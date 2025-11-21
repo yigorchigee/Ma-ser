@@ -4,10 +4,23 @@ If you only see the title line above in GitHub, click the **Raw** button or refr
 
 This repository contains a lightweight React-based interface for tracking ma'aser (tithing) income, donations, and user preferences. The UI is composed of standalone components and JSON schemas for the core data entities.
 
+## What platforms this code covers
+- **Web (desktop & mobile browsers):** The React pages in `src/pages` are responsive and are what you see when you open the repo on GitHub. Deploy these to any web host and they will work on Android/iOS browsers.
+- **Native Android/iOS apps:** Not included here. To ship native apps, wrap or re-implement these screens in a mobile stack (e.g., React Native, Expo, or native Swift/Kotlin) and connect to the same backend API.
+- **PWA option:** If you want an installable “app-like” experience without native builds, configure your web deploy as a Progressive Web App (PWA) and reuse this UI unchanged.
+
 ## Structure
 - `src/pages` – Feature pages (dashboard, transactions, donations, settings).
 - `src/components` – Reusable UI elements, forms, icons, and dashboard widgets.
 - `schemas` – JSON Schema definitions for `Transaction`, `Donation`, and `Charity` objects.
+
+## Run it locally (quick start)
+1. Clone the repo: `git clone <repo-url> && cd Ma-ser`
+2. Install dependencies: `npm install`
+3. Start the dev server: `npm run dev`
+4. Open the printed localhost URL in your browser. The UI is responsive, so you can shrink the window or use devtools device mode to preview mobile layouts.
+
+> Note: Components import `@/api/base44Client` and other `@/...` aliases. Make sure your bundler is configured to resolve `@` to the `src` directory. The UI primitives in `src/components/ui` are simple placeholders; swap them with your design system as needed.
 
 ## Pages
 - **MaaserTracker**: Dashboard showing ma'aser owed, recent transactions, and quick-add forms.
