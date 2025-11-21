@@ -1,0 +1,38 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Transaction date"
+    },
+    "description": {
+      "type": "string",
+      "description": "Transaction description"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount"
+    },
+    "account": {
+      "type": "string",
+      "description": "Account name"
+    },
+    "is_internal_transfer": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is an internal transfer to exclude from ma'aser"
+    },
+    "category": {
+      "type": "string",
+      "description": "Transaction category"
+    }
+  },
+  "required": [
+    "date",
+    "description",
+    "amount",
+    "account"
+  ]
+}
