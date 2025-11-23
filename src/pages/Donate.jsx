@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import DonationForm from '../components/forms/DonationForm';
@@ -13,36 +13,30 @@ export default function Donate() {
   // Fetch charities
   const { data: charities = [] } = useQuery({
     queryKey: ['charities'],
-    queryFn: () => base44.entities.Charity.list(),
+    queryFn: () => dataClient.entities.Charity.list(),
   });
 
   // Fetch donations
   const { data: donations = [] } = useQuery({
     queryKey: ['donations'],
-    queryFn: () => base44.entities.Donation.list('-date'),
+    queryFn: () => dataClient.entities.Donation.list('-date'),
   });
 
   // Fetch transactions to calculate ma'aser owed
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list(),
+    queryFn: () => dataClient.entities.Transaction.list(),
   });
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        return await base44.auth.me();
-      } catch (error) {
-        return null;
-      }
-    },
+    queryFn: () => dataClient.auth.me(),
   });
 
   const maaserPercentage = user?.maaser_percentage || 10;
 
   const createDonationMutation = useMutation({
-    mutationFn: (data) => base44.entities.Donation.create(data),
+    mutationFn: (data) => dataClient.entities.Donation.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['donations'] });
       toast.success('Donation recorded successfully!');
@@ -59,7 +53,8 @@ export default function Donate() {
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalDonated = donations.reduce((sum, d) => sum + d.amount, 0);
-  const maaserOwed = (totalIncome * maaserPercentage) / 100;
+  const maaserTarget = (totalIncome * maaserPercentage) / 100;
+  const maaserOwed = Math.max(maaserTarget - totalDonated, 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 md:p-8">

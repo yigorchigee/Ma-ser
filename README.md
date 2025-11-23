@@ -20,7 +20,18 @@ This repository contains a lightweight React-based interface for tracking ma'ase
 3. Start the dev server: `npm run dev`
 4. Open the printed localhost URL in your browser. The UI is responsive, so you can shrink the window or use devtools device mode to preview mobile layouts.
 
-> Note: Components import `@/api/base44Client` and other `@/...` aliases. Make sure your bundler is configured to resolve `@` to the `src` directory. The UI primitives in `src/components/ui` are simple placeholders; swap them with your design system as needed.
+## How to preview the app/website
+Choose the path that fits your setup:
+
+- **Fastest (no installs):** In GitHub, press the `.` key to open the repo in the browser-based VS Code editor, then hit the Run button to start `npm run dev`; open the forwarded preview URL.
+- **Local machine:** Follow the quick-start steps above, then open the localhost URL from `npm run dev` in any browser. Use the browser’s mobile device emulator (e.g., Chrome DevTools → Toggle device toolbar) to see phone layouts.
+- **Phone preview:** Run `npm run dev` on your computer, note the LAN URL it prints (e.g., `http://192.168.x.x:3000`), and open that URL from your phone on the same Wi‑Fi. The site is responsive, so it will render like a mobile app.
+- **Hosted preview:** Deploy the repo to Vercel/Netlify/Render and open the live URL. This requires pushing your code to a remote and connecting it to the host; no code changes are needed.
+
+> Note: Data is stored locally in the browser via `src/api/dataClient.js`, so you don’t need any Base44 plugins or external APIs to try the UI. Make sure your bundler is configured to resolve `@` to the `src` directory. The UI primitives in `src/components/ui` are simple placeholders; swap them with your design system as needed.
+
+### Resetting the demo data
+- Open **Settings** (from the navigation bar) and click **“Reset demo data.”** This clears your local entries and reloads the seeded income, donation, and charity examples. It’s safe to use anytime if you want a clean slate.
 
 ## Pages
 - **MaaserTracker**: Dashboard showing ma'aser owed, recent transactions, and quick-add forms.
@@ -29,7 +40,8 @@ This repository contains a lightweight React-based interface for tracking ma'ase
 - **Settings**: Configure ma'aser percentage and preferred color scheme.
 
 ## Notes
-- Components reference `@/api/base44Client` and other aliases; ensure your bundler/resolver maps `@` to the `src` directory.
+- Components reference `@/...` aliases; ensure your bundler/resolver maps `@` to the `src` directory.
+- Data lives in `localStorage` through `src/api/dataClient.js`, which also seeds demo transactions/donations/charities so you can click around immediately—no plugins required.
 - The UI primitives in `src/components/ui` are simple, dependency-free placeholders to keep the example self-contained. Replace them with your design system as needed.
 
 ## How to browse this code on GitHub (click-by-click)

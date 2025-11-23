@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { LayoutDashboard, Receipt, Settings } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { dataClient } from '@/api/dataClient';
 import { useQuery } from '@tanstack/react-query';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 
@@ -16,13 +16,7 @@ export default function Layout({ children, currentPageName }) {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        return await base44.auth.me();
-      } catch (error) {
-        return null;
-      }
-    },
+    queryFn: () => dataClient.auth.me(),
   });
 
   const colorScheme = user?.color_scheme || 'purple';

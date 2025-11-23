@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Settings as SettingsIcon, Palette, Percent } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Palette, Percent, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -12,13 +13,7 @@ export default function Settings() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        return await base44.auth.me();
-      } catch (error) {
-        return null;
-      }
-    },
+    queryFn: () => dataClient.auth.me(),
   });
 
   const [maaserPercentage, setMaaserPercentage] = useState(user?.maaser_percentage || 10);
@@ -43,7 +38,7 @@ export default function Settings() {
   }, [user]);
 
   const updateSettingsMutation = useMutation({
-    mutationFn: (data) => base44.auth.updateMe(data),
+    mutationFn: (data) => dataClient.auth.updateMe(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
       toast.success('Settings updated successfully!');
@@ -60,6 +55,16 @@ export default function Settings() {
     setColorScheme(value);
     updateSettingsMutation.mutate({ color_scheme: value });
   };
+
+  const resetDataMutation = useMutation({
+    mutationFn: async () => {
+      dataClient.reset();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      toast.success('Demo data reset. Fresh sample data loaded.');
+    },
+  });
 
   const colorSchemes = [
     { value: 'purple', label: 'Purple', gradient: 'from-purple-600 to-blue-600' },
@@ -138,6 +143,35 @@ export default function Settings() {
                 ))}
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Demo data controls */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <RotateCcw className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+              Reset Demo Data
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-base text-gray-700">
+              Clear your current local data and reload the seeded demo income, donations, and charities. Useful if you want a clean slate or to see the starter example values again.
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const confirmed = confirm('Reset demo data? This will remove your local entries and restore the starter examples.');
+                if (confirmed) {
+                  resetDataMutation.mutate();
+                }
+              }}
+              className="flex items-center gap-2"
+              disabled={resetDataMutation.isLoading}
+            >
+              <RotateCcw className="h-5 w-5" />
+              {resetDataMutation.isLoading ? 'Resetting...' : 'Reset demo data'}
+            </Button>
           </CardContent>
         </Card>
       </div>

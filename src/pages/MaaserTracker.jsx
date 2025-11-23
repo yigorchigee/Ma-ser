@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Plus, DollarSign, Heart, ChevronDown, ChevronUp } from 'lucide-react';
@@ -20,13 +20,7 @@ export default function MaaserTracker() {
   // Fetch user settings - make it optional so it doesn't break the page
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        return await base44.auth.me();
-      } catch (error) {
-        return null;
-      }
-    },
+    queryFn: () => dataClient.auth.me(),
   });
 
   const maaserPercentage = user?.maaser_percentage || 10;
@@ -34,24 +28,24 @@ export default function MaaserTracker() {
   // Fetch transactions
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-date'),
+    queryFn: () => dataClient.entities.Transaction.list('-date'),
   });
 
   // Fetch donations
   const { data: donations = [] } = useQuery({
     queryKey: ['donations'],
-    queryFn: () => base44.entities.Donation.list('-date'),
+    queryFn: () => dataClient.entities.Donation.list('-date'),
   });
 
   // Fetch charities
   const { data: charities = [] } = useQuery({
     queryKey: ['charities'],
-    queryFn: () => base44.entities.Charity.list(),
+    queryFn: () => dataClient.entities.Charity.list(),
   });
 
   // Mutations
   const createTransactionMutation = useMutation({
-    mutationFn: (data) => base44.entities.Transaction.create(data),
+    mutationFn: (data) => dataClient.entities.Transaction.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       setShowTransactionForm(false);
@@ -61,7 +55,7 @@ export default function MaaserTracker() {
   });
 
   const updateTransactionMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Transaction.update(id, data),
+    mutationFn: ({ id, data }) => dataClient.entities.Transaction.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       setShowTransactionForm(false);
@@ -71,7 +65,7 @@ export default function MaaserTracker() {
   });
 
   const deleteTransactionMutation = useMutation({
-    mutationFn: (id) => base44.entities.Transaction.delete(id),
+    mutationFn: (id) => dataClient.entities.Transaction.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success('Transaction deleted successfully!');
@@ -86,7 +80,8 @@ export default function MaaserTracker() {
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalDonated = donations.reduce((sum, d) => sum + d.amount, 0);
-  const maaserOwed = (totalIncome * maaserPercentage) / 100;
+  const maaserTarget = (totalIncome * maaserPercentage) / 100;
+  const maaserOwed = Math.max(maaserTarget - totalDonated, 0);
 
   // Handlers
   const handleTransactionSubmit = (data) => {

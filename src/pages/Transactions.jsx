@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,17 +17,17 @@ export default function Transactions() {
   // Fetch transactions
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-date'),
+    queryFn: () => dataClient.entities.Transaction.list('-date'),
   });
 
   // Fetch donations
   const { data: donations = [] } = useQuery({
     queryKey: ['donations'],
-    queryFn: () => base44.entities.Donation.list('-date'),
+    queryFn: () => dataClient.entities.Donation.list('-date'),
   });
 
   const deleteTransactionMutation = useMutation({
-    mutationFn: (id) => base44.entities.Transaction.delete(id),
+    mutationFn: (id) => dataClient.entities.Transaction.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success('Transaction deleted successfully!');
@@ -35,7 +35,7 @@ export default function Transactions() {
   });
 
   const deleteDonationMutation = useMutation({
-    mutationFn: (id) => base44.entities.Donation.delete(id),
+    mutationFn: (id) => dataClient.entities.Donation.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['donations'] });
       toast.success('Donation deleted successfully!');
