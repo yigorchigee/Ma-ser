@@ -1,0 +1,22 @@
+{
+  "name": "Charity",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Charity name"
+    },
+    "category": {
+      "type": "string",
+      "description": "Charity category"
+    },
+    "is_recommended": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is a recommended charity"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

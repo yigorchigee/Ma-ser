@@ -1,0 +1,28 @@
+{
+  "name": "Donation",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Donation date"
+    },
+    "charity_name": {
+      "type": "string",
+      "description": "Name of the charity"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Donation amount"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "date",
+    "charity_name",
+    "amount"
+  ]
+}
