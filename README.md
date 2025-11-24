@@ -1,62 +1,67 @@
-# Ma'aser Tracker UI
+# How to Run Ma'aser Tracker on Your Computer (Beginner Friendly)
 
-If you only see the title line above in GitHub, click the **Raw** button or refresh—sometimes GitHub collapses the preview when it is still loading. The full instructions below outline exactly where to click to browse the code.
+These steps are written for someone with no coding background. Pick **one** option below (ZIP, HTTPS, SSH, or GitHub CLI) and follow its steps from start to finish.
 
-This repository contains a lightweight React-based interface for tracking ma'aser (tithing) income, donations, and user preferences. The UI is composed of standalone components and JSON schemas for the core data entities.
+## Before you start
+- You need a computer with internet access.
+- Install **Node.js** (includes npm) from [https://nodejs.org](https://nodejs.org). Choose the LTS version and click through the installer with the default options.
 
-## What platforms this code covers
-- **Web (desktop & mobile browsers):** The React pages in `src/pages` are responsive and are what you see when you open the repo on GitHub. Deploy these to any web host and they will work on Android/iOS browsers.
-- **Native Android/iOS apps:** Not included here. To ship native apps, wrap or re-implement these screens in a mobile stack (e.g., React Native, Expo, or native Swift/Kotlin) and connect to the same backend API.
-- **PWA option:** If you want an installable “app-like” experience without native builds, configure your web deploy as a Progressive Web App (PWA) and reuse this UI unchanged.
+## Option A: Download ZIP (no extra tools required)
+1. On the project page, click the green **Code** button.
+2. Click **Download ZIP**.
+3. When the file finishes downloading, right-click it and choose **Extract All** (or double-click to unzip on Mac). A folder named `Ma-ser` will appear.
+4. Open a terminal:
+   - Windows: click the search bar, type **Command Prompt**, and open it.
+   - Mac: open **Terminal** from Applications → Utilities.
+5. In the terminal, type `cd ` (with a space) and drag the `Ma-ser` folder into the window. Press **Enter**. The prompt should now show `Ma-ser` at the end of the line.
+6. Install the required files by typing `npm install` and pressing **Enter**. Wait until the downloads finish and you see the prompt again.
+7. Start the app by typing `npm run dev` and pressing **Enter**. After a few seconds the terminal will print a web address like `http://localhost:5173/`.
+8. Open the app by copying that address into Chrome, Edge, or Safari. The Ma'aser Tracker will load.
+9. Stop the app when you are done by returning to the terminal window and pressing **Ctrl + C** (or **Cmd + C** on Mac).
 
-## Structure
-- `src/pages` – Feature pages (dashboard, transactions, donations, settings).
-- `src/components` – Reusable UI elements, forms, icons, and dashboard widgets.
-- `schemas` – JSON Schema definitions for `Transaction`, `Donation`, and `Charity` objects.
-- `src/api/integrations` – Provider SDK wrappers for banks (Plaid-style aggregator), PayPal, Cash App, Zelle, and Venmo.
+## Option B: Clone with HTTPS (requires Git installed)
+1. Install **Git** from [https://git-scm.com/downloads](https://git-scm.com/downloads). Accept the default options.
+2. Open a terminal (Command Prompt on Windows or Terminal on Mac).
+3. Copy and paste this command, then press **Enter**:
+   ```
+   git clone https://github.com/<your-username>/Ma-ser.git
+   ```
+4. When the command finishes, a folder named `Ma-ser` will appear.
+5. Move into the folder by typing `cd Ma-ser` and pressing **Enter**.
+6. Install the required files by typing `npm install` and pressing **Enter**. Wait until the downloads finish and you see the prompt again.
+7. Start the app by typing `npm run dev` and pressing **Enter**. After a few seconds the terminal will print a web address like `http://localhost:5173/`.
+8. Open the app by copying that address into Chrome, Edge, or Safari.
+9. Stop the app when you are done by returning to the terminal window and pressing **Ctrl + C** (or **Cmd + C** on Mac).
 
-## Run it locally (quick start)
-1. Clone the repo: `git clone <repo-url> && cd Ma-ser`
-2. Install dependencies: `npm install`
-3. Start the dev server: `npm run dev`
-4. Open the printed localhost URL in your browser. The UI is responsive, so you can shrink the window or use devtools device mode to preview mobile layouts.
+## Option C: Clone with SSH (requires Git and SSH keys set up with GitHub)
+1. Install **Git** from [https://git-scm.com/downloads](https://git-scm.com/downloads). Accept the default options.
+2. Make sure you have SSH keys added to your GitHub account (see GitHub's "Generating a new SSH key" guide if you have not done this).
+3. Open a terminal.
+4. Copy and paste this command, then press **Enter**:
+   ```
+   git clone git@github.com:<your-username>/Ma-ser.git
+   ```
+5. When the command finishes, a folder named `Ma-ser` will appear.
+6. Move into the folder by typing `cd Ma-ser` and pressing **Enter**.
+7. Install the required files by typing `npm install` and pressing **Enter**. Wait until the downloads finish and you see the prompt again.
+8. Start the app by typing `npm run dev` and pressing **Enter**. After a few seconds the terminal will print a web address like `http://localhost:5173/`.
+9. Open the app by copying that address into your browser.
+10. Stop the app when you are done by returning to the terminal window and pressing **Ctrl + C** (or **Cmd + C** on Mac).
 
-## How to preview the app/website
-Choose the path that fits your setup:
+## Option D: Clone with GitHub CLI (requires `gh` installed and signed in)
+1. Install **GitHub CLI** from [https://cli.github.com/](https://cli.github.com/) and sign in by running `gh auth login` in your terminal. Follow the prompts.
+2. Open a terminal.
+3. Copy and paste this command, then press **Enter**:
+   ```
+   gh repo clone <your-username>/Ma-ser
+   ```
+4. When the command finishes, a folder named `Ma-ser` will appear.
+5. Move into the folder by typing `cd Ma-ser` and pressing **Enter**.
+6. Install the required files by typing `npm install` and pressing **Enter**. Wait until the downloads finish and you see the prompt again.
+7. Start the app by typing `npm run dev` and pressing **Enter**. After a few seconds the terminal will print a web address like `http://localhost:5173/`.
+8. Open the app by copying that address into your browser.
+9. Stop the app when you are done by returning to the terminal window and pressing **Ctrl + C** (or **Cmd + C** on Mac).
 
-- **Fastest (no installs):** In GitHub, press the `.` key to open the repo in the browser-based VS Code editor, then hit the Run button to start `npm run dev`; open the forwarded preview URL.
-- **Local machine:** Follow the quick-start steps above, then open the localhost URL from `npm run dev` in any browser. Use the browser’s mobile device emulator (e.g., Chrome DevTools → Toggle device toolbar) to see phone layouts.
-- **Phone preview:** Run `npm run dev` on your computer, note the LAN URL it prints (e.g., `http://192.168.x.x:3000`), and open that URL from your phone on the same Wi‑Fi. The site is responsive, so it will render like a mobile app.
-- **Hosted preview:** Deploy the repo to Vercel/Netlify/Render and open the live URL. This requires pushing your code to a remote and connecting it to the host; no code changes are needed.
-
-> Note: Data is stored locally in the browser via `src/api/dataClient.js`, so you don’t need any Base44 plugins or external APIs to try the UI. Make sure your bundler is configured to resolve `@` to the `src` directory. The UI primitives in `src/components/ui` are simple placeholders; swap them with your design system as needed.
-
-### Resetting the demo data
-- Open **Settings** (from the navigation bar) and click **“Reset demo data.”** This clears your local entries and reloads the seeded income, donation, and charity examples. It’s safe to use anytime if you want a clean slate.
-
-## Pages
-- **MaaserTracker**: Dashboard showing ma'aser owed, recent transactions, and quick-add forms.
-- **Transactions**: Combined view of income and donations with filters for each type.
-- **Donate**: Record donations against available ma'aser balance.
-- **Settings**: Configure ma'aser percentage and preferred color scheme.
-
-## Notes
-- Components reference `@/...` aliases; ensure your bundler/resolver maps `@` to the `src` directory.
-- Data lives in `localStorage` through `src/api/dataClient.js`, which also seeds demo transactions/donations/charities so you can click around immediately—no plugins required.
-- The UI primitives in `src/components/ui` are simple, dependency-free placeholders to keep the example self-contained. Replace them with your design system as needed.
-
-## How to browse this code on GitHub (click-by-click)
-1. Open this repository on GitHub in your browser.
-2. On the file list, click the folder named **`src`**.
-3. Click **`pages/`** to see the main screens:
-   - **`MaaserTracker.jsx`** – dashboard showing ma'aser owed and recent transactions.
-   - **`Transactions.jsx`** – list of income and donations with filters.
-   - **`Donate.jsx`** – donation entry form.
-   - **`Settings.jsx`** – ma'aser percentage and color theme controls.
-4. Back in **`src/`**, click **`Layout.jsx`** to see navigation wiring between those pages.
-5. Click **`components/`** for reusable pieces:
-   - **`components/forms/`** – donation and transaction forms used on the pages.
-   - **`components/dashboard/`** – widgets like `StatCard` and `TransactionList`.
-   - **`components/ui/`** – small UI primitives used by the forms and pages.
-6. Return to the repo root and click **`schemas/`** to view JSON Schemas that describe the data (`Transaction.json`, `Donation.json`, `Charity.json`).
-7. If you prefer the quick keyboard shortcut, press the **`t`** key anywhere in the repo to open GitHub’s “Go to file” picker and type a filename (e.g., `MaaserTracker.jsx`).
+## Troubleshooting
+- If `npm install` or `npm run dev` is not recognized, close the terminal, reopen it, and try again. Node.js may need a restart to finish installing.
+- If the page does not open, make sure you copied the full address (including `http://` and the numbers) into the browser.
