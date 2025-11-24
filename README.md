@@ -13,6 +13,7 @@ This repository contains a lightweight React-based interface for tracking ma'ase
 - `src/pages` – Feature pages (dashboard, transactions, donations, settings).
 - `src/components` – Reusable UI elements, forms, icons, and dashboard widgets.
 - `schemas` – JSON Schema definitions for `Transaction`, `Donation`, and `Charity` objects.
+- `src/api/integrations` – Provider SDK wrappers for banks (Plaid-style aggregator), PayPal, Cash App, Zelle, and Venmo.
 
 ## Run it locally (quick start)
 1. Clone the repo: `git clone <repo-url> && cd Ma-ser`

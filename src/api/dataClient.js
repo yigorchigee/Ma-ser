@@ -1,3 +1,5 @@
+import { integrationHub } from './integrations/integrationHub';
+
 const STORAGE_KEYS = {
   user: 'maaser_user',
   transactions: 'maaser_transactions',
@@ -117,9 +119,28 @@ export const dataClient = {
   },
   entities: {
     Transaction: {
-      async list(order = '-date') {
+      async list(order = '-date', { includeExternal = false } = {}) {
         const items = ensureSeeded(STORAGE_KEYS.transactions, starterTransactions);
-        return sortByDate(items, order);
+
+        if (!includeExternal) {
+          return sortByDate(items, order);
+        }
+
+        const externalTransactions = await integrationHub.syncExternalTransactions();
+
+        const mappedExternal = externalTransactions.map((txn) => ({
+          id: txn.id || generateId(`txn_${txn.provider || 'external'}`),
+          date: txn.date,
+          description: txn.description,
+          amount: txn.amount,
+          account: txn.account || txn.provider,
+          is_internal_transfer: Boolean(txn.is_internal_transfer),
+          category: txn.category || txn.provider || 'External',
+          integration_provider: txn.provider,
+          integration_source_id: txn.sourceId,
+        }));
+
+        return sortByDate([...items, ...mappedExternal], order);
       },
       async create(data) {
         const items = ensureSeeded(STORAGE_KEYS.transactions, starterTransactions);
@@ -169,6 +190,39 @@ export const dataClient = {
       },
     },
   },
+  integrations: {
+    async syncExternalTransactions() {
+      const externalTransactions = await integrationHub.syncExternalTransactions();
+      const items = ensureSeeded(STORAGE_KEYS.transactions, starterTransactions);
+
+      const normalized = externalTransactions.map((txn) => ({
+        id: txn.id || generateId(`txn_${txn.provider || 'external'}`),
+        date: txn.date,
+        description: txn.description,
+        amount: txn.amount,
+        account: txn.account || txn.provider,
+        is_internal_transfer: Boolean(txn.is_internal_transfer),
+        category: txn.category || txn.provider || 'External',
+        integration_provider: txn.provider,
+        integration_source_id: txn.sourceId,
+      }));
+
+      const existingIds = new Set(items.map((txn) => txn.integration_source_id || txn.id));
+      const merged = [
+        ...items,
+        ...normalized.filter((txn) => !existingIds.has(txn.integration_source_id || txn.id)),
+      ];
+
+      persist(STORAGE_KEYS.transactions, merged);
+      return sortByDate(merged, '-date');
+    },
+    async getConnectionStatus() {
+      return integrationHub.connectionStatus();
+    },
+    async disconnect(provider) {
+      return integrationHub.disconnect(provider);
+    },
+  },
   reset() {
     memoryStore = {};
     persist(STORAGE_KEYS.user, defaultUser);
@@ -176,3 +230,4 @@ export const dataClient = {
     persist(STORAGE_KEYS.donations, starterDonations);
   },
 };
+
