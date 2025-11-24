@@ -6,73 +6,73 @@ import { dataClient } from '@/api/dataClient';
 import { useQuery } from '@tanstack/react-query';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 
-export default function Layout({ children, currentPageName }) {
-  const navItems = [
-    { name: 'MaaserTracker', label: 'Dashboard', icon: LayoutDashboard },
-    { name: 'Transactions', label: 'Transactions', icon: Receipt },
-    { name: 'Donate', label: 'Donate', icon: CharityBoxIcon },
-    { name: 'Settings', label: 'Settings', icon: Settings }
-  ];
+const themeMap = {
+  purple: {
+    accent: 'purple-600',
+    gradient: 'from-purple-600 via-indigo-500 to-blue-500',
+    muted: 'purple-50',
+  },
+  green: {
+    accent: 'emerald-600',
+    gradient: 'from-emerald-600 via-green-500 to-teal-500',
+    muted: 'emerald-50',
+  },
+  orange: {
+    accent: 'orange-600',
+    gradient: 'from-orange-600 via-amber-500 to-rose-500',
+    muted: 'orange-50',
+  },
+  blue: {
+    accent: 'blue-600',
+    gradient: 'from-blue-600 via-cyan-500 to-sky-500',
+    muted: 'blue-50',
+  },
+  pink: {
+    accent: 'pink-600',
+    gradient: 'from-pink-600 via-fuchsia-500 to-purple-500',
+    muted: 'pink-50',
+  },
+  red: {
+    accent: 'rose-600',
+    gradient: 'from-rose-600 via-red-500 to-orange-500',
+    muted: 'rose-50',
+  },
+};
 
+export default function Layout({ children, currentPageName }) {
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => dataClient.auth.me(),
   });
 
-  const colorScheme = user?.color_scheme || 'purple';
+  const theme = themeMap[user?.color_scheme] || themeMap.purple;
 
-  const colorMap = {
-    purple: {
-      primary: 'purple-600',
-      hover: 'purple-100',
-      border: 'purple-600'
-    },
-    green: {
-      primary: 'green-600',
-      hover: 'green-100',
-      border: 'green-600'
-    },
-    orange: {
-      primary: 'orange-600',
-      hover: 'orange-100',
-      border: 'orange-600'
-    },
-    blue: {
-      primary: 'blue-600',
-      hover: 'blue-100',
-      border: 'blue-600'
-    },
-    pink: {
-      primary: 'pink-600',
-      hover: 'pink-100',
-      border: 'pink-600'
-    },
-    red: {
-      primary: 'red-600',
-      hover: 'red-100',
-      border: 'red-600'
-    }
-  };
-
-  const colors = colorMap[colorScheme];
+  const navItems = [
+    { name: 'MaaserTracker', label: "Overview", icon: LayoutDashboard },
+    { name: 'Transactions', label: 'Activity', icon: Receipt },
+    { name: 'Donate', label: 'Give', icon: CharityBoxIcon },
+    { name: 'Settings', label: 'Settings', icon: Settings },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      {/* Navigation */}
-      <nav className={`bg-white shadow-lg border-b-4 border-${colors.border}`}>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="fixed inset-0 bg-gradient-to-br from-white via-white to-slate-50" aria-hidden />
+      <div className="fixed inset-x-6 top-10 h-72 rounded-3xl bg-gradient-to-br opacity-30 blur-3xl pointer-events-none" style={{ backgroundImage: 'linear-gradient(120deg, rgba(99,102,241,0.35), rgba(56,189,248,0.35))' }} aria-hidden />
+
+      <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/70 border-b border-slate-200/70 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 bg-white rounded-lg p-1 shadow-sm">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69168b31a1c7548829035f39/f0d741e3d_MeiserLogo.png" 
-                  alt="Ma'aser Logo" 
-                  className="h-full w-full object-contain"
-                />
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center gap-3">
+              <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${theme.gradient} shadow-lg flex items-center justify-center text-white font-black`}>
+                M
               </div>
-              <h1 className={`text-2xl md:text-3xl font-bold text-${colors.primary}`}>Ma'aser Tracker</h1>
+              <div>
+                <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Ma'aser Tracker</p>
+                <p className={`text-xl font-bold text-${theme.accent}`}>Give with clarity.</p>
+              </div>
             </div>
-            <div className="flex gap-2">
+
+            <nav className="flex items-center gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPageName === item.name;
@@ -80,24 +80,27 @@ export default function Layout({ children, currentPageName }) {
                   <Link
                     key={item.name}
                     to={createPageUrl(item.name)}
-                    className={`flex items-center gap-2 px-4 md:px-6 py-3 rounded-lg font-semibold text-base md:text-lg transition-all ${
+                    className={`group relative flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 border border-transparent ${
                       isActive
-                        ? `bg-${colors.primary} text-white shadow-lg`
-                        : `text-gray-700 hover:bg-${colors.hover}`
+                        ? `bg-${theme.muted} text-${theme.accent} border-${theme.accent}`
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className={`h-5 w-5 ${isActive ? `text-${theme.accent}` : 'text-slate-500'}`} />
                     <span className="hidden md:inline">{item.label}</span>
                   </Link>
                 );
               })}
-            </div>
+            </nav>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Main Content */}
-      <main>{children}</main>
+      <main className="relative pt-10 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

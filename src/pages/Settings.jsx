@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Palette, Percent, RotateCcw } from 'lucide-react';
+import { Palette, Percent, RotateCcw, Sparkles, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -25,7 +25,7 @@ export default function Settings() {
     orange: 'orange-600',
     blue: 'blue-600',
     pink: 'pink-600',
-    red: 'red-600'
+    red: 'red-600',
   };
 
   useEffect(() => {
@@ -76,105 +76,102 @@ export default function Settings() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Settings</h1>
-          <p className="text-xl text-gray-600">Customize your Ma'aser Tracker experience</p>
-        </div>
+    <div className="space-y-8">
+      <Card className="border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
+        <CardContent className="p-8 space-y-4">
+          <p className="uppercase tracking-[0.3em] text-xs text-white/70">Settings</p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
+              <p className="text-white/75 max-w-2xl mt-2">Tune the ma'aser percentage, pick a color story, and reset the demo data whenever you want a clean slate.</p>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm font-semibold">
+              <ShieldCheck className="h-5 w-5" />
+              Preferences saved locally
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Ma'aser Percentage Setting */}
-        <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <Percent className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
-              Ma'aser Percentage
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Label htmlFor="maaser-percentage" className="text-lg">
-                Select your ma'aser percentage:
-              </Label>
-              <Select value={maaserPercentage.toString()} onValueChange={handleMaaserPercentageChange}>
-                <SelectTrigger id="maaser-percentage" className="w-full text-lg">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10" className="text-lg">10%</SelectItem>
-                  <SelectItem value="20" className="text-lg">20%</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-gray-600">
-                This determines what percentage of your income should be set aside for ma'aser.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Color Scheme Setting */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Palette className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
-              Color Scheme
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Label htmlFor="color-scheme" className="text-lg">
-                Choose your preferred color theme:
-              </Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {colorSchemes.map((scheme) => (
-                  <button
-                    key={scheme.value}
-                    onClick={() => handleColorSchemeChange(scheme.value)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      colorScheme === scheme.value
-                        ? 'border-gray-900 shadow-lg'
-                        : 'border-gray-200 hover:border-gray-400'
-                    }`}
-                  >
-                    <div className={`h-20 rounded-lg bg-gradient-to-br ${scheme.gradient} mb-2`} />
-                    <p className="text-center font-semibold">{scheme.label}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Demo data controls */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <RotateCcw className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
-              Reset Demo Data
+              Ma'aser percentage
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-base text-gray-700">
-              Clear your current local data and reload the seeded demo income, donations, and charities. Useful if you want a clean slate or to see the starter example values again.
-            </p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                const confirmed = confirm('Reset demo data? This will remove your local entries and restore the starter examples.');
-                if (confirmed) {
-                  resetDataMutation.mutate();
-                }
-              }}
-              className="flex items-center gap-2"
-              disabled={resetDataMutation.isLoading}
-            >
-              <RotateCcw className="h-5 w-5" />
-              {resetDataMutation.isLoading ? 'Resetting...' : 'Reset demo data'}
-            </Button>
+            <Label htmlFor="maaser-percentage" className="text-base">Select your ma'aser percentage:</Label>
+            <Select value={maaserPercentage.toString()} onValueChange={handleMaaserPercentageChange}>
+              <SelectTrigger id="maaser-percentage" className="w-full text-base h-12 font-semibold">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10" className="text-base">10%</SelectItem>
+                <SelectItem value="20" className="text-base">20%</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-slate-600">This determines what percentage of your income should be set aside for ma'aser.</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-slate-200 shadow-md">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Palette className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+              Color scheme
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-slate-600">Choose the accent that best matches your vibe.</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {colorSchemes.map((scheme) => (
+                <button
+                  key={scheme.value}
+                  onClick={() => handleColorSchemeChange(scheme.value)}
+                  className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                    colorScheme === scheme.value
+                      ? 'border-slate-900 shadow-lg'
+                      : 'border-slate-200 hover:border-slate-400'
+                  }`}
+                >
+                  <div className={`h-16 rounded-xl bg-gradient-to-br ${scheme.gradient} mb-3`} />
+                  <p className="font-semibold text-slate-900">{scheme.label}</p>
+                </button>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
+
+      <Card className="border border-slate-200 shadow-md">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-2xl">
+            <Sparkles className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+            Reset demo data
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-base text-slate-700">
+            Clear your current local data and reload the seeded demo income, donations, and charities. Useful if you want a clean slate or to see the starter example values again.
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const confirmed = confirm('Reset demo data? This will remove your local entries and restore the starter examples.');
+              if (confirmed) {
+                resetDataMutation.mutate();
+              }
+            }}
+            className="flex items-center gap-2"
+            disabled={resetDataMutation.isLoading}
+          >
+            <RotateCcw className="h-5 w-5" />
+            {resetDataMutation.isLoading ? 'Resetting...' : 'Reset demo data'}
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
