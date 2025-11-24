@@ -7,36 +7,9 @@ These steps are written for someone with no coding background. Follow them in or
 - Install **Node.js** (includes npm) from [https://nodejs.org](https://nodejs.org). Choose the LTS version and click through the installer with the default options.
 
 ## Step-by-step
-1. **Get the project onto your computer** (pick **one** option below and follow its steps)
-   
-   **Option A: Download ZIP (no tools needed)**
-   1. On the project page, click the green **Code** button.
-   2. Click **Download ZIP**.
-   3. When the file finishes downloading, right-click it and choose **Extract All** (or double-click to unzip on Mac). A folder named `Ma-ser` will appear.
-
-   **Option B: Clone with HTTPS (requires Git installed)**
-   1. Open your terminal.
-   2. Copy and paste this command, then press **Enter**:
-      ```
-      git clone https://github.com/<your-username>/Ma-ser.git
-      ```
-   3. When the command finishes, a folder named `Ma-ser` will appear.
-
-   **Option C: Clone with SSH (requires Git + SSH keys set up)**
-   1. Open your terminal.
-   2. Copy and paste this command, then press **Enter**:
-      ```
-      git clone git@github.com:<your-username>/Ma-ser.git
-      ```
-   3. When the command finishes, a folder named `Ma-ser` will appear.
-
-   **Option D: Clone with GitHub CLI (requires gh installed and signed in)**
-   1. Open your terminal.
-   2. Copy and paste this command, then press **Enter**:
-      ```
-      gh repo clone <your-username>/Ma-ser
-      ```
-   3. When the command finishes, a folder named `Ma-ser` will appear.
+1. **Download the project**
+   - Click the green **Code** button on the project page and choose **Download ZIP**.
+   - Save the file, then right-click the ZIP and choose **Extract All** (or double-click to unzip on Mac). A folder named `Ma-ser` will appear.
 
 2. **Open the folder in a terminal**
    - Windows: click the search bar, type **Command Prompt**, and open it.
