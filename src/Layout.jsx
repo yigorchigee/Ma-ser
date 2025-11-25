@@ -78,7 +78,7 @@ export default function Layout({ children, currentPageName }) {
               </div>
             </Link>
 
-            <nav className="flex items-center gap-2">
+            <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPageName === item.name;
@@ -94,6 +94,7 @@ export default function Layout({ children, currentPageName }) {
                   >
                     <Icon className={`h-4 w-4 ${isActive ? `text-${theme.accent}` : 'text-slate-500'}`} />
                     <span className="hidden md:inline">{item.label}</span>
+                    <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-white/0 via-white/40 to-white/0" aria-hidden />
                   </Link>
                 );
               })}

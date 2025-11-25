@@ -114,7 +114,7 @@ export default function Donate() {
       </Card>
 
       {showDonationForm && (
-        <Card className="border border-slate-200 shadow-md">
+        <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-slate-900">Record a ma'aser payment</CardTitle>
           </CardHeader>

@@ -162,9 +162,12 @@ function SummaryCard({ label, value, accent }) {
 
 function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation }) {
   return (
-    <Card className="border border-slate-200 shadow-md">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-slate-900">{title}</CardTitle>
+    <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-indigo-500" />
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {items.length === 0 ? (
@@ -229,7 +232,7 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation }) {
 
 function IncomeCard({ transactions, incomeTransactions, onDeleteTransaction }) {
   return (
-    <Card className="border border-slate-200 shadow-md">
+    <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-slate-900">Income transactions</CardTitle>
       </CardHeader>
@@ -317,7 +320,7 @@ function IncomeCard({ transactions, incomeTransactions, onDeleteTransaction }) {
 
 function DonationCard({ donations, onDeleteDonation }) {
   return (
-    <Card className="border border-slate-200 shadow-md">
+    <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-slate-900">Ma'aser payments</CardTitle>
       </CardHeader>
