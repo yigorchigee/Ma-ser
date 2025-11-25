@@ -51,6 +51,10 @@ export default function MaaserTracker() {
     createTransactionMutation.mutate(data);
   };
 
+  const handleTransactionCancel = () => {
+    setShowTransactionForm(false);
+  };
+
   const recentActivity = [
     ...transactions
       .filter((t) => !t.is_internal_transfer)
@@ -148,7 +152,11 @@ export default function MaaserTracker() {
                 Close
               </Button>
             </div>
-            <TransactionForm transaction={null} onSubmit={handleTransactionSubmit} onCancel={() => setShowTransactionForm(false)} />
+              <TransactionForm
+                transaction={null}
+                onSubmit={handleTransactionSubmit}
+                onCancel={handleTransactionCancel}
+              />
           </CardContent>
         </Card>
       )}
