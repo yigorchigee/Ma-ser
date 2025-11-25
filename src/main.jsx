@@ -18,9 +18,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path="/maasertracker"
+            path="/dashboard"
             element={(
-              <Layout currentPageName="MaaserTracker">
+              <Layout currentPageName="Dashboard">
                 <MaaserTracker />
               </Layout>
             )}
@@ -49,8 +49,8 @@ function App() {
               </Layout>
             )}
           />
-          <Route path="/" element={<Navigate to="/maasertracker" replace />} />
-          <Route path="*" element={<Navigate to="/maasertracker" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
       <Toaster richColors closeButton />

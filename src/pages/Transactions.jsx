@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DollarSign, List, Edit2, Trash2, ArrowUpRight, Notebook } from 'lucide-react';
+import { DollarSign, List, Sparkles, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
@@ -61,68 +61,52 @@ export default function Transactions() {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 items-start">
-        <Card className="border-none shadow-xl bg-gradient-to-br from-indigo-600 via-blue-600 to-cyan-500 text-white">
-          <CardContent className="p-8 space-y-5">
-            <p className="uppercase tracking-[0.3em] text-xs text-white/70">Transactions</p>
-            <h1 className="text-3xl md:text-4xl font-black">Every dollar tells a story.</h1>
-            <p className="text-white/80 max-w-2xl">
-              Review income entries and ma'aser payments in one streamlined ledger. Switch views to focus on just what you need.
-            </p>
-            <div className="flex flex-wrap gap-3 text-sm text-white/80">
-              <span className="px-3 py-2 rounded-full bg-white/15 border border-white/20">{transactions.length} income entries</span>
-              <span className="px-3 py-2 rounded-full bg-white/15 border border-white/20">{donations.length} donations</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-slate-200 shadow-md">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg text-slate-800">
-              <Notebook className="h-5 w-5 text-indigo-500" />
-              Pick what to explore
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-white shadow-2xl overflow-hidden">
+        <div className="p-8 lg:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.35em] text-white/70">Transactions</p>
+            <h1 className="text-3xl md:text-4xl font-black">View your income and ma'aser payments</h1>
+            <p className="text-white/75 max-w-2xl">Switch the dropdown to focus on everything, just income, or only the ma'aser payments you've logged.</p>
+          </div>
+          <div className="w-full md:w-64">
             <Select value={view} onValueChange={setView}>
-              <SelectTrigger className="w-full h-12 text-base font-semibold">
-                <SelectValue />
+              <SelectTrigger className="w-full h-12 text-base font-semibold bg-white/10 border-white/20 text-white placeholder:text-white/70 hover:bg-white/15 transition-all">
+                <SelectValue placeholder="All activity" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all" className="text-base">
                   <div className="flex items-center gap-2">
                     <List className="h-5 w-5" />
-                    All activity
+                    All
                   </div>
                 </SelectItem>
                 <SelectItem value="income" className="text-base">
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
-                    Income only
+                    Income
                   </div>
                 </SelectItem>
                 <SelectItem value="donations" className="text-base">
                   <div className="flex items-center gap-2">
                     <CharityBoxIcon className="h-5 w-5" />
-                    Ma'aser payments
+                    Ma'aser Payments
                   </div>
                 </SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-sm text-slate-600">Use this switcher to focus on the entries you care about right now.</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SummaryCard label="Income entries" value={incomeTransactions.length} accent="indigo" />
-        <SummaryCard label="Donations" value={donations.length} accent="emerald" />
+        <SummaryCard label="Ma'aser payments" value={donations.length} accent="emerald" />
         <SummaryCard label="All records" value={allItems.length} accent="rose" />
       </div>
 
       {view === 'all' && (
         <LedgerCard
-          title="All activity"
+          title="Activity feed"
           items={allItems}
           onDeleteDonation={handleDeleteDonation}
           onDeleteTransaction={handleDeleteTransaction}
@@ -149,15 +133,29 @@ export default function Transactions() {
 
 function SummaryCard({ label, value, accent }) {
   const colors = {
-    indigo: 'from-indigo-50 to-slate-50 border-indigo-100 text-indigo-700',
-    emerald: 'from-emerald-50 to-slate-50 border-emerald-100 text-emerald-700',
-    rose: 'from-rose-50 to-slate-50 border-rose-100 text-rose-700',
+    indigo: {
+      surface: 'from-indigo-50 to-slate-50 border-indigo-100 text-indigo-700',
+      dot: 'bg-indigo-500',
+    },
+    emerald: {
+      surface: 'from-emerald-50 to-slate-50 border-emerald-100 text-emerald-700',
+      dot: 'bg-emerald-500',
+    },
+    rose: {
+      surface: 'from-rose-50 to-slate-50 border-rose-100 text-rose-700',
+      dot: 'bg-rose-500',
+    },
   };
 
   return (
-    <div className={`rounded-2xl border bg-gradient-to-br p-5 shadow-sm ${colors[accent]}`}>
-      <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="text-3xl font-black mt-2">{value}</p>
+    <div className={`rounded-2xl border bg-gradient-to-br p-5 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 ${colors[accent].surface}`}>
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">{label}</p>
+        <span className={`h-2.5 w-2.5 rounded-full ${colors[accent].dot}`} />
+      </div>
+      <p className="text-3xl font-black mt-2 flex items-center gap-2">
+        <Sparkles className="h-4 w-4" /> {value}
+      </p>
     </div>
   );
 }
@@ -175,7 +173,7 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation }) {
           items.map((item) => (
             <div
               key={`${item.type}-${item.id}`}
-              className={`flex items-center justify-between p-4 rounded-xl border transition ${
+              className={`flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow ${
                 item.type === 'income'
                   ? 'bg-indigo-50 border-indigo-100'
                   : 'bg-emerald-50 border-emerald-100'
@@ -210,18 +208,18 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation }) {
                   {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
-                  className="hover:bg-rose-100"
-                >
-                  <Trash2 className="h-5 w-5 text-rose-600" />
-                </Button>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
+                    className="hover:bg-rose-100 active:scale-95 transition"
+                  >
+                    <Trash2 className="h-5 w-5 text-rose-600" />
+                  </Button>
+                </div>
               </div>
-            </div>
           ))
         )}
       </CardContent>
@@ -244,7 +242,7 @@ function IncomeCard({ transactions, incomeTransactions, onDeleteTransaction }) {
             {incomeTransactions.map((transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between p-4 bg-indigo-50 border border-indigo-100 rounded-xl"
+                className="flex items-center justify-between p-4 bg-indigo-50 border border-indigo-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className="bg-indigo-100 p-3 rounded-xl">
@@ -268,7 +266,7 @@ function IncomeCard({ transactions, incomeTransactions, onDeleteTransaction }) {
                     variant="ghost"
                     size="icon"
                     onClick={() => onDeleteTransaction(transaction.id)}
-                    className="hover:bg-rose-100"
+                    className="hover:bg-rose-100 active:scale-95 transition"
                   >
                     <Trash2 className="h-5 w-5 text-rose-600" />
                   </Button>
@@ -332,7 +330,7 @@ function DonationCard({ donations, onDeleteDonation }) {
             {donations.map((donation) => (
               <div
                 key={donation.id}
-                className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl"
+                className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div className="bg-emerald-100 p-3 rounded-xl">
@@ -350,7 +348,7 @@ function DonationCard({ donations, onDeleteDonation }) {
                     variant="ghost"
                     size="icon"
                     onClick={() => onDeleteDonation(donation.id)}
-                    className="hover:bg-rose-100"
+                    className="hover:bg-rose-100 active:scale-95 transition"
                   >
                     <Trash2 className="h-5 w-5 text-rose-600" />
                   </Button>
