@@ -48,29 +48,35 @@ export default function Layout({ children, currentPageName }) {
   const theme = themeMap[user?.color_scheme] || themeMap.purple;
 
   const navItems = [
-    { name: 'MaaserTracker', label: "Overview", icon: LayoutDashboard },
-    { name: 'Transactions', label: 'Activity', icon: Receipt },
-    { name: 'Donate', label: 'Give', icon: CharityBoxIcon },
+    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { name: 'Transactions', label: 'Transactions', icon: Receipt },
+    { name: 'Donate', label: 'Donate', icon: CharityBoxIcon },
     { name: 'Settings', label: 'Settings', icon: Settings },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="fixed inset-0 bg-gradient-to-br from-white via-white to-slate-50" aria-hidden />
-      <div className="fixed inset-x-6 top-10 h-72 rounded-3xl bg-gradient-to-br opacity-30 blur-3xl pointer-events-none" style={{ backgroundImage: 'linear-gradient(120deg, rgba(99,102,241,0.35), rgba(56,189,248,0.35))' }} aria-hidden />
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-50" aria-hidden />
+      <div
+        className="fixed inset-x-6 top-4 h-64 rounded-3xl bg-gradient-to-r opacity-40 blur-3xl pointer-events-none"
+        style={{ backgroundImage: 'linear-gradient(120deg, rgba(79,70,229,0.35), rgba(56,189,248,0.35))' }}
+        aria-hidden
+      />
 
-      <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/70 border-b border-slate-200/70 shadow-sm">
+      <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-3">
-              <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${theme.gradient} shadow-lg flex items-center justify-center text-white font-black`}>
+            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
+              <div
+                className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${theme.gradient} shadow-lg flex items-center justify-center text-white font-black transition-transform duration-200 hover:-translate-y-0.5 active:scale-95`}
+              >
                 M
               </div>
               <div>
-                <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Ma'aser Tracker</p>
-                <p className={`text-xl font-bold text-${theme.accent}`}>Give with clarity.</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Ma'aser Tracker</p>
+                <p className={`text-xl font-black text-${theme.accent}`}>Clarity for your giving.</p>
               </div>
-            </div>
+            </Link>
 
             <nav className="flex items-center gap-2">
               {navItems.map((item) => {
@@ -80,13 +86,13 @@ export default function Layout({ children, currentPageName }) {
                   <Link
                     key={item.name}
                     to={createPageUrl(item.name)}
-                    className={`group relative flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 border border-transparent ${
+                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border shadow-sm hover:shadow ${
                       isActive
                         ? `bg-${theme.muted} text-${theme.accent} border-${theme.accent}`
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
+                        : 'text-slate-600 border-transparent hover:text-slate-900 hover:border-slate-200 hover:bg-white'
+                    } active:scale-95 hover:-translate-y-0.5`}
                   >
-                    <Icon className={`h-5 w-5 ${isActive ? `text-${theme.accent}` : 'text-slate-500'}`} />
+                    <Icon className={`h-4 w-4 ${isActive ? `text-${theme.accent}` : 'text-slate-500'}`} />
                     <span className="hidden md:inline">{item.label}</span>
                   </Link>
                 );
@@ -97,9 +103,7 @@ export default function Layout({ children, currentPageName }) {
       </header>
 
       <main className="relative pt-10 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          {children}
-        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">{children}</div>
       </main>
     </div>
   );
