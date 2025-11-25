@@ -64,20 +64,14 @@ export default function Donate() {
         ];
 
   return (
-    <div className="space-y-10">
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 text-white shadow-2xl">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.25),transparent_38%)]" aria-hidden />
-        <div className="p-8 lg:p-10 space-y-6 relative">
+    <div className="space-y-8">
+      <div className="rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 text-white shadow-2xl overflow-hidden">
+        <div className="p-8 lg:p-10 space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.35em] text-white/70">Donate</p>
               <h1 className="text-3xl md:text-4xl font-black">Channel your ma'aser where it matters most.</h1>
               <p className="text-white/80 max-w-2xl">Pick a cause to support. We'll expand each profile soon, but for now choose the charity that resonates and log your gift.</p>
-              <div className="flex flex-wrap gap-2 text-xs text-white/70">
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Glass cards</span>
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Hover lift</span>
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Quick totals</span>
-              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-white/85">
               <Highlight label="Ma'aser owed" value={`$${maaserOwed.toFixed(2)}`} />
@@ -88,7 +82,7 @@ export default function Donate() {
         </div>
       </div>
 
-      <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
+      <Card className="border border-slate-200 shadow-md">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between text-2xl font-bold text-slate-900">
             <span>Choose a charity</span>
@@ -101,7 +95,7 @@ export default function Donate() {
           {showcaseCharities.map((charity) => (
             <button
               key={charity.id}
-              className="group text-left rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 shadow-md p-5 hover:-translate-y-1 hover:shadow-2xl active:scale-95 transition-all"
+              className="group text-left rounded-2xl border border-slate-200 bg-white shadow-sm p-5 hover:-translate-y-1 hover:shadow-xl active:scale-95 transition-all"
             >
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div>
@@ -114,10 +108,6 @@ export default function Donate() {
               {charity.website && (
                 <p className="text-sm font-semibold text-emerald-700">{charity.website}</p>
               )}
-              <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                Tap to view profile (coming soon)
-              </div>
             </button>
           ))}
         </CardContent>
@@ -139,7 +129,7 @@ export default function Donate() {
         </Card>
       )}
 
-      <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
+      <Card className="border border-slate-200 shadow-md">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900">
             <Heart className="h-5 w-5 text-rose-500" />
