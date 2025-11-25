@@ -55,22 +55,26 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-900">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_55%),radial-gradient(circle_at_20%_20%,_rgba(99,102,241,0.16),_transparent_45%),radial-gradient(circle_at_80%_0%,_rgba(59,130,246,0.14),_transparent_40%)]" aria-hidden />
-      <div className="fixed inset-x-4 top-10 h-56 rounded-3xl bg-gradient-to-r from-white/10 via-white/5 to-white/10 blur-3xl opacity-70" aria-hidden />
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-50" aria-hidden />
+      <div
+        className="fixed inset-x-6 top-4 h-64 rounded-3xl bg-gradient-to-r opacity-40 blur-3xl pointer-events-none"
+        style={{ backgroundImage: 'linear-gradient(120deg, rgba(79,70,229,0.35), rgba(56,189,248,0.35))' }}
+        aria-hidden
+      />
 
-      <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/80 border-b border-white/60 shadow-lg shadow-slate-900/5">
+      <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
-            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3 group">
+            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
               <div
-                className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${theme.gradient} shadow-lg shadow-${theme.accent}/30 ring-1 ring-white/50 flex items-center justify-center text-white font-black transition-all duration-300 group-hover:-translate-y-1 group-active:scale-95`}
+                className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${theme.gradient} shadow-lg flex items-center justify-center text-white font-black transition-transform duration-200 hover:-translate-y-0.5 active:scale-95`}
               >
                 M
               </div>
-              <div className="space-y-0.5">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-slate-500">Ma'aser Tracker</p>
-                <p className={`text-xl font-black text-${theme.accent} drop-shadow-sm`}>Clarity for your giving.</p>
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Ma'aser Tracker</p>
+                <p className={`text-xl font-black text-${theme.accent}`}>Clarity for your giving.</p>
               </div>
             </Link>
 
@@ -82,9 +86,9 @@ export default function Layout({ children, currentPageName }) {
                   <Link
                     key={item.name}
                     to={createPageUrl(item.name)}
-                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border ${
+                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border shadow-sm hover:shadow ${
                       isActive
-                        ? `bg-${theme.muted} text-${theme.accent} border-${theme.accent}/40 shadow-inner shadow-${theme.accent}/20`
+                        ? `bg-${theme.muted} text-${theme.accent} border-${theme.accent}`
                         : 'text-slate-600 border-transparent hover:text-slate-900 hover:border-slate-200 hover:bg-white'
                     } active:scale-95 hover:-translate-y-0.5`}
                   >
@@ -100,10 +104,7 @@ export default function Layout({ children, currentPageName }) {
       </header>
 
       <main className="relative pt-10 pb-16">
-        <div className="absolute inset-x-0 top-8 flex justify-center" aria-hidden>
-          <div className="h-24 w-24 rounded-full bg-gradient-to-br from-white/25 to-white/5 blur-3xl" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">{children}</div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">{children}</div>
       </main>
     </div>
   );
