@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Plus, DollarSign, Heart, ArrowUpRight, ArrowDownLeft, Clock3 } from 'lucide-react';
+import { Plus, DollarSign, Heart, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 
@@ -74,60 +74,41 @@ export default function MaaserTracker() {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-white shadow-2xl overflow-hidden">
-        <div className="p-8 lg:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.35em] text-white/60">Dashboard</p>
-            <h1 className="text-3xl md:text-4xl font-black">Know exactly where your ma'aser stands.</h1>
-            <p className="text-white/70 max-w-2xl">A calm snapshot of what you owe, what you've given, and the latest money coming in.</p>
+      <div className="rounded-3xl bg-gradient-to-r from-rose-500 via-red-500 to-orange-400 text-white shadow-2xl p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Ma'aser Owed</p>
+            <p className="text-5xl md:text-6xl font-black mt-2">${maaserOwed.toFixed(2)}</p>
+            <p className="text-white/80 mt-2">Set aside this amount to stay square with your ma'aser goal.</p>
           </div>
-          <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 shadow-lg">
-            <Clock3 className="h-5 w-5" />
-            <div>
-              <p className="text-xs text-white/60">Current commitment</p>
-              <p className="text-lg font-semibold">{maaserPercentage}% of income</p>
-            </div>
-          </div>
+          <Button
+            className="bg-white text-rose-600 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95"
+            onClick={() => setShowTransactionForm((prev) => !prev)}
+          >
+            <Plus className="h-5 w-5 mr-2" /> Add income
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="rounded-3xl bg-gradient-to-r from-rose-500 via-red-500 to-orange-400 text-white shadow-2xl p-8 lg:col-span-2">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Ma'aser Owed</p>
-              <p className="text-5xl md:text-6xl font-black mt-2">${maaserOwed.toFixed(2)}</p>
-              <p className="text-white/80 mt-2">Set aside this amount to stay square with your ma'aser goal.</p>
-            </div>
-            <Button
-              className="bg-white text-rose-600 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95"
-              onClick={() => setShowTransactionForm((prev) => !prev)}
-            >
-              <Plus className="h-5 w-5 mr-2" /> Add income
-            </Button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-md p-6 flex items-center gap-3 hover:-translate-y-0.5 transition-all">
+          <div className="h-12 w-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner">
+            <Heart className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Total donated</p>
+            <p className="text-3xl font-bold text-slate-900">${totalDonated.toFixed(2)}</p>
+            <p className="text-sm text-slate-500">Ma'aser already paid out</p>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-          <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-md p-6 flex items-center gap-3 hover:-translate-y-0.5 transition-all">
-            <div className="h-12 w-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner">
-              <Heart className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Total donate</p>
-              <p className="text-3xl font-bold text-slate-900">${totalDonated.toFixed(2)}</p>
-              <p className="text-sm text-slate-500">Ma'aser already paid out</p>
-            </div>
+        <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-md p-6 flex items-center gap-3 hover:-translate-y-0.5 transition-all">
+          <div className="h-12 w-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shadow-inner">
+            <DollarSign className="h-6 w-6" />
           </div>
-          <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-md p-6 flex items-center gap-3 hover:-translate-y-0.5 transition-all">
-            <div className="h-12 w-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shadow-inner">
-              <DollarSign className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Total income</p>
-              <p className="text-3xl font-bold text-slate-900">${totalIncome.toFixed(2)}</p>
-              <p className="text-sm text-slate-500">Tracked earnings subject to ma'aser</p>
-            </div>
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Total income</p>
+            <p className="text-3xl font-bold text-slate-900">${totalIncome.toFixed(2)}</p>
+            <p className="text-sm text-slate-500">Tracked earnings subject to ma'aser</p>
           </div>
         </div>
       </div>
