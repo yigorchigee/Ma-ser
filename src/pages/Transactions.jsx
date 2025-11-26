@@ -59,74 +59,29 @@ export default function Transactions() {
 
   const incomeTransactions = transactions.filter((t) => !t.is_internal_transfer);
 
+  const filteredItems =
+    view === 'all'
+      ? allItems
+      : view === 'income'
+        ? allItems.filter((item) => item.type === 'income')
+        : allItems.filter((item) => item.type === 'donation');
+
   return (
     <div className="space-y-8">
-      <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-white shadow-2xl overflow-hidden">
-        <div className="p-8 lg:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.35em] text-white/70">Transactions</p>
-            <h1 className="text-3xl md:text-4xl font-black">View your income and ma'aser payments</h1>
-            <p className="text-white/75 max-w-2xl">Switch the dropdown to focus on everything, just income, or only the ma'aser payments you've logged.</p>
-          </div>
-          <div className="w-full md:w-64">
-            <Select value={view} onValueChange={setView}>
-              <SelectTrigger className="w-full h-12 text-base font-semibold bg-white/10 border-white/20 text-white placeholder:text-white/70 hover:bg-white/15 transition-all">
-                <SelectValue placeholder="All activity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-base">
-                  <div className="flex items-center gap-2">
-                    <List className="h-5 w-5" />
-                    All
-                  </div>
-                </SelectItem>
-                <SelectItem value="income" className="text-base">
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5" />
-                    Income
-                  </div>
-                </SelectItem>
-                <SelectItem value="donations" className="text-base">
-                  <div className="flex items-center gap-2">
-                    <CharityBoxIcon className="h-5 w-5" />
-                    Ma'aser Payments
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SummaryCard label="Income entries" value={incomeTransactions.length} accent="indigo" />
         <SummaryCard label="Ma'aser payments" value={donations.length} accent="emerald" />
         <SummaryCard label="All records" value={allItems.length} accent="rose" />
       </div>
 
-      {view === 'all' && (
-        <LedgerCard
-          title="Activity feed"
-          items={allItems}
-          onDeleteDonation={handleDeleteDonation}
-          onDeleteTransaction={handleDeleteTransaction}
-        />
-      )}
-
-      {view === 'income' && (
-        <IncomeCard
-          transactions={transactions}
-          incomeTransactions={incomeTransactions}
-          onDeleteTransaction={handleDeleteTransaction}
-        />
-      )}
-
-      {view === 'donations' && (
-        <DonationCard
-          donations={donations}
-          onDeleteDonation={handleDeleteDonation}
-        />
-      )}
+      <LedgerCard
+        title="Activity feed"
+        view={view}
+        onViewChange={setView}
+        items={filteredItems}
+        onDeleteDonation={handleDeleteDonation}
+        onDeleteTransaction={handleDeleteTransaction}
+      />
     </div>
   );
 }
@@ -160,14 +115,50 @@ function SummaryCard({ label, value, accent }) {
   );
 }
 
-function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation }) {
+function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view, onViewChange }) {
   return (
     <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="text-2xl font-bold text-slate-900 flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-indigo-500" />
           {title}
         </CardTitle>
+        <div className="w-full sm:w-64">
+          <Select value={view} onValueChange={onViewChange}>
+            <SelectTrigger className="w-full h-11 text-sm font-semibold bg-white border-slate-200 text-slate-900 hover:bg-slate-50 focus:ring-2 focus:ring-indigo-500">
+              <SelectValue placeholder="All activity" />
+            </SelectTrigger>
+            <SelectContent className="text-slate-900 bg-white shadow-lg border border-slate-200">
+              <SelectItem
+                value="all"
+                className="text-base text-slate-900 data-[highlighted]:bg-indigo-50 data-[state=checked]:bg-indigo-100"
+              >
+                <div className="flex items-center gap-2">
+                  <List className="h-5 w-5" />
+                  All
+                </div>
+              </SelectItem>
+              <SelectItem
+                value="income"
+                className="text-base text-slate-900 data-[highlighted]:bg-indigo-50 data-[state=checked]:bg-indigo-100"
+              >
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5" />
+                  Income
+                </div>
+              </SelectItem>
+              <SelectItem
+                value="donations"
+                className="text-base text-slate-900 data-[highlighted]:bg-indigo-50 data-[state=checked]:bg-indigo-100"
+              >
+                <div className="flex items-center gap-2">
+                  <CharityBoxIcon className="h-5 w-5" />
+                  Ma'aser Payments
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {items.length === 0 ? (
@@ -211,154 +202,19 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation }) {
                   {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
                 </div>
               </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
-                    className="hover:bg-rose-100 active:scale-95 transition"
-                  >
-                    <Trash2 className="h-5 w-5 text-rose-600" />
-                  </Button>
-                </div>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
+                  className="hover:bg-rose-100 active:scale-95 transition"
+                >
+                  <Trash2 className="h-5 w-5 text-rose-600" />
+                </Button>
               </div>
+            </div>
           ))
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function IncomeCard({ transactions, incomeTransactions, onDeleteTransaction }) {
-  return (
-    <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-slate-900">Income transactions</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-slate-600">Showing {incomeTransactions.length} income transaction(s) used for ma'aser calculation.</p>
-        {incomeTransactions.length === 0 ? (
-          <p className="text-slate-600 text-center py-10">No income transactions yet</p>
-        ) : (
-          <div className="space-y-3">
-            {incomeTransactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-4 bg-indigo-50 border border-indigo-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
-              >
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="bg-indigo-100 p-3 rounded-xl">
-                    <DollarSign className="h-6 w-6 text-indigo-700" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-slate-900 text-lg truncate">{transaction.description}</h4>
-                    <p className="text-sm text-slate-600 truncate">
-                      {transaction.account} • {format(new Date(transaction.date), 'MMMM dd, yyyy')}
-                    </p>
-                    {transaction.category && (
-                      <Badge variant="outline" className="mt-2">
-                        {transaction.category}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl font-bold text-indigo-700">${transaction.amount.toFixed(2)}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteTransaction(transaction.id)}
-                    className="hover:bg-rose-100 active:scale-95 transition"
-                  >
-                    <Trash2 className="h-5 w-5 text-rose-600" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {transactions.filter((t) => t.is_internal_transfer).length > 0 && (
-          <div className="mt-6 space-y-3">
-            <h4 className="font-semibold text-slate-800 text-lg">Excluded internal transfers</h4>
-            {transactions.filter((t) => t.is_internal_transfer).map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-lg opacity-80"
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="bg-slate-200 p-2 rounded-lg">
-                    <DollarSign className="h-5 w-5 text-slate-600" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-medium text-slate-800 truncate">{transaction.description}</h4>
-                    <p className="text-sm text-slate-600 truncate">
-                      {transaction.account} • {format(new Date(transaction.date), 'MMMM dd, yyyy')}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-semibold text-slate-700">${transaction.amount.toFixed(2)}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteTransaction(transaction.id)}
-                    className="hover:bg-rose-100"
-                  >
-                    <Trash2 className="h-4 w-4 text-rose-600" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function DonationCard({ donations, onDeleteDonation }) {
-  return (
-    <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-slate-900">Ma'aser payments</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-slate-600">Showing {donations.length} donation(s)</p>
-        {donations.length === 0 ? (
-          <p className="text-slate-600 text-center py-10">No donations yet</p>
-        ) : (
-          <div className="space-y-3">
-            {donations.map((donation) => (
-              <div
-                key={donation.id}
-                className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
-              >
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div className="bg-emerald-100 p-3 rounded-xl">
-                    <CharityBoxIcon className="h-6 w-6 text-emerald-700" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-slate-900 text-lg truncate">{donation.charity_name}</h4>
-                    <p className="text-sm text-slate-600 truncate">{format(new Date(donation.date), 'MMMM dd, yyyy')}</p>
-                    {donation.notes && <p className="text-sm text-slate-500 truncate">{donation.notes}</p>}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl font-bold text-emerald-700">${donation.amount.toFixed(2)}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteDonation(donation.id)}
-                    className="hover:bg-rose-100 active:scale-95 transition"
-                  >
-                    <Trash2 className="h-5 w-5 text-rose-600" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
         )}
       </CardContent>
     </Card>
