@@ -72,9 +72,8 @@ export default function Layout({ children, currentPageName }) {
               >
                 M
               </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Ma'aser Tracker</p>
-                <p className={`text-xl font-black text-${theme.accent}`}>Clarity for your giving.</p>
+              <div className="flex flex-col justify-center leading-tight">
+                <p className={`text-lg sm:text-xl font-black text-${theme.accent}`}>Ma'aser Tracker</p>
               </div>
             </Link>
 
