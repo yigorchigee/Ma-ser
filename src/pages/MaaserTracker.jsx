@@ -75,11 +75,10 @@ export default function MaaserTracker() {
   return (
     <div className="space-y-8">
       <div className="rounded-3xl bg-gradient-to-r from-rose-500 via-red-500 to-orange-400 text-white shadow-2xl p-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Ma'aser Owed</p>
-            <p className="text-5xl md:text-6xl font-black mt-2">${maaserOwed.toFixed(2)}</p>
-            <p className="text-white/80 mt-2">Set aside this amount to stay square with your ma'aser goal.</p>
+            <p className="text-5xl md:text-6xl font-black">${maaserOwed.toFixed(2)}</p>
           </div>
           <Button
             className="bg-white text-rose-600 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95"
