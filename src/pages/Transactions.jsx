@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DollarSign, List, Sparkles, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { formatCounterparty } from '@/utils';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
 
 export default function Transactions() {
@@ -143,7 +144,7 @@ function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h4 className="font-semibold text-slate-900 text-lg truncate">
-                      {item.type === 'income' ? item.description : item.charity_name}
+                      {formatCounterparty(item)}
                     </h4>
                     <Badge className={item.type === 'income' ? 'bg-emerald-600' : 'bg-blue-600'}>
                       {item.type === 'income' ? 'Income' : "Ma'aser Payment"}
