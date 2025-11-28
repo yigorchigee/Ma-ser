@@ -8,7 +8,6 @@ const STORAGE_KEYS = {
 
 const defaultUser = {
   maaser_percentage: 10,
-  color_scheme: 'purple',
 };
 
 const defaultCharities = [
