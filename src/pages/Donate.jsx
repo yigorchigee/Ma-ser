@@ -141,7 +141,7 @@ export default function Donate() {
                   {(() => {
                     const rawNote = donation.notes ?? donation.note;
                     const normalized = typeof rawNote === 'string' ? rawNote.trim() : '';
-                    const shouldShowNote = normalized && !normalized.toLowerCase().includes('weekly giving');
+                    const shouldShowNote = normalized && normalized.toLowerCase() !== 'weekly giving';
 
                     return shouldShowNote ? (
                       <p className="text-sm text-slate-500 mt-1">{normalized}</p>

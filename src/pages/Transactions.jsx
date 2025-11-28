@@ -44,6 +44,12 @@ export default function Transactions() {
     },
   });
 
+  const handleDeleteDonation = (id) => {
+    if (confirm('Are you sure you want to delete this payment?')) {
+      deleteDonationMutation.mutate(id);
+    }
+  };
+
   const handleDeleteTransaction = (id) => {
     if (confirm('Are you sure you want to delete this transaction?')) {
       deleteTransactionMutation.mutate(id);
@@ -70,12 +76,13 @@ export default function Transactions() {
         onViewChange={setView}
         items={filteredItems}
         onDeleteTransaction={handleDeleteTransaction}
+        onDeleteDonation={handleDeleteDonation}
       />
     </div>
   );
 }
 
-function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
+function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view, onViewChange }) {
   return (
     <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader className="pb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -152,6 +159,24 @@ function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
                     {item.is_internal_transfer && (
                       <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
                         Internal Transfer
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap text-sm">
+                    {item.type === 'income' ? (
+                      <>
+                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                          Source: {item.integration_provider || item.account || 'Manual entry'}
+                        </Badge>
+                        {item.account && (
+                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                            Account: {item.account}
+                          </Badge>
+                        )}
+                      </>
+                    ) : (
+                      <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                        To: {item.charity_name || item.description || 'Recipient'}
                       </Badge>
                     )}
                   </div>
