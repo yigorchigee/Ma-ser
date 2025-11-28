@@ -178,7 +178,7 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
                   {item.type === 'income' ? (
                     <DollarSign className="h-5 w-5" />
                   ) : (
-                    <CharityBoxIcon className="h-5 w-5" />
+                    <CharityBoxIcon className="h-6 w-6" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">

@@ -133,7 +133,7 @@ export default function Donate() {
             >
               <div className="flex items-center gap-4">
                 <div className="bg-blue-100 p-3 rounded-xl">
-                  <CharityBoxIcon className="h-5 w-5 text-blue-700" />
+                  <CharityBoxIcon className="h-6 w-6 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-slate-900 text-lg">{donation.charity_name}</h4>
