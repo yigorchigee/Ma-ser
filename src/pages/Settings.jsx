@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Palette, Percent, RotateCcw, Sparkles, ShieldCheck, Link2, User, Wallet2 } from 'lucide-react';
+import { Percent, RotateCcw, ShieldCheck, Link2, User, Wallet2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -17,23 +17,10 @@ export default function Settings() {
   });
 
   const [maaserPercentage, setMaaserPercentage] = useState(user?.maaser_percentage || 10);
-  const [colorScheme, setColorScheme] = useState(user?.color_scheme || 'purple');
-
-  const colorMap = {
-    purple: 'purple-600',
-    green: 'green-600',
-    orange: 'orange-600',
-    blue: 'blue-600',
-    pink: 'pink-600',
-    red: 'red-600',
-  };
 
   useEffect(() => {
     if (user?.maaser_percentage) {
       setMaaserPercentage(user.maaser_percentage);
-    }
-    if (user?.color_scheme) {
-      setColorScheme(user.color_scheme);
     }
   }, [user]);
 
@@ -51,11 +38,6 @@ export default function Settings() {
     updateSettingsMutation.mutate({ maaser_percentage: percentage });
   };
 
-  const handleColorSchemeChange = (value) => {
-    setColorScheme(value);
-    updateSettingsMutation.mutate({ color_scheme: value });
-  };
-
   const resetDataMutation = useMutation({
     mutationFn: async () => {
       dataClient.reset();
@@ -66,15 +48,6 @@ export default function Settings() {
     },
   });
 
-  const colorSchemes = [
-    { value: 'purple', label: 'Purple', gradient: 'from-purple-600 to-blue-600' },
-    { value: 'green', label: 'Green', gradient: 'from-green-600 to-teal-600' },
-    { value: 'orange', label: 'Orange', gradient: 'from-orange-600 to-red-600' },
-    { value: 'blue', label: 'Blue', gradient: 'from-blue-600 to-cyan-600' },
-    { value: 'pink', label: 'Pink', gradient: 'from-pink-600 to-purple-600' },
-    { value: 'red', label: 'Red', gradient: 'from-red-600 to-rose-600' },
-  ];
-
   return (
     <div className="space-y-8">
       <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
@@ -84,10 +57,9 @@ export default function Settings() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="space-y-2">
               <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
-              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage, pick a color story, and reset the demo data whenever you want a clean slate.</p>
+              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the demo data whenever you want a clean slate.</p>
               <div className="flex flex-wrap gap-2 text-xs text-white/70">
                 <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Color themes</span>
                 <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
               </div>
             </div>
@@ -103,7 +75,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Percent className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+              <Percent className="h-6 w-6 text-purple-600" />
               Ma'aser percentage
             </CardTitle>
           </CardHeader>
@@ -125,35 +97,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Palette className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
-              Color scheme
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-slate-600">Choose the accent that best matches your vibe.</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {colorSchemes.map((scheme) => (
-                <button
-                  key={scheme.value}
-                  onClick={() => handleColorSchemeChange(scheme.value)}
-                  className={`p-4 rounded-2xl border-2 transition-all text-left hover:-translate-y-0.5 active:scale-95 ${
-                    colorScheme === scheme.value
-                      ? 'border-slate-900 shadow-lg'
-                      : 'border-slate-200 hover:border-slate-400 shadow-sm'
-                  }`}
-                >
-                  <div className={`h-16 rounded-xl bg-gradient-to-br ${scheme.gradient} mb-3`} />
-                  <p className="font-semibold text-slate-900">{scheme.label}</p>
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-slate-200 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Link2 className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+              <Link2 className="h-6 w-6 text-purple-600" />
               Link your accounts
             </CardTitle>
           </CardHeader>
@@ -178,7 +122,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <User className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+              <User className="h-6 w-6 text-purple-600" />
               Profile
             </CardTitle>
           </CardHeader>
@@ -197,7 +141,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Wallet2 className={`h-6 w-6 text-${colorMap[colorScheme]}`} />
+              <Wallet2 className="h-6 w-6 text-purple-600" />
               Reset & data
             </CardTitle>
           </CardHeader>

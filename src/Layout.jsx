@@ -2,51 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { LayoutDashboard, Receipt, Settings } from 'lucide-react';
-import { dataClient } from '@/api/dataClient';
-import { useQuery } from '@tanstack/react-query';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 
-const themeMap = {
-  purple: {
-    accent: 'purple-600',
-    gradient: 'from-purple-600 via-indigo-500 to-blue-500',
-    muted: 'purple-50',
-  },
-  green: {
-    accent: 'emerald-600',
-    gradient: 'from-emerald-600 via-green-500 to-teal-500',
-    muted: 'emerald-50',
-  },
-  orange: {
-    accent: 'orange-600',
-    gradient: 'from-orange-600 via-amber-500 to-rose-500',
-    muted: 'orange-50',
-  },
-  blue: {
-    accent: 'blue-600',
-    gradient: 'from-blue-600 via-cyan-500 to-sky-500',
-    muted: 'blue-50',
-  },
-  pink: {
-    accent: 'pink-600',
-    gradient: 'from-pink-600 via-fuchsia-500 to-purple-500',
-    muted: 'pink-50',
-  },
-  red: {
-    accent: 'rose-600',
-    gradient: 'from-rose-600 via-red-500 to-orange-500',
-    muted: 'rose-50',
-  },
-};
-
 export default function Layout({ children, currentPageName }) {
-  const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => dataClient.auth.me(),
-  });
-
-  const theme = themeMap[user?.color_scheme] || themeMap.purple;
-
   const navItems = [
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { name: 'Transactions', label: 'Transactions', icon: Receipt },
@@ -68,12 +26,12 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-between h-20">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
               <div
-                className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${theme.gradient} shadow-lg flex items-center justify-center text-white font-black transition-transform duration-200 hover:-translate-y-0.5 active:scale-95`}
+                className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-600 via-indigo-500 to-blue-500 shadow-lg flex items-center justify-center text-white font-black transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
               >
                 M
               </div>
               <div className="flex flex-col justify-center leading-tight">
-                <p className={`text-lg sm:text-xl font-black text-${theme.accent}`}>Ma'aser Tracker</p>
+                <p className="text-lg sm:text-xl font-black text-purple-600">Ma'aser Tracker</p>
               </div>
             </Link>
 
@@ -87,11 +45,11 @@ export default function Layout({ children, currentPageName }) {
                     to={createPageUrl(item.name)}
                     className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border shadow-sm hover:shadow ${
                       isActive
-                        ? `bg-${theme.muted} text-${theme.accent} border-${theme.accent}`
+                        ? 'bg-purple-50 text-purple-600 border-purple-600'
                         : 'text-slate-600 border-transparent hover:text-slate-900 hover:border-slate-200 hover:bg-white'
                     } active:scale-95 hover:-translate-y-0.5`}
                   >
-                    <Icon className={`h-4 w-4 ${isActive ? `text-${theme.accent}` : 'text-slate-500'}`} />
+                    <Icon className={`h-4 w-4 ${isActive ? 'text-purple-600' : 'text-slate-500'}`} />
                     <span className="hidden md:inline">{item.label}</span>
                     <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-white/0 via-white/40 to-white/0" aria-hidden />
                   </Link>
