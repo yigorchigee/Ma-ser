@@ -89,15 +89,11 @@ function removeWeeklyGivingNotes(donations) {
   let updated = false;
 
   const cleaned = donations.map((donation) => {
-    const rawNote = donation.note ?? donation.notes;
-    const noteValue = typeof rawNote === 'string' ? rawNote.trim().toLowerCase() : '';
-
-    if (noteValue === 'weekly giving') {
-      const { note, notes, ...rest } = donation;
+    if (donation.note?.trim().toLowerCase() === 'weekly giving') {
+      const { note, ...rest } = donation;
       updated = true;
       return rest;
     }
-
     return donation;
   });
 
