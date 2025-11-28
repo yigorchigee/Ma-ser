@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CharityBoxIcon({ className = "h-6 w-6" }) {
+export default function CharityBoxIcon({ className = "h-7 w-7" }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className}>
       <circle cx="12" cy="12" r="9" fill="currentColor" opacity="0.95" />
