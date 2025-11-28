@@ -47,7 +47,6 @@ const starterDonations = [
     date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString().split('T')[0],
     charity_name: 'Tomchei Shabbos',
     amount: 120,
-    notes: 'Weekly giving',
   },
 ];
 
@@ -84,6 +83,51 @@ function load(key, fallback) {
 
 function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
+}
+
+function sanitizeDonationNotes(donation) {
+  const rawNote = donation.note ?? donation.notes;
+  const normalized = typeof rawNote === 'string' ? rawNote.trim() : '';
+
+  if (!normalized) return donation;
+
+  const lower = normalized.toLowerCase();
+
+  if (!lower.includes('weekly giving')) {
+    return donation;
+  }
+
+  const cleanedNote = normalized.replace(/weekly giving/gi, '').trim();
+
+  if (!cleanedNote) {
+    const { note, notes, ...rest } = donation;
+    return rest;
+  }
+
+  const preferredField = donation.notes !== undefined ? 'notes' : 'note';
+  const cleanedDonation = { ...donation, [preferredField]: cleanedNote };
+  delete cleanedDonation.note;
+  delete cleanedDonation.notes;
+  cleanedDonation[preferredField] = cleanedNote;
+  return cleanedDonation;
+}
+
+function removeWeeklyGivingNotes(donations) {
+  let updated = false;
+
+  const cleaned = donations.map((donation) => {
+    const sanitized = sanitizeDonationNotes(donation);
+    if (sanitized !== donation) {
+      updated = true;
+    }
+    return sanitized;
+  });
+
+  if (updated) {
+    persist(STORAGE_KEYS.donations, cleaned);
+  }
+
+  return cleaned;
 }
 
 function ensureSeeded(key, fallback = []) {
@@ -193,11 +237,12 @@ export const dataClient = {
     Donation: {
       async list(order = '-date') {
         const items = ensureSeeded(STORAGE_KEYS.donations, starterDonations);
-        return sortByDate(items, order);
+        const cleaned = removeWeeklyGivingNotes(items);
+        return sortByDate(cleaned, order);
       },
       async create(data) {
         const items = ensureSeeded(STORAGE_KEYS.donations, starterDonations);
-        const next = { ...data, id: generateId('don') };
+        const next = sanitizeDonationNotes({ ...data, id: generateId('don') });
         items.push(next);
         persist(STORAGE_KEYS.donations, items);
         return next;
