@@ -53,7 +53,6 @@ export default function Settings() {
       <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.25),transparent_40%)]" aria-hidden />
         <CardContent className="p-8 space-y-4 relative">
-          <p className="uppercase tracking-[0.3em] text-xs text-white/70">Settings</p>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="space-y-2">
               <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
