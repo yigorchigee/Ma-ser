@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Percent, RotateCcw, ShieldCheck, Link2, User, Wallet2 } from 'lucide-react';
+import { Percent, RotateCcw, Link2, User, Wallet2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -50,27 +50,6 @@ export default function Settings() {
 
   return (
     <div className="space-y-8">
-      <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.25),transparent_40%)]" aria-hidden />
-        <CardContent className="p-8 space-y-4 relative">
-          <p className="uppercase tracking-[0.3em] text-xs text-white/70">Settings</p>
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
-              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the demo data whenever you want a clean slate.</p>
-              <div className="flex flex-wrap gap-2 text-xs text-white/70">
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm font-semibold backdrop-blur">
-              <ShieldCheck className="h-5 w-5" />
-              Preferences saved locally
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
