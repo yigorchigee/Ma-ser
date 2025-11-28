@@ -27,6 +27,7 @@ const starterTransactions = [
     account: 'Checking',
     is_internal_transfer: false,
     category: 'Salary',
+    is_manual: false,
   },
   {
     id: 'txn_seed_2',
@@ -36,6 +37,7 @@ const starterTransactions = [
     account: 'Savings',
     is_internal_transfer: false,
     category: 'Gift',
+    is_manual: false,
   },
 ];
 
@@ -97,6 +99,20 @@ function generateId(prefix) {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
+export function isManualTransaction(transaction) {
+  if (!transaction) return false;
+
+  if (typeof transaction.is_manual === 'boolean') {
+    return transaction.is_manual;
+  }
+
+  return (
+    !transaction.integration_provider &&
+    !transaction.integration_source_id &&
+    !transaction.id?.toString().startsWith('txn_seed')
+  );
+}
+
 function sortByDate(items, order) {
   const sorted = [...items].sort((a, b) => new Date(a.date) - new Date(b.date));
   return order === '-date' ? sorted.reverse() : sorted;
@@ -143,7 +159,7 @@ export const dataClient = {
       },
       async create(data) {
         const items = ensureSeeded(STORAGE_KEYS.transactions, starterTransactions);
-        const next = { ...data, id: generateId('txn') };
+        const next = { ...data, id: generateId('txn'), is_manual: true };
         items.push(next);
         persist(STORAGE_KEYS.transactions, items);
         return next;
@@ -159,6 +175,16 @@ export const dataClient = {
       },
       async delete(id) {
         const items = ensureSeeded(STORAGE_KEYS.transactions, starterTransactions);
+        const idx = items.findIndex((item) => item.id === id);
+
+        if (idx === -1) {
+          return { id };
+        }
+
+        if (!isManualTransaction(items[idx])) {
+          throw new Error('Only manually added transactions can be deleted.');
+        }
+
         const filtered = items.filter((item) => item.id !== id);
         persist(STORAGE_KEYS.transactions, filtered);
         return { id };
