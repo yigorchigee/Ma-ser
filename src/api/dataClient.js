@@ -203,10 +203,7 @@ export const dataClient = {
         return next;
       },
       async delete(id) {
-        const items = ensureSeeded(STORAGE_KEYS.donations, starterDonations);
-        const filtered = items.filter((item) => item.id !== id);
-        persist(STORAGE_KEYS.donations, filtered);
-        return { id };
+        throw new Error('Donation records cannot be deleted.');
       },
     },
     Charity: {

@@ -49,12 +49,6 @@ export default function Transactions() {
     }
   };
 
-  const handleDeleteDonation = (id) => {
-    if (confirm('Are you sure you want to delete this donation?')) {
-      deleteDonationMutation.mutate(id);
-    }
-  };
-
   const allItems = [
     ...transactions.map((t) => ({ ...t, type: 'income', isManual: isManualTransaction(t) })),
     ...donations.map((d) => ({ ...d, type: 'donation' })),
@@ -74,14 +68,13 @@ export default function Transactions() {
         view={view}
         onViewChange={setView}
         items={filteredItems}
-        onDeleteDonation={handleDeleteDonation}
         onDeleteTransaction={handleDeleteTransaction}
       />
     </div>
   );
 }
 
-function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view, onViewChange }) {
+function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
   return (
     <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader className="pb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
