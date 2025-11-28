@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Plus, DollarSign, Heart, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, DollarSign, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 import TransactionForm from '../components/forms/TransactionForm';
+import CharityBoxIcon from '../components/icons/CharityBoxIcon';
 
 export default function MaaserTracker() {
   const [showTransactionForm, setShowTransactionForm] = useState(false);
@@ -57,18 +60,19 @@ export default function MaaserTracker() {
       .map((t) => ({
         id: `income-${t.id}`,
         type: 'income',
-        label: t.description || 'Income received',
+        description: t.description || 'Income received',
         amount: t.amount,
         date: t.date,
         account: t.account,
+        notes: t.notes,
       })),
     ...donations.map((d) => ({
       id: `donation-${d.id}`,
       type: 'donation',
-      label: d.charity_name || 'Ma’aser payment',
+      charity_name: d.charity_name || "Ma'aser payment",
       amount: d.amount,
       date: d.date,
-      account: d.notes,
+      notes: d.notes,
     })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -149,45 +153,40 @@ export default function MaaserTracker() {
 
           <div className="space-y-3">
             {recentActivity.length === 0 && <p className="text-slate-600 text-center py-10">No transactions yet.</p>}
-            {recentActivity.map((item) => (
-              <div
-                key={item.id}
-                className={`flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all hover:-translate-y-0.5 hover:shadow ${
-                  item.type === 'income'
-                    ? 'bg-emerald-50 border-emerald-100'
-                    : 'bg-blue-50 border-blue-100'
-                }`}
-              >
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <div
-                    className={`h-12 w-12 rounded-xl flex items-center justify-center shadow-inner ${
-                      item.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
-                    }`}
-                  >
-                    {item.type === 'income' ? <ArrowDownLeft className="h-6 w-6" /> : <ArrowUpRight className="h-6 w-6" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-semibold text-slate-900 text-lg truncate">{item.label}</p>
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full font-semibold ${
-                          item.type === 'income'
-                            ? 'bg-emerald-200 text-emerald-800'
-                            : 'bg-blue-200 text-blue-800'
-                        }`}
-                      >
-                        {item.type === 'income' ? 'Income' : "Ma'aser Payment"}
-                      </span>
+            {recentActivity.map((item) => {
+              const isIncome = item.type === 'income';
+
+              return (
+                <div
+                  key={item.id}
+                  className={`flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow ${
+                    isIncome ? 'bg-emerald-50 border-emerald-100' : 'bg-blue-50 border-blue-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className={`p-3 rounded-xl ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {isIncome ? <DollarSign className="h-5 w-5" /> : <CharityBoxIcon className="h-6 w-6" />}
                     </div>
-                    <p className="text-sm text-slate-600 truncate">
-                      {item.account ? `${item.account} • ` : ''}
-                      {new Date(item.date).toLocaleDateString()}
-                    </p>
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-semibold text-slate-900 text-lg truncate">
+                          {isIncome ? item.description : item.charity_name}
+                        </h4>
+                        <Badge className={isIncome ? 'bg-emerald-600' : 'bg-blue-600'}>
+                          {isIncome ? 'Income' : "Ma'aser Payment"}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-slate-600 truncate">
+                        {isIncome && item.account ? `${item.account} • ` : ''}
+                        {format(new Date(item.date), 'MMMM dd, yyyy')}
+                      </p>
+                      {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
+                    </div>
                   </div>
+                  <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
                 </div>
-                <p className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
