@@ -57,8 +57,6 @@ export default function Transactions() {
     ...donations.map((d) => ({ ...d, type: 'donation' })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  const incomeTransactions = transactions.filter((t) => !t.is_internal_transfer);
-
   const filteredItems =
     view === 'all'
       ? allItems
@@ -68,12 +66,6 @@ export default function Transactions() {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <SummaryCard label="Income entries" value={incomeTransactions.length} accent="green" />
-        <SummaryCard label="Ma'aser payments" value={donations.length} accent="blue" />
-        <SummaryCard label="All records" value={allItems.length} accent="aqua" />
-      </div>
-
       <LedgerCard
         title="Activity feed"
         view={view}
@@ -82,35 +74,6 @@ export default function Transactions() {
         onDeleteDonation={handleDeleteDonation}
         onDeleteTransaction={handleDeleteTransaction}
       />
-    </div>
-  );
-}
-
-function SummaryCard({ label, value, accent }) {
-  const colors = {
-    blue: {
-      surface: 'from-blue-50 to-slate-50 border-blue-100 text-blue-700',
-      dot: 'bg-blue-500',
-    },
-    green: {
-      surface: 'from-emerald-50 to-slate-50 border-emerald-100 text-emerald-700',
-      dot: 'bg-emerald-500',
-    },
-    aqua: {
-      surface: 'from-teal-50 to-slate-50 border-teal-100 text-teal-700',
-      dot: 'bg-teal-500',
-    },
-  };
-
-  return (
-    <div className={`rounded-2xl border bg-gradient-to-br p-5 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 ${colors[accent].surface}`}>
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-        <span className={`h-2.5 w-2.5 rounded-full ${colors[accent].dot}`} />
-      </div>
-      <p className="text-3xl font-black mt-2 flex items-center gap-2">
-        <Sparkles className="h-4 w-4" /> {value}
-      </p>
     </div>
   );
 }
