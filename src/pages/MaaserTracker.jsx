@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, DollarSign, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { formatCounterparty } from '@/utils';
 
 import TransactionForm from '../components/forms/TransactionForm';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
@@ -60,7 +60,7 @@ export default function MaaserTracker() {
       .map((t) => ({
         id: `income-${t.id}`,
         type: 'income',
-        description: t.description || 'Income received',
+        label: formatCounterparty({ ...t, type: 'income' }) || 'Income received',
         amount: t.amount,
         date: t.date,
         account: t.account,
@@ -69,7 +69,7 @@ export default function MaaserTracker() {
     ...donations.map((d) => ({
       id: `donation-${d.id}`,
       type: 'donation',
-      charity_name: d.charity_name || "Ma'aser payment",
+      label: formatCounterparty({ ...d, type: 'donation' }) || 'Ma’aser payment',
       amount: d.amount,
       date: d.date,
       notes: d.notes,
