@@ -5,13 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Percent, RotateCcw, Link2, User, Wallet2 } from 'lucide-react';
+import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => dataClient.auth.me(),
   });
@@ -19,7 +24,7 @@ export default function Settings() {
   const [maaserPercentage, setMaaserPercentage] = useState(user?.maaser_percentage || 10);
 
   useEffect(() => {
-    if (user?.maaser_percentage) {
+    if (user?.maaser_percentage !== undefined) {
       setMaaserPercentage(user.maaser_percentage);
     }
   }, [user]);
@@ -48,18 +53,58 @@ export default function Settings() {
     },
   });
 
+  const isBusy = isLoading || updateSettingsMutation.isPending;
+
+  const handleRetry = () => {
+    queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+  };
+
+  if (isError) {
+    return (
+      <Card className="border border-amber-200 bg-amber-50 shadow-sm">
+        <CardContent className="p-6 flex flex-col gap-4 text-amber-800">
+          <div className="flex items-center gap-3 font-semibold text-lg">
+            <AlertTriangle className="h-5 w-5" />
+            Unable to load your settings
+          </div>
+          <p className="text-sm">{error?.message || 'Something went wrong while loading your preferences. Please try again.'}</p>
+          <div>
+            <Button onClick={handleRetry} variant="outline" className="gap-2">
+              <RotateCcw className="h-4 w-4" />
+              Retry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isLoading && !user) {
+    return (
+      <div className="space-y-6">
+        {[1, 2].map((key) => (
+          <div key={key} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {[1, 2].map((inner) => (
+              <div key={`${key}-${inner}`} className="animate-pulse rounded-2xl bg-white border border-slate-200 shadow-sm h-40" />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
-      <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.25),transparent_40%)]" aria-hidden />
-        <CardContent className="p-8 space-y-4 relative">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
-              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the sample data whenever you want a clean slate.</p>
-              <div className="flex flex-wrap gap-2 text-xs text-white/70">
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
+        <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.25),transparent_40%)]" aria-hidden />
+          <CardContent className="p-8 space-y-4 relative">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div className="space-y-2">
+                <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
+                <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the sample data whenever you want a clean slate.</p>
+                <div className="flex flex-wrap gap-2 text-xs text-white/70">
+                  <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
+                  <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
               </div>
             </div>
             <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm font-semibold backdrop-blur">
@@ -80,7 +125,11 @@ export default function Settings() {
           </CardHeader>
           <CardContent className="space-y-4">
             <Label htmlFor="maaser-percentage" className="text-base">Select your ma'aser percentage:</Label>
-            <Select value={maaserPercentage.toString()} onValueChange={handleMaaserPercentageChange}>
+            <Select
+              value={maaserPercentage.toString()}
+              onValueChange={handleMaaserPercentageChange}
+              disabled={isBusy}
+            >
               <SelectTrigger id="maaser-percentage" className="w-full text-base h-12 font-semibold">
                 <SelectValue />
               </SelectTrigger>
@@ -157,7 +206,7 @@ export default function Settings() {
                 }
               }}
               className="flex items-center gap-2 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
-              disabled={resetDataMutation.isLoading}
+              disabled={resetDataMutation.isLoading || isLoading}
             >
               <RotateCcw className="h-5 w-5" />
               {resetDataMutation.isLoading ? 'Resetting...' : 'Reset sample data'}

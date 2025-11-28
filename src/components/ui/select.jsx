@@ -12,7 +12,7 @@ function collectItems(children, items = []) {
   return items;
 }
 
-export function Select({ value, onValueChange, children, className = '' }) {
+export function Select({ value, onValueChange, children, className = '', disabled = false }) {
   const items = collectItems(children);
 
   return (
@@ -20,6 +20,7 @@ export function Select({ value, onValueChange, children, className = '' }) {
       className={`border border-gray-300 rounded-md px-3 py-2 bg-white ${className}`}
       value={value}
       onChange={(event) => onValueChange?.(event.target.value)}
+      disabled={disabled}
     >
       {items.map((item, index) => (
         <option
