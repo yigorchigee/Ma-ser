@@ -216,7 +216,7 @@ export const dataClient = {
       },
       async create(data) {
         const items = ensureSeeded(STORAGE_KEYS.donations, starterDonations);
-        const next = { ...data, id: generateId('don') };
+        const next = sanitizeDonationNotes({ ...data, id: generateId('don') });
         items.push(next);
         persist(STORAGE_KEYS.donations, items);
         return next;
