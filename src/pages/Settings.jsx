@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -59,6 +59,20 @@ export default function Settings() {
     queryClient.invalidateQueries({ queryKey: ['currentUser'] });
   };
 
+  const handleSectionNavigation = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const sections = [
+    { id: 'maaser-percentage', label: "Ma'aser percentage", description: 'Adjust your giving rate', icon: Percent },
+    { id: 'link-accounts', label: 'Account linking', description: 'Connect payment sources', icon: Link2 },
+    { id: 'profile', label: 'Profile', description: 'View your account info', icon: User },
+    { id: 'reset-data', label: 'Reset & data', description: 'Start fresh with sample data', icon: Wallet2 },
+  ];
+
   if (isError) {
     return (
       <Card className="border border-amber-200 bg-amber-50 shadow-sm">
@@ -94,29 +108,33 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-8">
-      <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-800 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(37,99,235,0.25),transparent_40%)]" aria-hidden />
-        <CardContent className="p-8 space-y-4 relative">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
-              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the sample data whenever you want a clean slate.</p>
-              <div className="flex flex-wrap gap-2 text-xs text-white/70">
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
-                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm font-semibold backdrop-blur">
-              <ShieldCheck className="h-5 w-5" />
-              Preferences saved locally
-            </div>
-          </div>
+    <div className="grid lg:grid-cols-[260px,1fr] gap-6 items-start">
+      <Card className="border border-slate-200 shadow-md sticky top-4 h-fit">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold">Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {sections.map(({ id, label, description, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => handleSectionNavigation(id)}
+              className="w-full flex items-start gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left hover:border-slate-300 hover:-translate-y-0.5 active:scale-95 transition"
+            >
+              <span className="mt-0.5 inline-flex rounded-lg bg-blue-50 text-blue-700 border border-blue-100 p-2">
+                <Icon className="h-4 w-4" />
+              </span>
+              <span className="space-y-0.5">
+                <p className="font-semibold text-slate-900">{label}</p>
+                <p className="text-sm text-slate-600">{description}</p>
+              </span>
+            </button>
+          ))}
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-slate-200 shadow-md">
+      <div className="space-y-6">
+        <Card id="maaser-percentage" className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <Percent className="h-6 w-6 text-blue-600" />
@@ -142,7 +160,7 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 shadow-md">
+        <Card id="link-accounts" className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <Link2 className="h-6 w-6 text-blue-600" />
@@ -164,10 +182,8 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-slate-200 shadow-md">
+        <Card id="profile" className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <User className="h-6 w-6 text-blue-600" />
@@ -186,7 +202,7 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card className="border border-slate-200 shadow-md">
+        <Card id="reset-data" className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <Wallet2 className="h-6 w-6 text-blue-600" />
