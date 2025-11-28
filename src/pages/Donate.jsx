@@ -138,7 +138,15 @@ export default function Donate() {
                 <div>
                   <h4 className="font-semibold text-slate-900 text-lg">{donation.charity_name}</h4>
                   <p className="text-sm text-slate-600">{new Date(donation.date).toLocaleDateString()}</p>
-                  {donation.notes && <p className="text-sm text-slate-500 mt-1">{donation.notes}</p>}
+                  {(() => {
+                    const rawNote = donation.notes ?? donation.note;
+                    const normalized = typeof rawNote === 'string' ? rawNote.trim() : '';
+                    const shouldShowNote = normalized && normalized.toLowerCase() !== 'weekly giving';
+
+                    return shouldShowNote ? (
+                      <p className="text-sm text-slate-500 mt-1">{normalized}</p>
+                    ) : null;
+                  })()}
                 </div>
               </div>
               <span className="text-xl font-bold text-blue-700">${donation.amount.toFixed(2)}</span>

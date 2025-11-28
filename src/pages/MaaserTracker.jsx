@@ -181,12 +181,19 @@ export default function MaaserTracker() {
                     </div>
                     <div className="flex items-center gap-2 flex-wrap text-sm">
                       {isIncome ? (
-                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                          {[item.integration_provider, item.account].filter(Boolean).join(' ') || 'Manual entry'}
-                        </Badge>
+                        <>
+                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                            Source: {item.integration_provider || item.account || 'Manual entry'}
+                          </Badge>
+                          {item.account && (
+                            <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                              Account: {item.account}
+                            </Badge>
+                          )}
+                        </>
                       ) : (
                         <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                          {item.charity_name || 'Recipient'}
+                          To: {item.charity_name || 'Recipient'}
                         </Badge>
                       )}
                     </div>

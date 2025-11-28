@@ -47,7 +47,6 @@ const starterDonations = [
     date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString().split('T')[0],
     charity_name: 'Tomchei Shabbos',
     amount: 120,
-    notes: 'Weekly giving',
   },
 ];
 
@@ -84,6 +83,25 @@ function load(key, fallback) {
 
 function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
+}
+
+function removeWeeklyGivingNotes(donations) {
+  let updated = false;
+
+  const cleaned = donations.map((donation) => {
+    if (donation.note?.trim().toLowerCase() === 'weekly giving') {
+      const { note, ...rest } = donation;
+      updated = true;
+      return rest;
+    }
+    return donation;
+  });
+
+  if (updated) {
+    persist(STORAGE_KEYS.donations, cleaned);
+  }
+
+  return cleaned;
 }
 
 function ensureSeeded(key, fallback = []) {
@@ -193,11 +211,12 @@ export const dataClient = {
     Donation: {
       async list(order = '-date') {
         const items = ensureSeeded(STORAGE_KEYS.donations, starterDonations);
-        return sortByDate(items, order);
+        const cleaned = removeWeeklyGivingNotes(items);
+        return sortByDate(cleaned, order);
       },
       async create(data) {
         const items = ensureSeeded(STORAGE_KEYS.donations, starterDonations);
-        const next = { ...data, id: generateId('don') };
+        const next = sanitizeDonationNotes({ ...data, id: generateId('don') });
         items.push(next);
         persist(STORAGE_KEYS.donations, items);
         return next;
