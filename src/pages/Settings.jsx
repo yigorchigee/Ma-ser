@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Percent, RotateCcw, ShieldCheck, Link2, User, Wallet2 } from 'lucide-react';
+import { Percent, RotateCcw, Link2, User, Wallet2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -44,7 +44,7 @@ export default function Settings() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries();
-      toast.success('Data reset. Fresh defaults loaded.');
+      toast.success('Sample data reset. Fresh starter data loaded.');
     },
   });
 
@@ -53,11 +53,10 @@ export default function Settings() {
       <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.25),transparent_40%)]" aria-hidden />
         <CardContent className="p-8 space-y-4 relative">
-          <p className="uppercase tracking-[0.3em] text-xs text-white/70">Settings</p>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="space-y-2">
               <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
-              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset your data whenever you want a clean slate.</p>
+              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the sample data whenever you want a clean slate.</p>
               <div className="flex flex-wrap gap-2 text-xs text-white/70">
                 <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
                 <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
@@ -129,7 +128,7 @@ export default function Settings() {
           <CardContent className="space-y-3">
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <p className="text-xs uppercase tracking-wide text-slate-500">Name</p>
-              <p className="text-lg font-semibold text-slate-900">{user?.name || 'Your Name'}</p>
+              <p className="text-lg font-semibold text-slate-900">{user?.name || 'Sample User'}</p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
               <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
@@ -147,12 +146,12 @@ export default function Settings() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-base text-slate-700">
-              Clear your current local data and restore the default income, donations, and charities. Useful if you want a clean slate or to see the starter values again.
+              Clear your current local data and reload the seeded sample income, donations, and charities. Useful if you want a clean slate or to see the starter example values again.
             </p>
             <Button
               variant="outline"
               onClick={() => {
-                const confirmed = confirm('Reset data? This will remove your local entries and restore the default values.');
+                const confirmed = confirm('Reset sample data? This will remove your local entries and restore the starter examples.');
                 if (confirmed) {
                   resetDataMutation.mutate();
                 }
@@ -161,7 +160,7 @@ export default function Settings() {
               disabled={resetDataMutation.isLoading}
             >
               <RotateCcw className="h-5 w-5" />
-              {resetDataMutation.isLoading ? 'Resetting...' : 'Reset data'}
+              {resetDataMutation.isLoading ? 'Resetting...' : 'Reset sample data'}
             </Button>
           </CardContent>
         </Card>
