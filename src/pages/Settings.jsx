@@ -5,13 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Percent, RotateCcw, Link2, User, Wallet2 } from 'lucide-react';
+import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => dataClient.auth.me(),
   });
@@ -19,7 +24,7 @@ export default function Settings() {
   const [maaserPercentage, setMaaserPercentage] = useState(user?.maaser_percentage || 10);
 
   useEffect(() => {
-    if (user?.maaser_percentage) {
+    if (user?.maaser_percentage !== undefined) {
       setMaaserPercentage(user.maaser_percentage);
     }
   }, [user]);
@@ -47,6 +52,46 @@ export default function Settings() {
       toast.success('Sample data reset. Fresh starter data loaded.');
     },
   });
+
+  const isBusy = isLoading || updateSettingsMutation.isPending;
+
+  const handleRetry = () => {
+    queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+  };
+
+  if (isError) {
+    return (
+      <Card className="border border-amber-200 bg-amber-50 shadow-sm">
+        <CardContent className="p-6 flex flex-col gap-4 text-amber-800">
+          <div className="flex items-center gap-3 font-semibold text-lg">
+            <AlertTriangle className="h-5 w-5" />
+            Unable to load your settings
+          </div>
+          <p className="text-sm">{error?.message || 'Something went wrong while loading your preferences. Please try again.'}</p>
+          <div>
+            <Button onClick={handleRetry} variant="outline" className="gap-2">
+              <RotateCcw className="h-4 w-4" />
+              Retry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isLoading && !user) {
+    return (
+      <div className="space-y-6">
+        {[1, 2].map((key) => (
+          <div key={key} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {[1, 2].map((inner) => (
+              <div key={`${key}-${inner}`} className="animate-pulse rounded-2xl bg-white border border-slate-200 shadow-sm h-40" />
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -80,7 +125,11 @@ export default function Settings() {
           </CardHeader>
           <CardContent className="space-y-4">
             <Label htmlFor="maaser-percentage" className="text-base">Select your ma'aser percentage:</Label>
-            <Select value={maaserPercentage.toString()} onValueChange={handleMaaserPercentageChange}>
+            <Select
+              value={maaserPercentage.toString()}
+              onValueChange={handleMaaserPercentageChange}
+              disabled={isBusy}
+            >
               <SelectTrigger id="maaser-percentage" className="w-full text-base h-12 font-semibold">
                 <SelectValue />
               </SelectTrigger>
@@ -157,7 +206,7 @@ export default function Settings() {
                 }
               }}
               className="flex items-center gap-2 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
-              disabled={resetDataMutation.isLoading}
+              disabled={resetDataMutation.isLoading || isLoading}
             >
               <RotateCcw className="h-5 w-5" />
               {resetDataMutation.isLoading ? 'Resetting...' : 'Reset sample data'}
