@@ -85,27 +85,16 @@ function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
 }
 
-function sanitizeDonationNotes(donation) {
-  const rawNote = donation.note ?? donation.notes;
-  const normalized = typeof rawNote === 'string' ? rawNote.trim() : '';
-
-  if (normalized.toLowerCase() === 'weekly giving') {
-    const { note, notes, ...rest } = donation;
-    return rest;
-  }
-
-  return donation;
-}
-
 function removeWeeklyGivingNotes(donations) {
   let updated = false;
 
   const cleaned = donations.map((donation) => {
-    const sanitized = sanitizeDonationNotes(donation);
-    if (sanitized !== donation) {
+    if (donation.note?.trim().toLowerCase() === 'weekly giving') {
+      const { note, ...rest } = donation;
       updated = true;
+      return rest;
     }
-    return sanitized;
+    return donation;
   });
 
   if (updated) {
