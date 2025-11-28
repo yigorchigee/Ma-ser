@@ -65,21 +65,9 @@ export default function Donate() {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-500 text-white shadow-2xl overflow-hidden">
-        <div className="p-8 lg:p-10 space-y-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.35em] text-white/70">Donate</p>
-              <h1 className="text-3xl md:text-4xl font-black">Channel your ma'aser where it matters most.</h1>
-              <p className="text-white/80 max-w-2xl">Pick a cause to support. We'll expand each profile soon, but for now choose the charity that resonates and log your gift.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-white/85">
-              <Highlight label="Ma'aser owed" value={`$${maaserOwed.toFixed(2)}`} />
-              <Highlight label="Target" value={`$${maaserTarget.toFixed(2)}`} />
-              <Highlight label="Donated" value={`$${totalDonated.toFixed(2)}`} />
-            </div>
-          </div>
-        </div>
+      <div className="space-y-2">
+        <h1 className="text-3xl md:text-4xl font-black text-slate-900">Channel your ma'aser where it matters most.</h1>
+        <p className="text-slate-600 max-w-2xl">Pick a cause to support. We'll expand each profile soon, but for now choose the charity that resonates and log your gift.</p>
       </div>
 
       <Card className="border border-slate-200 shadow-md">
@@ -158,15 +146,6 @@ export default function Donate() {
           ))}
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-function Highlight({ label, value }) {
-  return (
-    <div className="rounded-2xl border border-white/20 bg-white/10 p-4">
-      <p className="text-xs uppercase tracking-wide text-white/70">{label}</p>
-      <p className="text-2xl font-bold text-white mt-1">{value}</p>
     </div>
   );
 }
