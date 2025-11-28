@@ -66,6 +66,7 @@ export default function MaaserTracker() {
         date: t.date,
         account: t.account,
         notes: t.notes,
+        integration_provider: t.integration_provider,
       })),
     ...donations.map((d) => ({
       id: `donation-${d.id}`,
@@ -74,6 +75,7 @@ export default function MaaserTracker() {
       amount: d.amount,
       date: d.date,
       notes: d.notes,
+      charity_name: d.charity_name || d.description,
     })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -168,20 +170,31 @@ export default function MaaserTracker() {
                     <div className={`p-3 rounded-xl ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
                       {isIncome ? <DollarSign className="h-5 w-5" /> : <CharityBoxIcon className="h-6 w-6" />}
                     </div>
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-semibold text-slate-900 text-lg truncate">
-                          {isIncome ? item.description : item.charity_name}
-                        </h4>
-                        <Badge className={isIncome ? 'bg-emerald-600' : 'bg-blue-600'}>
-                          {isIncome ? 'Income' : "Ma'aser Payment"}
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-semibold text-slate-900 text-lg truncate">
+                        {isIncome ? item.description : item.charity_name}
+                      </h4>
+                      <Badge className={isIncome ? 'bg-emerald-600' : 'bg-blue-600'}>
+                        {isIncome ? 'Income' : "Ma'aser Payment"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap text-sm">
+                      {isIncome ? (
+                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                          {[item.integration_provider, item.account].filter(Boolean).join(' ') || 'Manual entry'}
                         </Badge>
-                      </div>
-                      <p className="text-sm text-slate-600 truncate">
-                        {isIncome && item.account ? `${item.account} • ` : ''}
-                        {format(new Date(item.date), 'MMMM dd, yyyy')}
-                      </p>
-                      {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
+                      ) : (
+                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                          {item.charity_name || 'Recipient'}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-slate-600 truncate">
+                      {isIncome && item.account ? `${item.account} • ` : ''}
+                      {format(new Date(item.date), 'MMMM dd, yyyy')}
+                    </p>
+                    {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
                     </div>
                   </div>
                   <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
