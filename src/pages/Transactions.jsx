@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { dataClient } from '@/api/dataClient';
+import { dataClient, isManualTransaction } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,13 +30,8 @@ export default function Transactions() {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       toast.success('Transaction deleted successfully!');
     },
-  });
-
-  const deleteDonationMutation = useMutation({
-    mutationFn: (id) => dataClient.entities.Donation.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['donations'] });
-      toast.success('Donation deleted successfully!');
+    onError: (error) => {
+      toast.error(error?.message || 'Only manually added transactions can be deleted.');
     },
   });
 
@@ -46,14 +41,8 @@ export default function Transactions() {
     }
   };
 
-  const handleDeleteDonation = (id) => {
-    if (confirm('Are you sure you want to delete this donation?')) {
-      deleteDonationMutation.mutate(id);
-    }
-  };
-
   const allItems = [
-    ...transactions.map((t) => ({ ...t, type: 'income' })),
+    ...transactions.map((t) => ({ ...t, type: 'income', isManual: isManualTransaction(t) })),
     ...donations.map((d) => ({ ...d, type: 'donation' })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -71,14 +60,13 @@ export default function Transactions() {
         view={view}
         onViewChange={setView}
         items={filteredItems}
-        onDeleteDonation={handleDeleteDonation}
         onDeleteTransaction={handleDeleteTransaction}
       />
     </div>
   );
 }
 
-function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view, onViewChange }) {
+function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
   return (
     <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader className="pb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -167,14 +155,16 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
-                  className="hover:bg-rose-100 active:scale-95 transition"
-                >
-                  <Trash2 className="h-5 w-5 text-rose-600" />
-                </Button>
+                {item.type === 'income' && item.isManual && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDeleteTransaction(item.id)}
+                    className="hover:bg-rose-100 active:scale-95 transition"
+                  >
+                    <Trash2 className="h-5 w-5 text-rose-600" />
+                  </Button>
+                )}
               </div>
             </div>
           ))
