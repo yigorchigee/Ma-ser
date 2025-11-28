@@ -138,7 +138,7 @@ export default function MaaserTracker() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Recent</p>
-              <h3 className="text-2xl font-bold text-slate-900">Latest activity</h3>
+              <h3 className="text-2xl font-bold text-slate-900">Recent activity</h3>
               <p className="text-slate-600">Income and ma'aser payments, most recent first.</p>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-700 shadow-sm">
