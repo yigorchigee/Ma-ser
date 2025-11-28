@@ -69,9 +69,9 @@ export default function Transactions() {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <SummaryCard label="Income entries" value={incomeTransactions.length} accent="indigo" />
-        <SummaryCard label="Ma'aser payments" value={donations.length} accent="emerald" />
-        <SummaryCard label="All records" value={allItems.length} accent="rose" />
+        <SummaryCard label="Income entries" value={incomeTransactions.length} accent="green" />
+        <SummaryCard label="Ma'aser payments" value={donations.length} accent="blue" />
+        <SummaryCard label="All records" value={allItems.length} accent="aqua" />
       </div>
 
       <LedgerCard
@@ -88,17 +88,17 @@ export default function Transactions() {
 
 function SummaryCard({ label, value, accent }) {
   const colors = {
-    indigo: {
-      surface: 'from-indigo-50 to-slate-50 border-indigo-100 text-indigo-700',
-      dot: 'bg-indigo-500',
+    blue: {
+      surface: 'from-blue-50 to-slate-50 border-blue-100 text-blue-700',
+      dot: 'bg-blue-500',
     },
-    emerald: {
+    green: {
       surface: 'from-emerald-50 to-slate-50 border-emerald-100 text-emerald-700',
       dot: 'bg-emerald-500',
     },
-    rose: {
-      surface: 'from-rose-50 to-slate-50 border-rose-100 text-rose-700',
-      dot: 'bg-rose-500',
+    aqua: {
+      surface: 'from-teal-50 to-slate-50 border-teal-100 text-teal-700',
+      dot: 'bg-teal-500',
     },
   };
 
@@ -120,18 +120,18 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
     <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader className="pb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-indigo-500" />
+          <Sparkles className="h-5 w-5 text-blue-500" />
           {title}
         </CardTitle>
         <div className="w-full sm:w-64">
           <Select value={view} onValueChange={onViewChange}>
-            <SelectTrigger className="w-full h-11 text-sm font-semibold bg-white border-slate-200 text-slate-900 hover:bg-slate-50 focus:ring-2 focus:ring-indigo-500">
+            <SelectTrigger className="w-full h-11 text-sm font-semibold bg-white border-slate-200 text-slate-900 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500">
               <SelectValue placeholder="All activity" />
             </SelectTrigger>
             <SelectContent className="text-slate-900 bg-white shadow-lg border border-slate-200">
               <SelectItem
                 value="all"
-                className="text-base text-slate-900 data-[highlighted]:bg-indigo-50 data-[state=checked]:bg-indigo-100"
+                className="text-base text-slate-900 data-[highlighted]:bg-blue-50 data-[state=checked]:bg-blue-100"
               >
                 <div className="flex items-center gap-2">
                   <List className="h-5 w-5" />
@@ -140,7 +140,7 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
               </SelectItem>
               <SelectItem
                 value="income"
-                className="text-base text-slate-900 data-[highlighted]:bg-indigo-50 data-[state=checked]:bg-indigo-100"
+                className="text-base text-slate-900 data-[highlighted]:bg-blue-50 data-[state=checked]:bg-blue-100"
               >
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-5 w-5" />
@@ -149,7 +149,7 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
               </SelectItem>
               <SelectItem
                 value="donations"
-                className="text-base text-slate-900 data-[highlighted]:bg-indigo-50 data-[state=checked]:bg-indigo-100"
+                className="text-base text-slate-900 data-[highlighted]:bg-blue-50 data-[state=checked]:bg-blue-100"
               >
                 <div className="flex items-center gap-2">
                   <CharityBoxIcon className="h-5 w-5" />
@@ -169,12 +169,12 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
               key={`${item.type}-${item.id}`}
               className={`flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow ${
                 item.type === 'income'
-                  ? 'bg-indigo-50 border-indigo-100'
-                  : 'bg-emerald-50 border-emerald-100'
+                  ? 'bg-emerald-50 border-emerald-100'
+                  : 'bg-blue-50 border-blue-100'
               }`}
             >
               <div className="flex items-center gap-4 flex-1 min-w-0">
-                <div className={`p-3 rounded-xl ${item.type === 'income' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                <div className={`p-3 rounded-xl ${item.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
                   {item.type === 'income' ? (
                     <DollarSign className="h-5 w-5" />
                   ) : (
@@ -186,8 +186,8 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
                     <h4 className="font-semibold text-slate-900 text-lg truncate">
                       {item.type === 'income' ? item.description : item.charity_name}
                     </h4>
-                    <Badge className={item.type === 'income' ? 'bg-indigo-600' : 'bg-emerald-600'}>
-                      {item.type === 'income' ? 'Income' : 'Donation'}
+                    <Badge className={item.type === 'income' ? 'bg-emerald-600' : 'bg-blue-600'}>
+                      {item.type === 'income' ? 'Income' : "Ma'aser Payment"}
                     </Badge>
                     {item.is_internal_transfer && (
                       <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
