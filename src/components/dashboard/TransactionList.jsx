@@ -16,7 +16,7 @@ export default function TransactionList({ transactions, onEdit, onDelete }) {
             className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl hover:shadow-sm transition"
           >
             <div className="flex items-center gap-4 flex-1 min-w-0">
-              <div className="bg-indigo-100 text-indigo-700 p-3 rounded-xl">
+              <div className="bg-blue-100 text-blue-700 p-3 rounded-xl">
                 <DollarSign className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
@@ -40,9 +40,9 @@ export default function TransactionList({ transactions, onEdit, onDelete }) {
                   variant="ghost"
                   size="icon"
                   onClick={() => onEdit(transaction)}
-                  className="hover:bg-indigo-100"
+                  className="hover:bg-blue-100"
                 >
-                  <Edit2 className="h-4 w-4 text-indigo-600" />
+                  <Edit2 className="h-4 w-4 text-blue-600" />
                 </Button>
                 <Button
                   variant="ghost"

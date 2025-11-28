@@ -2,17 +2,17 @@
 
 :root {
   color-scheme: light;
-  --bg: #030712;
+  --bg: #031023;
   --card: rgba(255, 255, 255, 0.9);
   --glass: rgba(255, 255, 255, 0.08);
   --border: rgba(255, 255, 255, 0.16);
   --text: #0f172a;
   --muted: #475569;
-  --accent: #6366f1;
-  --accent-2: #a855f7;
-  --accent-3: #06b6d4;
+  --accent: #2563eb;
+  --accent-2: #0ea5e9;
+  --accent-3: #10b981;
   --shadow-soft: 0 20px 70px rgba(15, 23, 42, 0.18);
-  --shadow-strong: 0 35px 120px rgba(99, 102, 241, 0.35);
+  --shadow-strong: 0 35px 120px rgba(37, 99, 235, 0.32);
 }
 
 * {
@@ -23,9 +23,9 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: 'Inter', 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 25%),
-    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.14), transparent 30%),
-    radial-gradient(circle at 50% 70%, rgba(244, 63, 94, 0.08), transparent 25%),
+  background: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.12), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.12), transparent 30%),
+    radial-gradient(circle at 50% 70%, rgba(16, 185, 129, 0.08), transparent 25%),
     var(--bg);
   color: var(--text);
   line-height: 1.6;
@@ -50,7 +50,7 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(99, 102, 241, 0.65), rgba(14, 165, 233, 0.65));
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.65), rgba(16, 185, 129, 0.65));
   border-radius: 999px;
 }
 
@@ -85,8 +85,8 @@ textarea {
   overflow: hidden;
   border-radius: 32px;
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(17, 24, 39, 0.88)),
-    radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.35), transparent 35%),
-    radial-gradient(circle at 80% 5%, rgba(14, 165, 233, 0.32), transparent 35%);
+    radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.35), transparent 35%),
+    radial-gradient(circle at 80% 5%, rgba(16, 185, 129, 0.28), transparent 35%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow-strong);
   color: white;
@@ -170,9 +170,9 @@ textarea {
 }
 
 .nav-pill.active {
-  background: linear-gradient(120deg, rgba(99, 102, 241, 0.16), rgba(99, 102, 241, 0.28));
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 18px 45px rgba(99, 102, 241, 0.25);
+  background: linear-gradient(120deg, rgba(37, 99, 235, 0.16), rgba(37, 99, 235, 0.28));
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 18px 45px rgba(37, 99, 235, 0.22);
 }
 
 .nav-pill.active .pill-ink {
@@ -244,9 +244,9 @@ textarea {
   gap: 8px;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(99, 102, 241, 0.08);
-  color: #4338ca;
-  border: 1px solid rgba(99, 102, 241, 0.16);
+  background: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
+  border: 1px solid rgba(37, 99, 235, 0.16);
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -265,8 +265,8 @@ textarea {
 
 .action-tile:hover {
   transform: translateY(-1px);
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 16px 35px rgba(99, 102, 241, 0.18);
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 16px 35px rgba(37, 99, 235, 0.18);
 }
 
 .action-tile strong {
@@ -287,7 +287,7 @@ textarea {
 
 .feed-row:hover {
   transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.35);
+  border-color: rgba(37, 99, 235, 0.35);
   box-shadow: 0 18px 35px rgba(15, 23, 42, 0.14);
 }
 
@@ -350,8 +350,8 @@ textarea {
 .input-shell select:focus,
 .input-shell textarea:focus {
   outline: none;
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
+  border-color: rgba(37, 99, 235, 0.55);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
 }
 
 .floating-badge {

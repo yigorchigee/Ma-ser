@@ -74,7 +74,7 @@ export default function Donate() {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between text-2xl font-bold text-slate-900">
             <span>Choose a charity</span>
-            <div className="flex items-center gap-2 text-sm font-semibold text-emerald-700">
+            <div className="flex items-center gap-2 text-sm font-semibold text-blue-700">
               <Sparkles className="h-4 w-4" /> Curated partners
             </div>
           </CardTitle>
@@ -90,11 +90,11 @@ export default function Donate() {
                   <p className="text-xs uppercase tracking-wide text-slate-500">Charity</p>
                   <p className="text-lg font-semibold text-slate-900">{charity.name}</p>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-emerald-600" />
+                <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-blue-600" />
               </div>
               <p className="text-sm text-slate-600 mb-2">{charity.focus || 'Trusted partner'}</p>
               {charity.website && (
-                <p className="text-sm font-semibold text-emerald-700">{charity.website}</p>
+                <p className="text-sm font-semibold text-blue-700">{charity.website}</p>
               )}
             </button>
           ))}
@@ -120,7 +120,7 @@ export default function Donate() {
       <Card className="border border-slate-200 shadow-md">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900">
-            <Heart className="h-5 w-5 text-rose-500" />
+            <Heart className="h-5 w-5 text-blue-600" />
             Recent gifts
           </CardTitle>
         </CardHeader>
@@ -129,11 +129,11 @@ export default function Donate() {
           {donations.map((donation) => (
             <div
               key={donation.id}
-              className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
+              className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
             >
               <div className="flex items-center gap-4">
-                <div className="bg-emerald-100 p-3 rounded-xl">
-                  <CharityBoxIcon className="h-5 w-5 text-emerald-700" />
+                <div className="bg-blue-100 p-3 rounded-xl">
+                  <CharityBoxIcon className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-slate-900 text-lg">{donation.charity_name}</h4>
@@ -141,7 +141,7 @@ export default function Donate() {
                   {donation.notes && <p className="text-sm text-slate-500 mt-1">{donation.notes}</p>}
                 </div>
               </div>
-              <span className="text-xl font-bold text-emerald-700">${donation.amount.toFixed(2)}</span>
+              <span className="text-xl font-bold text-blue-700">${donation.amount.toFixed(2)}</span>
             </div>
           ))}
         </CardContent>

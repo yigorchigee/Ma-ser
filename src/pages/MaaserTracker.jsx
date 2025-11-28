@@ -74,14 +74,14 @@ export default function MaaserTracker() {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-3xl bg-gradient-to-r from-rose-500 via-red-500 to-orange-400 text-white shadow-2xl p-8">
+      <div className="rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-emerald-500 text-white shadow-2xl p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="space-y-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Ma'aser Owed</p>
             <p className="text-5xl md:text-6xl font-black">${maaserOwed.toFixed(2)}</p>
           </div>
           <Button
-            className="bg-white text-rose-600 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95"
+            className="bg-white text-blue-700 hover:bg-white/90 font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95"
             onClick={() => setShowTransactionForm((prev) => !prev)}
           >
             <Plus className="h-5 w-5 mr-2" /> Add income
@@ -91,7 +91,7 @@ export default function MaaserTracker() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-md p-6 flex items-center gap-3 hover:-translate-y-0.5 transition-all">
-          <div className="h-12 w-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-inner">
+          <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shadow-inner">
             <Heart className="h-6 w-6" />
           </div>
           <div>
@@ -101,7 +101,7 @@ export default function MaaserTracker() {
           </div>
         </div>
         <div className="rounded-3xl border border-slate-200 bg-white/90 backdrop-blur shadow-md p-6 flex items-center gap-3 hover:-translate-y-0.5 transition-all">
-          <div className="h-12 w-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shadow-inner">
+          <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-inner">
             <DollarSign className="h-6 w-6" />
           </div>
           <div>
@@ -142,7 +142,7 @@ export default function MaaserTracker() {
               <p className="text-slate-600">Income and ma'aser payments, most recent first.</p>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-700 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="h-2 w-2 rounded-full bg-blue-500" />
               {recentActivity.length} total records
             </div>
           </div>
@@ -154,14 +154,14 @@ export default function MaaserTracker() {
                 key={item.id}
                 className={`flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all hover:-translate-y-0.5 hover:shadow ${
                   item.type === 'income'
-                    ? 'bg-indigo-50 border-indigo-100'
-                    : 'bg-emerald-50 border-emerald-100'
+                    ? 'bg-emerald-50 border-emerald-100'
+                    : 'bg-blue-50 border-blue-100'
                 }`}
               >
                 <div className="flex items-center gap-4 flex-1 min-w-0">
                   <div
                     className={`h-12 w-12 rounded-xl flex items-center justify-center shadow-inner ${
-                      item.type === 'income' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'
+                      item.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
                     }`}
                   >
                     {item.type === 'income' ? <ArrowDownLeft className="h-6 w-6" /> : <ArrowUpRight className="h-6 w-6" />}
@@ -172,8 +172,8 @@ export default function MaaserTracker() {
                       <span
                         className={`text-xs px-2 py-1 rounded-full font-semibold ${
                           item.type === 'income'
-                            ? 'bg-indigo-200 text-indigo-800'
-                            : 'bg-emerald-200 text-emerald-800'
+                            ? 'bg-emerald-200 text-emerald-800'
+                            : 'bg-blue-200 text-blue-800'
                         }`}
                       >
                         {item.type === 'income' ? 'Income' : "Ma'aser Payment"}
