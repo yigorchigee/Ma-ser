@@ -95,16 +95,16 @@ export default function Settings() {
 
   return (
     <div className="space-y-8">
-        <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-800 text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.25),transparent_40%)]" aria-hidden />
-          <CardContent className="p-8 space-y-4 relative">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-              <div className="space-y-2">
-                <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
-                <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the sample data whenever you want a clean slate.</p>
-                <div className="flex flex-wrap gap-2 text-xs text-white/70">
-                  <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
-                  <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
+      <Card className="relative overflow-hidden border-none shadow-xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-800 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(37,99,235,0.25),transparent_40%)]" aria-hidden />
+        <CardContent className="p-8 space-y-4 relative">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl font-black">Make it feel like yours.</h1>
+              <p className="text-white/75 max-w-2xl">Tune the ma'aser percentage and reset the sample data whenever you want a clean slate.</p>
+              <div className="flex flex-wrap gap-2 text-xs text-white/70">
+                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Live saving</span>
+                <span className="rounded-full bg-white/10 border border-white/15 px-3 py-1">Account linking</span>
               </div>
             </div>
             <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm font-semibold backdrop-blur">
@@ -119,7 +119,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Percent className="h-6 w-6 text-purple-600" />
+              <Percent className="h-6 w-6 text-blue-600" />
               Ma'aser percentage
             </CardTitle>
           </CardHeader>
@@ -145,7 +145,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Link2 className="h-6 w-6 text-purple-600" />
+              <Link2 className="h-6 w-6 text-blue-600" />
               Link your accounts
             </CardTitle>
           </CardHeader>
@@ -170,7 +170,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <User className="h-6 w-6 text-purple-600" />
+              <User className="h-6 w-6 text-blue-600" />
               Profile
             </CardTitle>
           </CardHeader>
@@ -189,7 +189,7 @@ export default function Settings() {
         <Card className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Wallet2 className="h-6 w-6 text-purple-600" />
+              <Wallet2 className="h-6 w-6 text-blue-600" />
               Reset & data
             </CardTitle>
           </CardHeader>
