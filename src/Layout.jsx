@@ -49,7 +49,11 @@ export default function Layout({ children, currentPageName }) {
                         : 'text-slate-600 border-transparent hover:text-slate-900 hover:border-slate-200 hover:bg-white'
                     } active:scale-95 hover:-translate-y-0.5`}
                   >
-                    <Icon className={`h-4 w-4 ${isActive ? 'text-blue-700' : 'text-slate-500'}`} />
+                    <Icon
+                      className={`${item.name === 'Donate' ? 'h-5 w-5' : 'h-4 w-4'} ${
+                        isActive ? 'text-blue-700' : 'text-slate-500'
+                      }`}
+                    />
                     <span className="hidden md:inline">{item.label}</span>
                     <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-white/0 via-white/40 to-white/0" aria-hidden />
                   </Link>

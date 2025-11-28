@@ -35,6 +35,14 @@ export default function Transactions() {
     },
   });
 
+  const deleteDonationMutation = useMutation({
+    mutationFn: (id) => dataClient.entities.Donation.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['donations'] });
+      toast.success('Donation deleted successfully!');
+    },
+  });
+
   const handleDeleteTransaction = (id) => {
     if (confirm('Are you sure you want to delete this transaction?')) {
       deleteTransactionMutation.mutate(id);
@@ -129,7 +137,7 @@ function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
                   {item.type === 'income' ? (
                     <DollarSign className="h-5 w-5" />
                   ) : (
-                    <CharityBoxIcon className="h-5 w-5" />
+                    <CharityBoxIcon className="h-6 w-6" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
@@ -155,11 +163,11 @@ function LedgerCard({ title, items, onDeleteTransaction, view, onViewChange }) {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
-                {item.type === 'income' && item.isManual && (
+                {(item.type === 'income' ? item.isManual : true) && (
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => onDeleteTransaction(item.id)}
+                    onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
                     className="hover:bg-rose-100 active:scale-95 transition"
                   >
                     <Trash2 className="h-5 w-5 text-rose-600" />
