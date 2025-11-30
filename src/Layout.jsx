@@ -1,10 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { LayoutDashboard, Receipt, Settings } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, LogOut, UserCircle } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
+import { useAuth } from './auth/AuthContext';
 
 export default function Layout({ children, currentPageName }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
   const navItems = [
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { name: 'Transactions', label: 'Transactions', icon: Receipt },
@@ -60,6 +69,24 @@ export default function Layout({ children, currentPageName }) {
                 );
               })}
             </nav>
+
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex flex-col text-right">
+                <span className="text-sm font-semibold text-slate-900">{user?.name || 'Signed in'}</span>
+                <span className="text-xs text-slate-500">{user?.email || 'Logged in'}</span>
+              </div>
+              <span className="inline-flex items-center justify-center h-11 w-11 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100">
+                <UserCircle className="h-6 w-6" />
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:-translate-y-0.5 active:scale-95 transition"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </button>
+            </div>
           </div>
         </div>
       </header>
