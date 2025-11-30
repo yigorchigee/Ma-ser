@@ -53,7 +53,6 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
-const GOOGLE_CLIENT_ID = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
 
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
@@ -102,9 +101,7 @@ function loadGoogleSdk() {
   return googleSdkPromise;
 }
 
-async function requestGoogleAccessToken() {
-  const clientId = GOOGLE_CLIENT_ID || (hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null);
-
+async function requestGoogleAccessToken(clientId) {
   if (!clientId) {
     throw new Error('Google login is not configured.');
   }
@@ -332,7 +329,13 @@ export const dataClient = {
       return { session, user: sanitizeUser(stored) };
     },
     async loginWithGoogle() {
-      const accessToken = await requestGoogleAccessToken();
+      const clientId = resolveGoogleClientId();
+
+      if (!clientId) {
+        throw new Error('Google login is not configured. Set VITE_GOOGLE_CLIENT_ID.');
+      }
+
+      const accessToken = await requestGoogleAccessToken(clientId);
       const profile = await fetchGoogleUser(accessToken);
 
       const normalizedEmail = profile.email?.trim().toLowerCase();
