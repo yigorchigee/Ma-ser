@@ -53,7 +53,7 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
-const GOOGLE_CLIENT_ID = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
+const DEFAULT_GOOGLE_CLIENT_ID = '1090146507186-vg40n9h6ugl6znuv7qjan9k9gv4d7c9m.apps.googleusercontent.com';
 
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
@@ -65,11 +65,11 @@ function resolveGoogleClientId() {
   const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
   const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
 
-  return envClientId || windowClientId || globalConfigClientId || null;
+  return envClientId || windowClientId || globalConfigClientId || DEFAULT_GOOGLE_CLIENT_ID;
 }
 
 function loadGoogleSdk() {
-  if (!hasWindow) {
+  if (!hasWindow || typeof document === 'undefined') {
     return Promise.reject(new Error('Google login is only available in the browser.'));
   }
 
@@ -102,9 +102,7 @@ function loadGoogleSdk() {
   return googleSdkPromise;
 }
 
-async function requestGoogleAccessToken() {
-  const clientId = GOOGLE_CLIENT_ID || (hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null);
-
+async function requestGoogleAccessToken(clientId) {
   if (!clientId) {
     throw new Error('Google login is not configured.');
   }
@@ -332,7 +330,13 @@ export const dataClient = {
       return { session, user: sanitizeUser(stored) };
     },
     async loginWithGoogle() {
-      const accessToken = await requestGoogleAccessToken();
+      const clientId = resolveGoogleClientId();
+
+      if (!clientId) {
+        throw new Error('Google login is not configured. Set VITE_GOOGLE_CLIENT_ID.');
+      }
+
+      const accessToken = await requestGoogleAccessToken(clientId);
       const profile = await fetchGoogleUser(accessToken);
 
       const normalizedEmail = profile.email?.trim().toLowerCase();

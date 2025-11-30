@@ -6,6 +6,12 @@ These steps are written for someone with no coding background. Pick **one** opti
 - You need a computer with internet access.
 - Install **Node.js** (includes npm) from [https://nodejs.org](https://nodejs.org). Choose the LTS version and click through the installer with the default options.
 
+## Required: configure Google login
+Google sign-in requires a valid OAuth client ID. A default client ID is already baked into the app so the Google button is enabled out of the box. If you want to use your own credentials instead:
+1. Copy the sample file by running `cp .env.example .env` in the `Ma-ser` folder.
+2. Open `.env` in a text editor and replace `VITE_GOOGLE_CLIENT_ID` with your Google OAuth client ID.
+3. Save the file and restart the dev server so the new setting is picked up.
+
 ## Option A: Clone with HTTPS (requires Git installed)
 1. Install **Git** from [https://git-scm.com/downloads](https://git-scm.com/downloads). Accept the default options.
 2. Open a terminal (Command Prompt on Windows or Terminal on Mac).
