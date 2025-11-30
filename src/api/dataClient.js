@@ -58,37 +58,24 @@ const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
 
 let googleSdkPromise = null;
-let googleSdkScript = null;
 
 function loadGoogleSdk() {
   if (!hasWindow) {
     return Promise.reject(new Error('Google login is only available in the browser.'));
   }
 
+  if (googleSdkPromise) return googleSdkPromise;
+
   if (window.google?.accounts?.oauth2) {
-    googleSdkPromise = googleSdkPromise || Promise.resolve(window.google);
+    googleSdkPromise = Promise.resolve(window.google);
     return googleSdkPromise;
   }
 
-  if (googleSdkPromise) return googleSdkPromise;
-
   googleSdkPromise = new Promise((resolve, reject) => {
-    const existingScript = document.querySelector(`script[src="${GOOGLE_SCRIPT_SRC}"]`);
-    if (existingScript) {
-      existingScript.remove();
-    }
-
     const script = document.createElement('script');
     script.src = GOOGLE_SCRIPT_SRC;
     script.async = true;
-
-    const cleanup = () => {
-      script.onload = null;
-      script.onerror = null;
-    };
-
     script.onload = () => {
-      cleanup();
       if (window.google?.accounts?.oauth2) {
         resolve(window.google);
       } else {
@@ -97,13 +84,9 @@ function loadGoogleSdk() {
       }
     };
     script.onerror = () => {
-      cleanup();
       googleSdkPromise = null;
-      script.remove();
       reject(new Error('Unable to load Google Identity Services SDK.'));
     };
-
-    googleSdkScript = script;
     document.head.appendChild(script);
   });
 
@@ -163,20 +146,6 @@ function persistSession(user) {
   persist(STORAGE_KEYS.session, session);
   persist(STORAGE_KEYS.user, sanitized);
   return session;
-}
-
-async function fetchGoogleUser(accessToken) {
-  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Unable to fetch Google profile information.');
-  }
-
-  return response.json();
 }
 
 function sanitizeDonationNotes(donation) {
@@ -307,52 +276,7 @@ export const dataClient = {
       return { session, user: sanitizeUser(stored) };
     },
     async loginWithGoogle() {
-      const clientId = import.meta?.env?.VITE_GOOGLE_CLIENT_ID;
-
-      if (!clientId) {
-        throw new Error('Google login is not configured. Please set VITE_GOOGLE_CLIENT_ID.');
-      }
-
-      const google = await loadGoogleSdk();
-
-      if (!google?.accounts?.oauth2?.initTokenClient) {
-        googleSdkPromise = null;
-        if (googleSdkScript) {
-          googleSdkScript.remove();
-          googleSdkScript = null;
-        }
-        throw new Error('Google login could not start because the SDK is unavailable. Please refresh and try again.');
-      }
-
-      const accessToken = await new Promise((resolve, reject) => {
-        try {
-          const tokenClient = google.accounts.oauth2.initTokenClient({
-            client_id: clientId,
-            scope: 'openid profile email',
-            prompt: 'select_account',
-            callback: (tokenResponse) => {
-              if (tokenResponse?.error) {
-                reject(new Error(tokenResponse.error));
-                return;
-              }
-
-              if (!tokenResponse?.access_token) {
-                reject(new Error('Google did not return an access token.'));
-                return;
-              }
-
-              resolve(tokenResponse.access_token);
-            },
-            error_callback: (err) => {
-              reject(new Error(err?.message || 'Google sign-in was cancelled.'));
-            },
-          });
-
-          tokenClient.requestAccessToken();
-        } catch (error) {
-          reject(error);
-        }
-      });
+      const accessToken = await requestGoogleAccessToken();
       const profile = await fetchGoogleUser(accessToken);
 
       const normalizedEmail = profile.email?.trim().toLowerCase();
