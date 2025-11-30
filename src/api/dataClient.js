@@ -53,6 +53,7 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+const GOOGLE_CLIENT_ID = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
 
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
@@ -60,16 +61,11 @@ let memoryStore = {};
 let googleSdkPromise = null;
 
 function resolveGoogleClientId() {
-  const envClientId = typeof import.meta !== 'undefined'
-    ? import.meta.env?.VITE_GOOGLE_CLIENT_ID || import.meta.env?.GOOGLE_CLIENT_ID
-    : null;
-  const processEnvClientId = typeof process !== 'undefined'
-    ? process.env?.VITE_GOOGLE_CLIENT_ID || process.env?.GOOGLE_CLIENT_ID
-    : null;
+  const envClientId = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
   const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
   const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
 
-  return envClientId || processEnvClientId || windowClientId || globalConfigClientId || null;
+  return envClientId || windowClientId || globalConfigClientId || null;
 }
 
 function loadGoogleSdk() {
@@ -107,7 +103,7 @@ function loadGoogleSdk() {
 }
 
 async function requestGoogleAccessToken() {
-  const clientId = resolveGoogleClientId();
+  const clientId = GOOGLE_CLIENT_ID || (hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null);
 
   if (!clientId) {
     throw new Error('Google login is not configured.');
