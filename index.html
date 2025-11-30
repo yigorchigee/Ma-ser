@@ -3,27 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAABeElEQVR42u3dMXLCMBBAUdX0KeEWOUvaXBZmmOEKuUWqNKTJpArBFiuvhF7xSwr2eWxjCSjnz4+r8iqGAACAAAAQAAACAEAAAAgAgFbt3o+HNQFoNPivy8v1v2aBKFsO/t7Ql2AAqBh+7eBngCi9HvVLIABscNQ/O0ITgNbDfyaEknn071/f/mwtAoDKU08UwMgIJfPUEwEwOkLJvPBGAYx8KiqZF95ogBERSuZtJ4AggNrbyEiAUU9DAADEAoyGsCnArYHfC0DjT74AAAAA4CIMwG0oAI8iAHgYB8Dj6MHWA6ZfkMlckhx9XTh8Ud6a8ES7ImxLsTGr762JgcNu1emRut6cG4kAIHmTLoBEiJ/XAbgx2NoOKwMQCbDku2JB0ACSOjXq9wDqZUkSAAAAAAAAAAAAAAAAAAAAAAAA6OQnywAAAAAAwGQAS94IAAAAAAAAAED+PwCAAAAQAAACAEAAAAgAAEAIAAABACAAABQeN8vi4HQLgwFYAAAAABJRU5ErkJggg=="
-      sizes="96x96"
-    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link
-      rel="shortcut icon"
-      href="data:image/x-icon;base64,AAABAAEAAAAAAAEAIACxAQAAFgAAAIlQTkcNChoKAAAADUlIRFIAAABgAAAAYAgGAAAA4ph3OAAAAXhJREFUeNrt3TFywjAQQFHV9CnhFjlL2lwWZpjhCrlFqjSkyaQKwRYrr4Re8UsK9nlsYwko58+Pq/IqhgAAgAAAEAAAAgBAAAAIAIBW7d6PhzUBaDT4r8vL9b9mgShbDv7e0JdgAKgYfu3gZ4AovR71SyAAbHDUPztCE4DWw38mhJJ59O9f3/5sLQKAylNPFMDICCXz1BMBMDpCybzwRgGMfCoqmRfeaIARERSuZtJ4AggNrbyEiAUU9DAADEAoyGsCnArYHfC0DjT74AAAAAOAiDMBtKACPIgB4GAfA4+jB1gOmX5DJXJIcfV04fFHemvBEuyJsS7Exq++tiYHDbtXpkbrenBuJACB5ky6ARIif1wG4MdjaDisDEAmw5LtiQdAAkjo16vcA6mVJEgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjkJ8sAAAAAAMBkAEveCAAAAAAAAABA/j8AgAAAEAAAAgBAAAAIAAABACAAAAQAgAAAUHjfL4uB0C4MBWAAAAAASUVORK5CYII="
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADDklEQVR42u3dMU7DQBBA0dT0lHALzkLLZYmExBW4BRVNKEAICmJv4t2dGb/id1GiWM/OyHbWh5f3t5NUpYONIKAloCWgJaAFtAS0BLQEtAS0gJaAloCWgJaAFtAS0BLQEtAS0AJaAloCun83T8/3awMD6NSAAQe6PGK4gQ6J+OP19nRpcAMdAvM1iFtxQwR0F8g9ELfghgnodJDBBrosZqiB3gxzBMhLsOECOi1mqIFuxhwZ8jnYkAGdGjPUQJfDDDXQ5TBDDXRXzHcPj6uDGmiggQZ65KgxEzTUOwM9Ym6eDRpqoIFWPtCjzmpEAA010EArD+iR55yjgIYaaKAVH/ToK4KRQEMNNNACGmigh4MedZNQNNC/UYOYHPSMO+oig4YaaKAFNNBAl5ifo4I2RwMNtPYDugXtpQENNNBAAw20gAYaaKCBBhpooIEGGmignYeWS98ufQMNNNBAAw000G7wNz8DDbT8p9B/CoEGGmigLTQDM9BAA116scY9ggbQ6qNWH5UFzy14DjTQQAMdGbWHBgE9DXTlx7oBvRPQvY/SnlMIdCnUs0DDvHPQs24vNTcDnXaevhJpho6zAjoZaqCBLoUaaKBLwQYa6FKogQa6G+oZsIEGuhRsoIEehro37O/PABro8bC3AP7PewIN9A++0S1iX3oN0ECnAd3SxO8ANNBfrR1LzgEOsFMCDfRf0Ml/ZYAGOm3HJHU/cAANNNBAAw000EADDTTQQAMNNNBAAw000EADDTTQwAINNNBAAw000EADDTTQQAMtoIEGGmiggQYaaKCBBhpooAU00EADDTTQQAMNNNBAAw20gAYaaKCBBhpooIEGGmigreBvpwAaaKCBBhpooIEGGmiggQYaaKCBBhroLKC33PBAAw000EADDTTQQAMNNNBAAw000EADDTTQQAMNNNBAAw000EADLQUPaAEtAS0BLQEtoCWgJaAloCWgBbQEtAS0BLQEtICWgJaAloCWgBbQEtAS0BLQEtACWgJaAloCWgJaQEtAS0BLQEtAC2gJaAloqb1PV02OFcn7kZsAAAAASUVORK5CYII="
-    />
-    <meta name="apple-mobile-web-app-title" content="Tzedaka Tracker" />
-    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || window.VITE_GOOGLE_CLIENT_ID;
+
+      if (clientId) {
+        window.__MAASER_CONFIG__ = window.__MAASER_CONFIG__ || {};
+        window.__MAASER_CONFIG__.googleClientId = clientId;
+      }
+    </script>
     <script>
       tailwind.config = {
         theme: {
