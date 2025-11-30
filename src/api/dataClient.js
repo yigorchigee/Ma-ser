@@ -1,4 +1,4 @@
-import { integrationHub } from './integrations/integrationHub';
+import { integrationHub } from './integrations/integrationHub.js';
 
 const STORAGE_KEYS = {
   user: 'maaser_user',
@@ -52,8 +52,99 @@ const starterDonations = [
   },
 ];
 
+const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
+
+let googleSdkPromise = null;
+let googleSdkScript = null;
+
+function requestGoogleAccessToken(google, clientId) {
+  if (!google?.accounts?.oauth2?.initTokenClient) {
+    throw new Error('Google login could not start because the SDK is unavailable. Please refresh and try again.');
+  }
+
+  return new Promise((resolve, reject) => {
+    try {
+      const tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'openid profile email',
+        prompt: 'select_account',
+        callback: (tokenResponse) => {
+          if (tokenResponse?.error) {
+            reject(new Error(tokenResponse.error));
+            return;
+          }
+
+          if (!tokenResponse?.access_token) {
+            reject(new Error('Google did not return an access token.'));
+            return;
+          }
+
+          resolve(tokenResponse.access_token);
+        },
+        error_callback: (err) => {
+          reject(new Error(err?.message || 'Google sign-in was cancelled.'));
+        },
+      });
+
+      tokenClient.requestAccessToken();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+function loadGoogleSdk() {
+  if (!hasWindow) {
+    return Promise.reject(new Error('Google login is only available in the browser.'));
+  }
+
+  if (window.google?.accounts?.oauth2) {
+    googleSdkPromise = googleSdkPromise || Promise.resolve(window.google);
+    return googleSdkPromise;
+  }
+
+  if (googleSdkPromise) return googleSdkPromise;
+
+  googleSdkPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(`script[src="${GOOGLE_SCRIPT_SRC}"]`);
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    const script = document.createElement('script');
+    script.src = GOOGLE_SCRIPT_SRC;
+    script.async = true;
+
+    const cleanup = () => {
+      script.onload = null;
+      script.onerror = null;
+    };
+
+    script.onload = () => {
+      cleanup();
+      if (window.google?.accounts?.oauth2) {
+        resolve(window.google);
+      } else {
+        googleSdkPromise = null;
+        reject(new Error('Google Identity Services SDK failed to load.'));
+      }
+    };
+    script.onerror = () => {
+      cleanup();
+      googleSdkPromise = null;
+      script.remove();
+      reject(new Error('Unable to load Google Identity Services SDK.'));
+    };
+
+    googleSdkScript = script;
+    document.head.appendChild(script);
+  });
+
+  return googleSdkPromise;
+}
 
 const storage = {
   getItem(key) {
@@ -85,6 +176,43 @@ function load(key, fallback) {
 
 function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
+}
+
+function sanitizeUser(user) {
+  if (!user) return null;
+
+  const { password, ...safeUser } = user;
+  return { ...defaultUser, ...safeUser };
+}
+
+function getStoredCredentials() {
+  return load(STORAGE_KEYS.credentials, null);
+}
+
+function persistCredentials(credentials) {
+  persist(STORAGE_KEYS.credentials, credentials);
+}
+
+function persistSession(user) {
+  const sanitized = sanitizeUser(user);
+  const session = { user: sanitized };
+  persist(STORAGE_KEYS.session, session);
+  persist(STORAGE_KEYS.user, sanitized);
+  return session;
+}
+
+async function fetchGoogleUser(accessToken) {
+  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to fetch Google profile information.');
+  }
+
+  return response.json();
 }
 
 function sanitizeDonationNotes(donation) {
@@ -215,12 +343,39 @@ export const dataClient = {
       return { session, user: sanitizeUser(stored) };
     },
     async loginWithGoogle() {
+      const clientId = import.meta?.env?.VITE_GOOGLE_CLIENT_ID;
+
+      if (!clientId) {
+        throw new Error('Google login is not configured. Please set VITE_GOOGLE_CLIENT_ID.');
+      }
+
+      const google = await loadGoogleSdk();
+
+      if (!google?.accounts?.oauth2?.initTokenClient) {
+        googleSdkPromise = null;
+        if (googleSdkScript) {
+          googleSdkScript.remove();
+          googleSdkScript = null;
+        }
+        throw new Error('Google login could not start because the SDK is unavailable. Please refresh and try again.');
+      }
+
+      const accessToken = await requestGoogleAccessToken(google, clientId);
+      const profile = await fetchGoogleUser(accessToken);
+
+      const normalizedEmail = profile.email?.trim().toLowerCase();
+
+      if (!normalizedEmail) {
+        throw new Error('Google account does not include an email address.');
+      }
+
       const googleAccount = {
-        name: 'Google User',
-        email: 'you@example.com',
+        name: profile.name || profile.given_name || 'Google User',
+        email: normalizedEmail,
         maaser_percentage: defaultUser.maaser_percentage,
         auth_provider: 'google',
-        email_verified: true,
+        email_verified: Boolean(profile.email_verified),
+        avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
       };
 

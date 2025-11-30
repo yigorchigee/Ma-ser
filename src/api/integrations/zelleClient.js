@@ -1,5 +1,5 @@
-import { integrationConfig } from './config';
-import { buildAuthHeaders, request } from './httpClient';
+import { integrationConfig } from './config.js';
+import { buildAuthHeaders, request } from './httpClient.js';
 
 function hasZelleConfig() {
   return Boolean(integrationConfig.zelle.baseUrl && integrationConfig.zelle.apiKey);
