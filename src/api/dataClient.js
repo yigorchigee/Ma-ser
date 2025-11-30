@@ -60,6 +60,14 @@ let memoryStore = {};
 
 let googleSdkPromise = null;
 
+function resolveGoogleClientId() {
+  const envClientId = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
+  const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
+  const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
+
+  return envClientId || windowClientId || globalConfigClientId || null;
+}
+
 function loadGoogleSdk() {
   if (!hasWindow) {
     return Promise.reject(new Error('Google login is only available in the browser.'));
@@ -190,6 +198,10 @@ function persistSession(user) {
   persist(STORAGE_KEYS.session, session);
   persist(STORAGE_KEYS.user, sanitized);
   return session;
+}
+
+function isGoogleLoginConfigured() {
+  return Boolean(resolveGoogleClientId());
 }
 
 function sanitizeDonationNotes(donation) {
@@ -344,6 +356,7 @@ export const dataClient = {
 
       return { session, user: sanitizeUser(googleAccount) };
     },
+    isGoogleLoginConfigured,
     async logout() {
       persist(STORAGE_KEYS.session, null);
       return { success: true };
