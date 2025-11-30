@@ -148,60 +148,6 @@ function persistSession(user) {
   return session;
 }
 
-async function requestGoogleAccessToken() {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-  if (!clientId) {
-    throw new Error('Google login is not configured. Please set VITE_GOOGLE_CLIENT_ID.');
-  }
-
-  const google = await loadGoogleSdk();
-
-  return new Promise((resolve, reject) => {
-    try {
-      const tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: clientId,
-        scope: 'openid profile email',
-        prompt: 'select_account',
-        callback: (tokenResponse) => {
-          if (tokenResponse?.error) {
-            reject(new Error(tokenResponse.error));
-            return;
-          }
-
-          if (!tokenResponse?.access_token) {
-            reject(new Error('Google did not return an access token.'));
-            return;
-          }
-
-          resolve(tokenResponse.access_token);
-        },
-        error_callback: (err) => {
-          reject(new Error(err?.message || 'Google sign-in was cancelled.'));
-        },
-      });
-
-      tokenClient.requestAccessToken();
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
-
-async function fetchGoogleUser(accessToken) {
-  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Unable to fetch Google profile information.');
-  }
-
-  return response.json();
-}
-
 function sanitizeDonationNotes(donation) {
   const normalizedNote = donation.note?.trim().toLowerCase();
   const normalizedNotes = donation.notes?.trim().toLowerCase();
