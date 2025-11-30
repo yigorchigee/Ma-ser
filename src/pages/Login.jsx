@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
-import CharityBoxIcon from '@/components/icons/CharityBoxIcon';
-import { Mail, ShieldCheck, UserPlus, LogIn, KeyRound } from 'lucide-react';
+import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login() {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -59,40 +58,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-[1.2fr,1fr] gap-8 items-center">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-emerald-400 text-white p-8 shadow-2xl">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.15),_transparent_45%)]" aria-hidden />
-          <div className="relative flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center shadow-lg">
-              <CharityBoxIcon className="h-7 w-7" />
-            </div>
-            <div>
-              <p className="text-lg font-semibold">Tzedaka Tracker</p>
-              <p className="text-sm text-white/80">Keep your giving organized and secure</p>
-            </div>
-          </div>
-          <div className="mt-10 space-y-4">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-6 w-6" />
-              <p className="text-lg font-semibold">Secure sign-in</p>
-            </div>
-            <p className="text-white/80 leading-relaxed">
-              Choose Google or email-based login. We'll remember your session on this device so you can jump right into tracking
-              your ma'aser without repeated logins.
-            </p>
-            <div className="rounded-2xl bg-white/10 border border-white/20 p-4 space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <UserPlus className="h-4 w-4" />
-                <span>Create an account with your email and we'll send a verification message.</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <LogIn className="h-4 w-4" />
-                <span>Already registered? Just sign in and we will keep you logged in.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <div className="w-full max-w-xl">
         <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div>
