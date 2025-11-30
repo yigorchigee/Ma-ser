@@ -67,7 +67,7 @@ export default function Login() {
               <CharityBoxIcon className="h-7 w-7" />
             </div>
             <div>
-              <p className="text-lg font-semibold">Ma'aser Tracker</p>
+              <p className="text-lg font-semibold">Tzedaka Tracker</p>
               <p className="text-sm text-white/80">Keep your giving organized and secure</p>
             </div>
           </div>
