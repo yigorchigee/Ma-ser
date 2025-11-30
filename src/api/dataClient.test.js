@@ -84,10 +84,10 @@ describe('dataClient auth', () => {
     );
   });
 
-  it('fails Google login when no client ID is configured', async () => {
+  it('fails Google login in a non-browser environment', async () => {
     await assert.rejects(
       () => dataClient.auth.loginWithGoogle(),
-      /Google login is not configured/
+      /Google login is only available in the browser/
     );
   });
 });

@@ -64,11 +64,11 @@ function resolveGoogleClientId() {
   const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
   const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
 
-  return envClientId || windowClientId || globalConfigClientId || null;
+  return envClientId || windowClientId || globalConfigClientId || DEFAULT_GOOGLE_CLIENT_ID;
 }
 
 function loadGoogleSdk() {
-  if (!hasWindow) {
+  if (!hasWindow || typeof document === 'undefined') {
     return Promise.reject(new Error('Google login is only available in the browser.'));
   }
 
