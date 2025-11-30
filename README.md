@@ -1,4 +1,4 @@
-# How to Run Ma'aser Tracker on Your Computer (Beginner Friendly)
+# How to Run Tzedaka Tracker on Your Computer (Beginner Friendly)
 
 These steps are written for someone with no coding background. Pick **one** option below (HTTPS, ZIP, SSH, or GitHub CLI) and follow its steps from start to finish.
 
@@ -31,7 +31,7 @@ These steps are written for someone with no coding background. Pick **one** opti
 5. In the terminal, type `cd ` (with a space) and drag the `Ma-ser` folder into the window. Press **Enter**. The prompt should now show `Ma-ser` at the end of the line.
 6. Install the required files by typing `npm install` and pressing **Enter**. Wait until the downloads finish and you see the prompt again.
 7. Start the app by typing `npm run dev` and pressing **Enter**. After a few seconds the terminal will print a web address like `http://localhost:5173/`.
-8. Open the app by copying that address into Chrome, Edge, or Safari. The Ma'aser Tracker will load.
+8. Open the app by copying that address into Chrome, Edge, or Safari. The Tzedaka Tracker will load.
 9. To view a new version later, stop the app with **Ctrl + C** (or **Cmd + C** on Mac), download the latest ZIP again, replace your existing `Ma-ser` folder with the new one, then rerun `npm install` (if asked) and `npm run dev` before refreshing the browser.
 10. Stop the app when you are done by returning to the terminal window and pressing **Ctrl + C** (or **Cmd + C** on Mac).
 

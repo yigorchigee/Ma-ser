@@ -40,7 +40,7 @@ export default function Layout({ children, currentPageName }) {
                 M
               </div>
               <div className="flex flex-col justify-center leading-tight">
-                <p className="text-lg sm:text-xl font-black text-blue-700">Ma'aser Tracker</p>
+                <p className="text-lg sm:text-xl font-black text-blue-700">Tzedaka Tracker</p>
               </div>
             </Link>
 
