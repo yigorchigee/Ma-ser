@@ -96,22 +96,12 @@ export default function Login() {
         <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-2xl font-bold text-slate-900">Welcome</p>
-              <p className="text-slate-600">Sign in to access your ma'aser dashboard.</p>
-            </div>
-            <div className="flex rounded-full border border-slate-200 overflow-hidden">
-              {['login', 'signup'].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setMode(value)}
-                  className={`px-4 py-2 text-sm font-semibold transition ${
-                    mode === value ? 'bg-blue-600 text-white' : 'bg-white text-slate-700'
-                  }`}
-                >
-                  {value === 'login' ? 'Login' : 'Create account'}
-                </button>
-              ))}
+              <p className="text-2xl font-bold text-slate-900">{mode === 'login' ? 'Welcome' : 'Create account'}</p>
+              <p className="text-slate-600">
+                {mode === 'login'
+                  ? "Sign in to access your ma'aser dashboard."
+                  : 'Create your Tzedaka Tracker account to get started.'}
+              </p>
             </div>
           </div>
 
@@ -196,6 +186,30 @@ export default function Login() {
               >
                 {isSubmitting ? 'Please wait...' : mode === 'login' ? 'Login' : 'Create account'}
               </button>
+
+              {mode === 'login' ? (
+                <p className="text-xs text-slate-600 text-center">
+                  New to Tzedaka Tracker?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setMode('signup')}
+                    className="text-blue-700 font-semibold hover:underline"
+                  >
+                    Create account
+                  </button>
+                </p>
+              ) : (
+                <p className="text-xs text-slate-600 text-center">
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setMode('login')}
+                    className="text-blue-700 font-semibold hover:underline"
+                  >
+                    Log in
+                  </button>
+                </p>
+              )}
             </form>
 
             <p className="text-xs text-slate-500 text-center">
