@@ -53,7 +53,7 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
-const DEFAULT_GOOGLE_CLIENT_ID = '';
+const DEFAULT_GOOGLE_CLIENT_ID = '377092527146-REPLACE_WITH_YOUR_FULL_CLIENT_ID';
 
 const hasWindow = typeof window !== 'undefined';
 const hasDom = typeof document !== 'undefined';
