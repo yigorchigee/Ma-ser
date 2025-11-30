@@ -2,6 +2,8 @@ import { integrationHub } from './integrations/integrationHub';
 
 const STORAGE_KEYS = {
   user: 'maaser_user',
+  session: 'maaser_session',
+  credentials: 'maaser_credentials',
   transactions: 'maaser_transactions',
   donations: 'maaser_donations',
 };
@@ -85,6 +87,37 @@ function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
 }
 
+function sanitizeUser(user) {
+  if (!user) return null;
+  const { password, ...rest } = user;
+  return rest;
+}
+
+function persistSession(user) {
+  if (!user) {
+    persist(STORAGE_KEYS.session, null);
+    return null;
+  }
+
+  const session = {
+    user: sanitizeUser(user),
+    last_active_at: new Date().toISOString(),
+  };
+
+  persist(STORAGE_KEYS.session, session);
+  persist(STORAGE_KEYS.user, sanitizeUser(user));
+  return session;
+}
+
+function getStoredCredentials() {
+  return load(STORAGE_KEYS.credentials, null);
+}
+
+function persistCredentials(user) {
+  persist(STORAGE_KEYS.credentials, user);
+  persist(STORAGE_KEYS.user, sanitizeUser(user));
+}
+
 function removeWeeklyGivingNotes(donations) {
   let updated = false;
 
@@ -139,15 +172,79 @@ function sortByDate(items, order) {
 export const dataClient = {
   auth: {
     async me() {
-      const user = load(STORAGE_KEYS.user, defaultUser);
+      const session = load(STORAGE_KEYS.session, null);
+      if (!session?.user) {
+        throw new Error('Not authenticated');
+      }
+
+      const storedUser = load(STORAGE_KEYS.user, defaultUser);
+      const user = { ...storedUser, ...session.user };
       persist(STORAGE_KEYS.user, user);
       return user;
     },
     async updateMe(updates) {
-      const existing = load(STORAGE_KEYS.user, defaultUser);
-      const next = { ...existing, ...updates };
-      persist(STORAGE_KEYS.user, next);
-      return next;
+      const existingCredentials = getStoredCredentials() || defaultUser;
+      const next = { ...existingCredentials, ...updates };
+      persistCredentials(next);
+      persistSession(next);
+      return sanitizeUser(next);
+    },
+    getSession() {
+      const session = load(STORAGE_KEYS.session, null);
+      return session?.user ? session : null;
+    },
+    async registerWithEmail({ name, email, password }) {
+      const normalizedEmail = email?.trim().toLowerCase();
+
+      const account = {
+        name: name?.trim() || 'Maaser User',
+        email: normalizedEmail,
+        password,
+        maaser_percentage: defaultUser.maaser_percentage,
+        auth_provider: 'email',
+        email_verified: false,
+        created_at: new Date().toISOString(),
+      };
+
+      persistCredentials(account);
+      const session = persistSession(account);
+
+      return {
+        session,
+        user: sanitizeUser(account),
+        emailSentAt: new Date().toISOString(),
+        message: `Verification email sent to ${normalizedEmail}`,
+      };
+    },
+    async loginWithEmail({ email, password }) {
+      const normalizedEmail = email?.trim().toLowerCase();
+      const stored = getStoredCredentials();
+
+      if (!stored || stored.email !== normalizedEmail || stored.password !== password) {
+        throw new Error('Invalid email or password');
+      }
+
+      const session = persistSession(stored);
+      return { session, user: sanitizeUser(stored) };
+    },
+    async loginWithGoogle() {
+      const googleAccount = {
+        name: 'Google User',
+        email: 'you@example.com',
+        maaser_percentage: defaultUser.maaser_percentage,
+        auth_provider: 'google',
+        email_verified: true,
+        connected_at: new Date().toISOString(),
+      };
+
+      persistCredentials(googleAccount);
+      const session = persistSession(googleAccount);
+
+      return { session, user: sanitizeUser(googleAccount) };
+    },
+    async logout() {
+      persist(STORAGE_KEYS.session, null);
+      return { success: true };
     },
   },
   entities: {
@@ -267,6 +364,8 @@ export const dataClient = {
   reset() {
     memoryStore = {};
     persist(STORAGE_KEYS.user, defaultUser);
+    persist(STORAGE_KEYS.session, null);
+    persist(STORAGE_KEYS.credentials, null);
     persist(STORAGE_KEYS.transactions, starterTransactions);
     persist(STORAGE_KEYS.donations, starterDonations);
   },
