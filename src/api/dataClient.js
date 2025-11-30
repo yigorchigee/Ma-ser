@@ -53,6 +53,7 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+const GOOGLE_CLIENT_ID = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
 
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
@@ -91,6 +92,49 @@ function loadGoogleSdk() {
   });
 
   return googleSdkPromise;
+}
+
+async function requestGoogleAccessToken() {
+  const clientId = GOOGLE_CLIENT_ID || (hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null);
+
+  if (!clientId) {
+    throw new Error('Google login is not configured.');
+  }
+
+  const google = await loadGoogleSdk();
+
+  return new Promise((resolve, reject) => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'profile email',
+      callback: (response) => {
+        if (response.error || !response.access_token) {
+          reject(new Error(response.error_description || 'Unable to retrieve Google access token.'));
+          return;
+        }
+
+        resolve(response.access_token);
+      },
+    });
+
+    client.requestAccessToken();
+  });
+}
+
+async function fetchGoogleUser(accessToken) {
+  if (!accessToken) {
+    throw new Error('Missing Google access token.');
+  }
+
+  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to fetch Google profile.');
+  }
+
+  return response.json();
 }
 
 const storage = {
