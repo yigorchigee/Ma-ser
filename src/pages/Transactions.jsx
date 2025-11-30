@@ -184,7 +184,16 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
                     {item.type === 'income' && item.account ? `${item.account} • ` : ''}
                     {format(new Date(item.date), 'MMMM dd, yyyy')}
                   </p>
-                  {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
+                  {(() => {
+                    const noteCandidate = item.type === 'donation' ? item.notes || item.note : item.notes;
+                    const normalized = typeof noteCandidate === 'string' ? noteCandidate.trim() : '';
+
+                    if (!normalized || normalized.toLowerCase() === 'weekly giving') {
+                      return null;
+                    }
+
+                    return <p className="text-sm text-slate-500 truncate">{normalized}</p>;
+                  })()}
                 </div>
               </div>
               <div className="flex items-center gap-3">

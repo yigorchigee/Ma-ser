@@ -85,16 +85,34 @@ function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
 }
 
+function sanitizeDonationNotes(donation) {
+  const normalizedNote = donation.note?.trim().toLowerCase();
+  const normalizedNotes = donation.notes?.trim().toLowerCase();
+
+  const cleaned = { ...donation };
+
+  if (normalizedNote === 'weekly giving') {
+    delete cleaned.note;
+  }
+
+  if (normalizedNotes === 'weekly giving') {
+    delete cleaned.notes;
+  }
+
+  return cleaned;
+}
+
 function removeWeeklyGivingNotes(donations) {
   let updated = false;
 
   const cleaned = donations.map((donation) => {
-    if (donation.note?.trim().toLowerCase() === 'weekly giving') {
-      const { note, ...rest } = donation;
+    const sanitized = sanitizeDonationNotes(donation);
+
+    if (donation.note !== sanitized.note || donation.notes !== sanitized.notes) {
       updated = true;
-      return rest;
     }
-    return donation;
+
+    return sanitized;
   });
 
   if (updated) {
