@@ -87,47 +87,34 @@ function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
 }
 
-function sanitizeUser(user) {
-  if (!user) return null;
-  const { password, ...rest } = user;
-  return rest;
-}
+function sanitizeDonationNotes(donation) {
+  const normalizedNote = donation.note?.trim().toLowerCase();
+  const normalizedNotes = donation.notes?.trim().toLowerCase();
 
-function persistSession(user) {
-  if (!user) {
-    persist(STORAGE_KEYS.session, null);
-    return null;
+  const cleaned = { ...donation };
+
+  if (normalizedNote === 'weekly giving') {
+    delete cleaned.note;
   }
 
-  const session = {
-    user: sanitizeUser(user),
-    last_active_at: new Date().toISOString(),
-  };
+  if (normalizedNotes === 'weekly giving') {
+    delete cleaned.notes;
+  }
 
-  persist(STORAGE_KEYS.session, session);
-  persist(STORAGE_KEYS.user, sanitizeUser(user));
-  return session;
-}
-
-function getStoredCredentials() {
-  return load(STORAGE_KEYS.credentials, null);
-}
-
-function persistCredentials(user) {
-  persist(STORAGE_KEYS.credentials, user);
-  persist(STORAGE_KEYS.user, sanitizeUser(user));
+  return cleaned;
 }
 
 function removeWeeklyGivingNotes(donations) {
   let updated = false;
 
   const cleaned = donations.map((donation) => {
-    if (donation.note?.trim().toLowerCase() === 'weekly giving') {
-      const { note, ...rest } = donation;
+    const sanitized = sanitizeDonationNotes(donation);
+
+    if (donation.note !== sanitized.note || donation.notes !== sanitized.notes) {
       updated = true;
-      return rest;
     }
-    return donation;
+
+    return sanitized;
   });
 
   if (updated) {
