@@ -53,6 +53,7 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+const GOOGLE_CLIENT_ID = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
 
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
@@ -102,7 +103,7 @@ function loadGoogleSdk() {
 }
 
 async function requestGoogleAccessToken() {
-  const clientId = resolveGoogleClientId();
+  const clientId = GOOGLE_CLIENT_ID || (hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null);
 
   if (!clientId) {
     throw new Error('Google login is not configured.');
