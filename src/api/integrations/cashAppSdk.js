@@ -1,5 +1,5 @@
-import { integrationConfig } from './config';
-import { loadExternalScript } from './sdkLoader';
+import { integrationConfig } from './config.js';
+import { loadExternalScript } from './sdkLoader.js';
 
 const SQUARE_SDK_URL = 'https://sandbox.web.squarecdn.com/v1/square.js';
 

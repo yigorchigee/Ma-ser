@@ -1,5 +1,5 @@
 import { loadScript } from '@paypal/paypal-js';
-import { integrationConfig } from './config';
+import { integrationConfig } from './config.js';
 
 const paypalSdkPromise = (() => {
   if (!integrationConfig.paypal.clientId) return null;

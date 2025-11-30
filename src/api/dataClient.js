@@ -1,4 +1,4 @@
-import { integrationHub } from './integrations/integrationHub';
+import { integrationHub } from './integrations/integrationHub.js';
 
 const STORAGE_KEYS = {
   user: 'maaser_user',
