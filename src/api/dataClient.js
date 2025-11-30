@@ -52,8 +52,46 @@ const starterDonations = [
   },
 ];
 
+const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+
 const hasWindow = typeof window !== 'undefined';
 let memoryStore = {};
+
+let googleSdkPromise = null;
+
+function loadGoogleSdk() {
+  if (!hasWindow) {
+    return Promise.reject(new Error('Google login is only available in the browser.'));
+  }
+
+  if (googleSdkPromise) return googleSdkPromise;
+
+  if (window.google?.accounts?.oauth2) {
+    googleSdkPromise = Promise.resolve(window.google);
+    return googleSdkPromise;
+  }
+
+  googleSdkPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = GOOGLE_SCRIPT_SRC;
+    script.async = true;
+    script.onload = () => {
+      if (window.google?.accounts?.oauth2) {
+        resolve(window.google);
+      } else {
+        googleSdkPromise = null;
+        reject(new Error('Google Identity Services SDK failed to load.'));
+      }
+    };
+    script.onerror = () => {
+      googleSdkPromise = null;
+      reject(new Error('Unable to load Google Identity Services SDK.'));
+    };
+    document.head.appendChild(script);
+  });
+
+  return googleSdkPromise;
+}
 
 const storage = {
   getItem(key) {
@@ -238,12 +276,22 @@ export const dataClient = {
       return { session, user: sanitizeUser(stored) };
     },
     async loginWithGoogle() {
+      const accessToken = await requestGoogleAccessToken();
+      const profile = await fetchGoogleUser(accessToken);
+
+      const normalizedEmail = profile.email?.trim().toLowerCase();
+
+      if (!normalizedEmail) {
+        throw new Error('Google account does not include an email address.');
+      }
+
       const googleAccount = {
-        name: 'Google User',
-        email: 'you@example.com',
+        name: profile.name || profile.given_name || 'Google User',
+        email: normalizedEmail,
         maaser_percentage: defaultUser.maaser_percentage,
         auth_provider: 'google',
-        email_verified: true,
+        email_verified: Boolean(profile.email_verified),
+        avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
       };
 
