@@ -48,6 +48,7 @@ export function AuthProvider({ children }) {
     () => ({
       user: session?.user || null,
       isAuthenticated: Boolean(session?.user),
+      googleLoginEnabled: dataClient.auth.isGoogleLoginConfigured(),
       loginWithGoogle,
       loginWithEmail,
       registerWithEmail,

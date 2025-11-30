@@ -59,6 +59,14 @@ let memoryStore = {};
 
 let googleSdkPromise = null;
 
+function resolveGoogleClientId() {
+  const envClientId = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
+  const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
+  const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
+
+  return envClientId || windowClientId || globalConfigClientId || null;
+}
+
 function loadGoogleSdk() {
   if (!hasWindow) {
     return Promise.reject(new Error('Google login is only available in the browser.'));
@@ -91,6 +99,49 @@ function loadGoogleSdk() {
   });
 
   return googleSdkPromise;
+}
+
+async function requestGoogleAccessToken() {
+  const clientId = resolveGoogleClientId();
+
+  if (!clientId) {
+    throw new Error('Google login is not configured.');
+  }
+
+  const google = await loadGoogleSdk();
+
+  return new Promise((resolve, reject) => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'profile email',
+      callback: (response) => {
+        if (response.error || !response.access_token) {
+          reject(new Error(response.error_description || 'Unable to retrieve Google access token.'));
+          return;
+        }
+
+        resolve(response.access_token);
+      },
+    });
+
+    client.requestAccessToken();
+  });
+}
+
+async function fetchGoogleUser(accessToken) {
+  if (!accessToken) {
+    throw new Error('Missing Google access token.');
+  }
+
+  const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    throw new Error('Unable to fetch Google profile.');
+  }
+
+  return response.json();
 }
 
 const storage = {
@@ -146,6 +197,10 @@ function persistSession(user) {
   persist(STORAGE_KEYS.session, session);
   persist(STORAGE_KEYS.user, sanitized);
   return session;
+}
+
+function isGoogleLoginConfigured() {
+  return Boolean(resolveGoogleClientId());
 }
 
 function sanitizeDonationNotes(donation) {
@@ -300,6 +355,7 @@ export const dataClient = {
 
       return { session, user: sanitizeUser(googleAccount) };
     },
+    isGoogleLoginConfigured,
     async logout() {
       persist(STORAGE_KEYS.session, null);
       return { success: true };
