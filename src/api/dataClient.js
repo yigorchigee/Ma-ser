@@ -87,6 +87,29 @@ function persist(key, value) {
   storage.setItem(key, JSON.stringify(value));
 }
 
+function sanitizeUser(user) {
+  if (!user) return null;
+
+  const { password, ...safeUser } = user;
+  return { ...defaultUser, ...safeUser };
+}
+
+function getStoredCredentials() {
+  return load(STORAGE_KEYS.credentials, null);
+}
+
+function persistCredentials(credentials) {
+  persist(STORAGE_KEYS.credentials, credentials);
+}
+
+function persistSession(user) {
+  const sanitized = sanitizeUser(user);
+  const session = { user: sanitized };
+  persist(STORAGE_KEYS.session, session);
+  persist(STORAGE_KEYS.user, sanitized);
+  return session;
+}
+
 function sanitizeDonationNotes(donation) {
   const normalizedNote = donation.note?.trim().toLowerCase();
   const normalizedNotes = donation.notes?.trim().toLowerCase();
