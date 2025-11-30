@@ -53,8 +53,10 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
+const DEFAULT_GOOGLE_CLIENT_ID = '';
 
 const hasWindow = typeof window !== 'undefined';
+const hasDom = typeof document !== 'undefined';
 let memoryStore = {};
 
 let googleSdkPromise = null;
@@ -329,6 +331,10 @@ export const dataClient = {
       return { session, user: sanitizeUser(stored) };
     },
     async loginWithGoogle() {
+      if (!hasDom) {
+        throw new Error('Google login is only available in the browser.');
+      }
+
       const clientId = resolveGoogleClientId();
 
       if (!clientId) {
