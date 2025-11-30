@@ -5,6 +5,9 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(() => dataClient.auth.getSession());
+  const [googleLoginEnabled, setGoogleLoginEnabled] = useState(
+    dataClient.auth.isGoogleLoginConfigured()
+  );
 
   const refreshSession = async () => {
     try {
@@ -19,6 +22,10 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     refreshSession();
+  }, []);
+
+  useEffect(() => {
+    setGoogleLoginEnabled(dataClient.auth.isGoogleLoginConfigured());
   }, []);
 
   const loginWithGoogle = async () => {
@@ -48,6 +55,7 @@ export function AuthProvider({ children }) {
     () => ({
       user: session?.user || null,
       isAuthenticated: Boolean(session?.user),
+      googleLoginEnabled,
       loginWithGoogle,
       loginWithEmail,
       registerWithEmail,

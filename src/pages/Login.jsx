@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/AuthContext';
 import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login() {
-  const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
+  const { isAuthenticated, googleLoginEnabled, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.from || '/dashboard';
@@ -24,6 +24,11 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async () => {
+    if (!googleLoginEnabled) {
+      toast.error('Google login is not configured for this environment.');
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       const result = await loginWithGoogle();
@@ -75,16 +80,22 @@ export default function Login() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              disabled={isSubmitting}
-              className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 active:scale-95 transition"
+              disabled={isSubmitting || !googleLoginEnabled}
+              className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 active:scale-95 transition disabled:opacity-60"
             >
               <img
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                 alt="Google"
                 className="h-5 w-5"
               />
-              Continue with Google
+              {googleLoginEnabled ? 'Continue with Google' : 'Google login unavailable'}
             </button>
+
+            {!googleLoginEnabled && (
+              <p className="text-xs text-amber-600 text-center bg-amber-50 border border-amber-200 rounded-lg py-2 px-3">
+                Google login is not set up for this environment. Add a VITE_GOOGLE_CLIENT_ID value to enable it.
+              </p>
+            )}
 
             <div className="relative py-2 text-center text-xs text-slate-500">
               <span className="px-3 bg-white relative z-10">or</span>
