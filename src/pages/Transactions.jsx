@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { dataClient, isManualTransaction } from '@/api/dataClient';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
+import { dataClient } from '@/api/dataClient';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DollarSign, List, Sparkles, Trash2 } from 'lucide-react';
+import { DollarSign, List, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
-import { toast } from 'sonner';
 import { formatCounterparty } from '@/utils';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
 
 export default function Transactions() {
   const [view, setView] = useState('all');
-  const queryClient = useQueryClient();
 
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
@@ -25,39 +22,8 @@ export default function Transactions() {
     queryFn: () => dataClient.entities.Donation.list('-date'),
   });
 
-  const deleteTransactionMutation = useMutation({
-    mutationFn: (id) => dataClient.entities.Transaction.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      toast.success('Transaction deleted successfully!');
-    },
-    onError: (error) => {
-      toast.error(error?.message || 'Only manually added transactions can be deleted.');
-    },
-  });
-
-  const deleteDonationMutation = useMutation({
-    mutationFn: (id) => dataClient.entities.Donation.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['donations'] });
-      toast.success('Donation deleted successfully!');
-    },
-  });
-
-  const handleDeleteDonation = (id) => {
-    if (confirm('Are you sure you want to delete this payment?')) {
-      deleteDonationMutation.mutate(id);
-    }
-  };
-
-  const handleDeleteTransaction = (id) => {
-    if (confirm('Are you sure you want to delete this transaction?')) {
-      deleteTransactionMutation.mutate(id);
-    }
-  };
-
   const allItems = [
-    ...transactions.map((t) => ({ ...t, type: 'income', isManual: isManualTransaction(t) })),
+    ...transactions.map((t) => ({ ...t, type: 'income' })),
     ...donations.map((d) => ({ ...d, type: 'donation' })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -75,14 +41,12 @@ export default function Transactions() {
         view={view}
         onViewChange={setView}
         items={filteredItems}
-        onDeleteTransaction={handleDeleteTransaction}
-        onDeleteDonation={handleDeleteDonation}
       />
     </div>
   );
 }
 
-function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view, onViewChange }) {
+function LedgerCard({ title, items, view, onViewChange }) {
   return (
     <Card className="border border-slate-200 shadow-xl shadow-slate-900/5">
       <CardHeader className="pb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -198,16 +162,6 @@ function LedgerCard({ title, items, onDeleteTransaction, onDeleteDonation, view,
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>
-                {(item.type === 'income' ? item.isManual : true) && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => (item.type === 'income' ? onDeleteTransaction(item.id) : onDeleteDonation(item.id))}
-                    className="hover:bg-rose-100 active:scale-95 transition"
-                  >
-                    <Trash2 className="h-5 w-5 text-rose-600" />
-                  </Button>
-                )}
               </div>
             </div>
           ))
