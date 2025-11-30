@@ -1,9 +1,9 @@
-import { bankingClient } from './bankingClient';
-import { cashAppClient } from './cashAppClient';
-import { hasIntegrationConfig } from './config';
-import { paypalClient } from './paypalClient';
-import { venmoClient } from './venmoClient';
-import { zelleClient } from './zelleClient';
+import { bankingClient } from './bankingClient.js';
+import { cashAppClient } from './cashAppClient.js';
+import { hasIntegrationConfig } from './config.js';
+import { paypalClient } from './paypalClient.js';
+import { venmoClient } from './venmoClient.js';
+import { zelleClient } from './zelleClient.js';
 
 function normalizeTransactions(provider, items, mapper) {
   if (!Array.isArray(items)) return [];

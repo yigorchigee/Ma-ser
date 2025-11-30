@@ -1,6 +1,6 @@
-import { integrationConfig } from './config';
-import { buildAuthHeaders, request } from './httpClient';
-import { createCashAppClient, createCashAppPaymentRequest } from './cashAppSdk';
+import { integrationConfig } from './config.js';
+import { buildAuthHeaders, request } from './httpClient.js';
+import { createCashAppClient, createCashAppPaymentRequest } from './cashAppSdk.js';
 
 function hasCashAppConfig() {
   return Boolean(integrationConfig.cashApp.baseUrl && integrationConfig.cashApp.apiKey);

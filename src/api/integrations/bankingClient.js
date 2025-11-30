@@ -1,6 +1,6 @@
-import { integrationConfig } from './config';
-import { request } from './httpClient';
-import { openBankLink } from './bankLinkSdk';
+import { integrationConfig } from './config.js';
+import { request } from './httpClient.js';
+import { openBankLink } from './bankLinkSdk.js';
 
 function bankHeaders() {
   const { apiKey } = integrationConfig.bankAggregator;

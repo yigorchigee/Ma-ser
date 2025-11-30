@@ -1,6 +1,6 @@
-import { integrationConfig } from './config';
-import { buildAuthHeaders, request } from './httpClient';
-import { renderVenmoButton } from './venmoSdk';
+import { integrationConfig } from './config.js';
+import { buildAuthHeaders, request } from './httpClient.js';
+import { renderVenmoButton } from './venmoSdk.js';
 
 function hasVenmoConfig() {
   return Boolean(integrationConfig.venmo.baseUrl && integrationConfig.venmo.apiKey);

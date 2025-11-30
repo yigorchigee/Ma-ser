@@ -1,4 +1,4 @@
-import { renderPayPalButtons } from './paypalSdk';
+import { renderPayPalButtons } from './paypalSdk.js';
 
 export async function renderVenmoButton({ container, createOrder, onApprove }) {
   return renderPayPalButtons({

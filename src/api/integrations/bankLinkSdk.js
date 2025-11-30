@@ -1,5 +1,5 @@
-import { integrationConfig } from './config';
-import { loadExternalScript } from './sdkLoader';
+import { integrationConfig } from './config.js';
+import { loadExternalScript } from './sdkLoader.js';
 
 const PLAID_SDK_URL = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
 
