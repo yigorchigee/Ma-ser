@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { dataClient } from '@/api/dataClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2 } from 'lucide-react';
+import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '@/auth/AuthContext';
 
 export default function Settings() {
+  const { logout } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const {
     data: user,
@@ -64,6 +68,11 @@ export default function Settings() {
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
   };
 
   const sections = [
@@ -210,6 +219,16 @@ export default function Settings() {
                 <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
                 <p className="text-lg font-semibold text-slate-900">{user?.email || 'user@example.com'}</p>
               </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="flex items-center gap-2 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </Button>
             </div>
           </CardContent>
         </Card>
