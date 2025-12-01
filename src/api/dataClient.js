@@ -506,13 +506,5 @@ export const dataClient = {
       return integrationHub.disconnect(provider);
     },
   },
-  reset() {
-    memoryStore = {};
-    persist(STORAGE_KEYS.user, defaultUser);
-    persist(STORAGE_KEYS.session, null);
-    persist(STORAGE_KEYS.credentials, null);
-    persist(STORAGE_KEYS.transactions, starterTransactions);
-    persist(STORAGE_KEYS.donations, starterDonations);
-  },
 };
 
