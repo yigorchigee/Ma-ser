@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/AuthContext';
 import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login() {
-  const { isAuthenticated, googleLoginEnabled, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
+  const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.from || '/dashboard';
@@ -24,11 +24,6 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async () => {
-    if (!googleLoginEnabled) {
-      toast.error('Google login is not configured for this environment.');
-      return;
-    }
-
     try {
       setIsSubmitting(true);
       const result = await loginWithGoogle();
@@ -80,7 +75,7 @@ export default function Login() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              disabled={isSubmitting || !googleLoginEnabled}
+              disabled={isSubmitting}
               className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 active:scale-95 transition disabled:opacity-60"
             >
               <img
@@ -88,7 +83,7 @@ export default function Login() {
                 alt="Google"
                 className="h-5 w-5"
               />
-              {googleLoginEnabled ? 'Continue with Google' : 'Google login unavailable'}
+              Continue with Google
             </button>
 
             {!googleLoginEnabled && (
