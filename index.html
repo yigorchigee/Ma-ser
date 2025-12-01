@@ -9,9 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
       const clientId =
-        (typeof import !== 'undefined' && typeof import.meta !== 'undefined'
-          ? import.meta.env?.VITE_GOOGLE_CLIENT_ID
-          : undefined) || window.VITE_GOOGLE_CLIENT_ID;
+        (typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : undefined) ||
+        window.VITE_GOOGLE_CLIENT_ID;
 
       if (clientId) {
         window.__MAASER_CONFIG__ = window.__MAASER_CONFIG__ || {};
