@@ -24,10 +24,10 @@ export default function Layout({ children, currentPageName }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-44">
+          <div className="flex items-center justify-between h-48 md:h-56">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-4">
-              <div className="relative h-36 md:h-40 w-40 md:w-52 overflow-hidden rounded-3xl bg-white/60 border border-white/70 shadow-sm flex items-center">
-                <TzedakaLogo className="h-48 md:h-60 w-full object-cover object-top transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
+              <div className="relative h-40 md:h-48 w-48 md:w-60 overflow-hidden rounded-3xl bg-white/70 border border-white/70 shadow-sm">
+                <TzedakaLogo className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
               </div>
             </Link>
 
