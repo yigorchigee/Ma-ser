@@ -53,7 +53,8 @@ const starterDonations = [
 ];
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
-const DEFAULT_GOOGLE_CLIENT_ID = '377092527146-REPLACE_WITH_YOUR_FULL_CLIENT_ID';
+const PLACEHOLDER_GOOGLE_CLIENT_ID = '377092527146-REPLACE_WITH_YOUR_FULL_CLIENT_ID';
+const DEFAULT_GOOGLE_CLIENT_ID = '377092527146-vu27pupmj0m69d3ndavbnv2i7adv6t9k.apps.googleusercontent.com';
 
 const hasWindow = typeof window !== 'undefined';
 const hasDom = typeof document !== 'undefined';
@@ -61,12 +62,31 @@ let memoryStore = {};
 
 let googleSdkPromise = null;
 
+function normalizeGoogleClientId(clientId) {
+  if (!clientId) return null;
+
+  const trimmed = clientId.trim();
+
+  if (!trimmed || trimmed === PLACEHOLDER_GOOGLE_CLIENT_ID) {
+    return null;
+  }
+
+  return trimmed;
+}
+
 function resolveGoogleClientId() {
   const envClientId = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
   const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
   const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
 
-  return envClientId || windowClientId || globalConfigClientId || DEFAULT_GOOGLE_CLIENT_ID;
+  const candidates = [envClientId, windowClientId, globalConfigClientId, DEFAULT_GOOGLE_CLIENT_ID];
+
+  for (const candidate of candidates) {
+    const normalized = normalizeGoogleClientId(candidate);
+    if (normalized) return normalized;
+  }
+
+  return null;
 }
 
 function loadGoogleSdk() {
