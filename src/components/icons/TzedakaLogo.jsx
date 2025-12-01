@@ -3,30 +3,29 @@ import React from 'react';
 export default function TzedakaLogo({ className = '' }) {
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       role="img"
-      aria-hidden
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Tzedaka Tracker logo"
+      className={`block ${className}`}
     >
-      <title>Tzedaka Tracker logo</title>
       <rect x="32" y="32" width="448" height="448" rx="96" fill="#1e64f0" />
       <circle cx="336" cy="156" r="92" fill="#58f5d0" stroke="#1e64f0" strokeWidth="10" />
       <path
         d="M336 112c-24 0-44 12-44 32 0 48 88 22 88 66 0 20-18 34-44 34s-44-14-44-34"
         fill="none"
         stroke="#1e64f0"
-        strokeWidth="18"
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeWidth="18"
       />
       <path
         d="M336 94v28m0 136v-28"
         fill="none"
         stroke="#1e64f0"
-        strokeWidth="18"
         strokeLinecap="round"
         strokeLinejoin="round"
+        strokeWidth="18"
       />
       <path
         d="M120 292c26 48 86 86 150 86h72c19 0 34-15 34-34s-15-34-34-34h-96c-28 0-52-14-68-36"
