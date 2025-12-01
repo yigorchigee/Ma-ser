@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2, LogOut } from 'lucide-react';
+import { AlertTriangle, Percent, RotateCcw, Link2, User, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 
@@ -39,6 +39,12 @@ export default function Settings() {
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
       toast.success('Settings updated successfully!');
     },
+    onError: () => {
+      toast.error("We couldn't update your settings. Please try again.");
+      if (user?.maaser_percentage !== undefined) {
+        setMaaserPercentage(user.maaser_percentage);
+      }
+    },
   });
 
   const handleMaaserPercentageChange = (value) => {
@@ -46,16 +52,6 @@ export default function Settings() {
     setMaaserPercentage(percentage);
     updateSettingsMutation.mutate({ maaser_percentage: percentage });
   };
-
-  const resetDataMutation = useMutation({
-    mutationFn: async () => {
-      dataClient.reset();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-      toast.success('Sample data reset. Fresh starter data loaded.');
-    },
-  });
 
   const isBusy = isLoading || updateSettingsMutation.isPending;
 
@@ -76,10 +72,7 @@ export default function Settings() {
   };
 
   const sections = [
-    { id: 'maaser-percentage', label: "Ma'aser percentage", description: 'Adjust your giving rate', icon: Percent },
-    { id: 'link-accounts', label: 'Account linking', description: 'Connect payment sources', icon: Link2 },
-    { id: 'account', label: 'Account', description: 'Manage your account info', icon: User },
-    { id: 'reset-data', label: 'Reset & data', description: 'Start fresh with sample data', icon: Wallet2 },
+    { id: 'account', label: 'Account', description: "Profile, ma'aser, and connections", icon: User },
   ];
 
   if (isError) {
@@ -143,55 +136,6 @@ export default function Settings() {
       </Card>
 
       <div className="space-y-6">
-        <Card id="maaser-percentage" className="border border-slate-200 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Percent className="h-6 w-6 text-blue-600" />
-              Ma'aser percentage
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Label htmlFor="maaser-percentage" className="text-base">Select your ma'aser percentage:</Label>
-            <Select
-              value={maaserPercentage.toString()}
-              onValueChange={handleMaaserPercentageChange}
-              disabled={isBusy}
-            >
-              <SelectTrigger id="maaser-percentage" className="w-full text-base h-12 font-semibold">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10" className="text-base">10%</SelectItem>
-                <SelectItem value="20" className="text-base">20%</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-slate-600">This determines what percentage of your income should be set aside for ma'aser.</p>
-          </CardContent>
-        </Card>
-
-        <Card id="link-accounts" className="border border-slate-200 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Link2 className="h-6 w-6 text-blue-600" />
-              Link your accounts
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-slate-600">Connect banks or payment apps so income and giving stay in sync. These buttons are placeholders for upcoming integrations.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {['Bank', 'Cash App', 'Venmo', 'PayPal', 'Zelle', 'Other'].map((provider) => (
-                <button
-                  key={provider}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 hover:border-slate-400 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
-                >
-                  {provider}
-                  <span className="block text-xs font-normal text-slate-500">Tap to link {provider.toLowerCase()}</span>
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
         <Card id="account" className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
@@ -199,7 +143,7 @@ export default function Settings() {
               Account
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4">
               <span className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-blue-50 text-blue-700 border border-blue-100">
                 <User className="h-6 w-6" />
@@ -220,6 +164,47 @@ export default function Settings() {
                 <p className="text-lg font-semibold text-slate-900">{user?.email || 'user@example.com'}</p>
               </div>
             </div>
+            <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="flex items-center gap-2">
+                <Percent className="h-5 w-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-slate-900">Ma'aser percentage</h3>
+              </div>
+              <p className="text-sm text-slate-600">Select the percentage of income you set aside for ma'aser.</p>
+              <div className="space-y-2">
+                <Label htmlFor="maaser-percentage" className="text-sm font-medium">Preferred rate</Label>
+                <Select
+                  value={maaserPercentage.toString()}
+                  onValueChange={handleMaaserPercentageChange}
+                  disabled={isBusy}
+                >
+                  <SelectTrigger id="maaser-percentage" className="w-full text-base h-12 font-semibold">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10" className="text-base">10%</SelectItem>
+                    <SelectItem value="20" className="text-base">20%</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="flex items-center gap-2">
+                <Link2 className="h-5 w-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-slate-900">Account linking</h3>
+              </div>
+              <p className="text-sm text-slate-600">Connect banks or payment apps so income and giving stay in sync. These buttons are placeholders for upcoming integrations.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {['Bank', 'Cash App', 'Venmo', 'PayPal', 'Zelle', 'Other'].map((provider) => (
+                  <button
+                    key={provider}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 hover:border-slate-400 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
+                  >
+                    {provider}
+                    <span className="block text-xs font-normal text-slate-500">Tap to link {provider.toLowerCase()}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button
                 variant="outline"
@@ -233,33 +218,6 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card id="reset-data" className="border border-slate-200 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Wallet2 className="h-6 w-6 text-blue-600" />
-              Reset & data
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-base text-slate-700">
-              Clear your current local data and reload the seeded sample income, donations, and charities. Useful if you want a clean slate or to see the starter example values again.
-            </p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                const confirmed = confirm('Reset sample data? This will remove your local entries and restore the starter examples.');
-                if (confirmed) {
-                  resetDataMutation.mutate();
-                }
-              }}
-              className="flex items-center gap-2 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
-              disabled={resetDataMutation.isLoading || isLoading}
-            >
-              <RotateCcw className="h-5 w-5" />
-              {resetDataMutation.isLoading ? 'Resetting...' : 'Reset sample data'}
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
