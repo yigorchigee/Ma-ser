@@ -33,6 +33,7 @@ const { dataClient } = await import('./dataClient.js');
 
 beforeEach(() => {
   window.localStorage.clear();
+  window.VITE_GOOGLE_CLIENT_ID = undefined;
 });
 
 describe('dataClient auth', () => {
@@ -89,5 +90,11 @@ describe('dataClient auth', () => {
       () => dataClient.auth.loginWithGoogle(),
       /Google login is only available in the browser/
     );
+  });
+
+  it('falls back to the default Google client ID when a placeholder is provided', () => {
+    window.VITE_GOOGLE_CLIENT_ID = '377092527146-REPLACE_WITH_YOUR_FULL_CLIENT_ID';
+
+    assert.ok(dataClient.auth.isGoogleLoginConfigured());
   });
 });
