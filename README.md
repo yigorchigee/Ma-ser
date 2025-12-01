@@ -10,7 +10,8 @@ These steps are written for someone with no coding background. Pick **one** opti
 Google sign-in requires a valid OAuth client ID. Without it, the Google sign-in button will be disabled and login attempts will fail. To configure it:
 1. Copy the sample file by running `cp .env.example .env` in the `Ma-ser` folder.
 2. Open `.env` in a text editor and set `VITE_GOOGLE_CLIENT_ID` to your Google OAuth client ID.
-3. Save the file and restart the dev server so the new setting is picked up.
+3. In the Google Cloud Console, add `http://localhost:5173` to the **Authorized JavaScript origins** for your OAuth client so local development sign-ins are allowed.
+4. Save the file and restart the dev server so the new setting is picked up.
 
 ## Option A: Clone with HTTPS (requires Git installed)
 1. Install **Git** from [https://git-scm.com/downloads](https://git-scm.com/downloads). Accept the default options.
