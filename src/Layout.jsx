@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { LayoutDashboard, LogOut, Receipt, Settings } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, LogOut } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 import { useAuth } from './auth/AuthContext';
 
@@ -74,8 +74,9 @@ export default function Layout({ children, currentPageName }) {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:-translate-y-0.5 active:scale-95 transition"
+                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-slate-300 hover:-translate-y-0.5 active:scale-95 transition"
               >
+                <UserCircle className="h-5 w-5 text-slate-600" />
                 <LogOut className="h-4 w-4" />
                 Sign out
               </button>
