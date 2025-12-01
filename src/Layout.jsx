@@ -24,11 +24,9 @@ export default function Layout({ children, currentPageName }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-28">
+          <div className="flex items-center justify-between h-24">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-4">
-              <div className="relative h-24 md:h-28 w-auto overflow-hidden rounded-2xl">
-                <TzedakaLogo className="h-28 md:h-32 w-auto max-w-[24rem] shrink-0 object-contain transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
-              </div>
+              <TzedakaLogo className="h-24 md:h-28 w-auto max-w-[22rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
             </Link>
 
             <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
