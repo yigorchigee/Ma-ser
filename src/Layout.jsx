@@ -26,10 +26,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <TzedakaLogo className="h-12 w-12 shrink-0 drop-shadow-lg transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
-              <div className="flex flex-col justify-center leading-tight">
-                <p className="text-lg sm:text-xl font-black text-blue-700">Tzedaka Tracker</p>
-              </div>
+              <TzedakaLogo className="h-14 w-auto max-w-[12rem] shrink-0 drop-shadow-lg transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
             </Link>
 
             <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
