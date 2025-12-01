@@ -69,7 +69,7 @@ export default function Settings() {
   const sections = [
     { id: 'maaser-percentage', label: "Ma'aser percentage", description: 'Adjust your giving rate', icon: Percent },
     { id: 'link-accounts', label: 'Account linking', description: 'Connect payment sources', icon: Link2 },
-    { id: 'profile', label: 'Profile', description: 'View your account info', icon: User },
+    { id: 'account', label: 'Account', description: 'Manage your account info', icon: User },
     { id: 'reset-data', label: 'Reset & data', description: 'Start fresh with sample data', icon: Wallet2 },
   ];
 
@@ -183,21 +183,33 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card id="profile" className="border border-slate-200 shadow-md">
+        <Card id="account" className="border border-slate-200 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
               <User className="h-6 w-6 text-blue-600" />
-              Profile
+              Account
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-wide text-slate-500">Name</p>
-              <p className="text-lg font-semibold text-slate-900">{user?.name || 'Sample User'}</p>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4">
+              <span className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-blue-50 text-blue-700 border border-blue-100">
+                <User className="h-6 w-6" />
+              </span>
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-wide text-slate-500">Signed in as</p>
+                <p className="text-lg font-semibold text-slate-900">{user?.name || 'Sample User'}</p>
+                <p className="text-sm text-slate-600">{user?.email || 'user@example.com'}</p>
+              </div>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
-              <p className="text-lg font-semibold text-slate-900">{user?.email || 'user@example.com'}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500">Name</p>
+                <p className="text-lg font-semibold text-slate-900">{user?.name || 'Sample User'}</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
+                <p className="text-lg font-semibold text-slate-900">{user?.email || 'user@example.com'}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
