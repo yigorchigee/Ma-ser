@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { LayoutDashboard, Receipt, Settings, LogOut, UserCircle } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, LogOut } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 import { useAuth } from './auth/AuthContext';
 
@@ -71,13 +71,6 @@ export default function Layout({ children, currentPageName }) {
             </nav>
 
             <div className="flex items-center gap-3">
-              <div className="hidden md:flex flex-col text-right">
-                <span className="text-sm font-semibold text-slate-900">{user?.name || 'Signed in'}</span>
-                <span className="text-xs text-slate-500">{user?.email || 'Logged in'}</span>
-              </div>
-              <span className="inline-flex items-center justify-center h-11 w-11 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100">
-                <UserCircle className="h-6 w-6" />
-              </span>
               <button
                 type="button"
                 onClick={handleLogout}
