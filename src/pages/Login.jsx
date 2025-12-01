@@ -86,6 +86,18 @@ export default function Login() {
               Continue with Google
             </button>
 
+            {!googleLoginEnabled && (
+              <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg py-3 px-4 space-y-1">
+                <p className="font-semibold text-center">Google login is not set up yet.</p>
+                <p>
+                  In your <code>.env</code> file (or hosting env vars), set <code>VITE_GOOGLE_CLIENT_ID</code> to
+                  <span className="font-semibold"> 377092527146-vu27pupmj0m69d3ndavbnv2i7adv6t9k.apps.googleusercontent.com</span>
+                  , then restart the app. You can also set <code>window.VITE_GOOGLE_CLIENT_ID</code> in the browser
+                  console for quick local testing.
+                </p>
+              </div>
+            )}
+
             <div className="relative py-2 text-center text-xs text-slate-500">
               <span className="px-3 bg-white relative z-10">or</span>
               <div className="absolute inset-x-0 top-1/2 h-px bg-slate-200" aria-hidden />
