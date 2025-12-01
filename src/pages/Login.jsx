@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
+import { dataClient } from '@/api/dataClient';
 import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login() {
@@ -13,6 +14,7 @@ export default function Login() {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const googleLoginEnabled = dataClient.auth.isGoogleLoginConfigured();
 
   if (isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
