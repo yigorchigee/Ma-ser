@@ -8,7 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
-      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || window.VITE_GOOGLE_CLIENT_ID;
+      const clientId =
+        (typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : undefined) ||
+        window.VITE_GOOGLE_CLIENT_ID;
 
       if (clientId) {
         window.__MAASER_CONFIG__ = window.__MAASER_CONFIG__ || {};
