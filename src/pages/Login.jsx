@@ -94,8 +94,9 @@ export default function Login() {
                 <p>
                   In your <code>.env</code> file (or hosting env vars), set <code>VITE_GOOGLE_CLIENT_ID</code> to
                   <span className="font-semibold"> 377092527146-vu27pupmj0m69d3ndavbnv2i7adv6t9k.apps.googleusercontent.com</span>
-                  , then restart the app. You can also set <code>window.VITE_GOOGLE_CLIENT_ID</code> in the browser
-                  console for quick local testing.
+                  , then restart the app. Add <code>http://localhost:5173</code> as an authorized JavaScript origin for the
+                  OAuth client in Google Cloud Console so local sign-ins are allowed. You can also set
+                  <code>window.VITE_GOOGLE_CLIENT_ID</code> in the browser console for quick local testing.
                 </p>
               </div>
             )}

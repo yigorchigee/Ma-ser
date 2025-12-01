@@ -75,13 +75,19 @@ function normalizeGoogleClientId(clientId) {
 }
 
 function resolveGoogleClientId() {
-  const envClientId = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null;
-  const windowClientId = hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null;
-  const globalConfigClientId = hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null;
+  const candidates = [
+    typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : null,
+    hasWindow ? window?.VITE_GOOGLE_CLIENT_ID : null,
+    hasWindow ? window?.__MAASER_CONFIG__?.googleClientId : null,
+    DEFAULT_GOOGLE_CLIENT_ID,
+  ];
 
-  return normalizeGoogleClientId(
-    envClientId || windowClientId || globalConfigClientId || DEFAULT_GOOGLE_CLIENT_ID
-  );
+  for (const candidate of candidates) {
+    const normalized = normalizeGoogleClientId(candidate);
+    if (normalized) return normalized;
+  }
+
+  return null;
 }
 
 function loadGoogleSdk() {
