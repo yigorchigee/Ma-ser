@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { LayoutDashboard, Receipt, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Receipt, Settings, LogOut, UserCircle } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 import { useAuth } from './auth/AuthContext';
 
