@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Percent, RotateCcw, Link2, User, Wallet2, LogOut } from 'lucide-react';
+import { AlertTriangle, Percent, RotateCcw, Link2, User, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 
@@ -53,16 +53,6 @@ export default function Settings() {
     updateSettingsMutation.mutate({ maaser_percentage: percentage });
   };
 
-  const resetDataMutation = useMutation({
-    mutationFn: async () => {
-      dataClient.reset();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-      toast.success('Sample data reset. Fresh starter data loaded.');
-    },
-  });
-
   const isBusy = isLoading || updateSettingsMutation.isPending;
 
   const handleRetry = () => {
@@ -83,7 +73,6 @@ export default function Settings() {
 
   const sections = [
     { id: 'account', label: 'Account', description: "Profile, ma'aser, and connections", icon: User },
-    { id: 'reset-data', label: 'Reset & data', description: 'Start fresh with sample data', icon: Wallet2 },
   ];
 
   if (isError) {
@@ -229,33 +218,6 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card id="reset-data" className="border border-slate-200 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <Wallet2 className="h-6 w-6 text-blue-600" />
-              Reset & data
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-base text-slate-700">
-              Clear your current local data and reload the seeded sample income, donations, and charities. Useful if you want a clean slate or to see the starter example values again.
-            </p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                const confirmed = confirm('Reset sample data? This will remove your local entries and restore the starter examples.');
-                if (confirmed) {
-                  resetDataMutation.mutate();
-                }
-              }}
-              className="flex items-center gap-2 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
-              disabled={resetDataMutation.isLoading || isLoading}
-            >
-              <RotateCcw className="h-5 w-5" />
-              {resetDataMutation.isLoading ? 'Resetting...' : 'Reset sample data'}
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
