@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TzedakaLogo({ className = '' }) {
   return (
-    <div className={`relative inline-block overflow-hidden rounded-2xl bg-white ${className}`}>
+    <div className={`relative inline-block overflow-hidden rounded-2xl ${className}`}>
       <img
         src="/Tzedaka Tracker with text to the right no BG.png"
         alt="Tzedaka Tracker logo"
