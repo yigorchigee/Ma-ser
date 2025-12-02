@@ -63,15 +63,6 @@ function parseAccountDetails(rawAccount) {
   const keyword = ACCOUNT_TYPE_KEYWORDS.find((key) => lower.includes(key));
 
   if (!keyword) {
-    const parts = normalized.split(' ');
-
-    if (parts.length >= 2) {
-      const provider = humanize(parts.slice(0, -1).join(' '));
-      const type = humanize(parts[parts.length - 1]);
-
-      return { provider, type };
-    }
-
     return { provider: '', type: normalized };
   }
 
@@ -84,8 +75,8 @@ function parseAccountDetails(rawAccount) {
     return { provider: '', type };
   }
 
-  const before = normalized.slice(0, match.index).trim();
-  const after = normalized.slice(match.index + match[0].length).trim();
+  const before = normalized.slice(0, match.index).replace(/[-_]/g, ' ').trim();
+  const after = normalized.slice(match.index + match[0].length).replace(/[-_]/g, ' ').trim();
 
   const provider = humanize(before || after);
 
@@ -95,37 +86,30 @@ function parseAccountDetails(rawAccount) {
 export function formatFundingSource(item) {
   if (!item) return 'Manual entry';
 
-  const accountRaw = [
-    'account',
-    'account_name',
-    'account_label',
-    'account_type',
-    'account_subtype',
-    'account_category',
-    'account_kind',
-  ]
-    .map((key) => item[key])
-    .find((value) => value);
+  const accountRaw =
+    item.account ||
+    item.account_name ||
+    item.account_label ||
+    item.account_type ||
+    item.account_subtype ||
+    item.account_category ||
+    item.account_kind;
 
   const accountDetails = parseAccountDetails(accountRaw);
 
   const provider =
     humanize(
-      [
-        'integration_provider',
-        'provider',
-        'source_name',
-        'source',
-        'bank_name',
-        'institution_name',
-        'account_provider',
-        'account_bank',
-        'account_institution',
-        'financial_institution',
-        'bank',
-      ]
-        .map((key) => item[key])
-        .find((value) => value)
+      item.integration_provider ||
+        item.provider ||
+        item.source_name ||
+        item.source ||
+        item.bank_name ||
+        item.institution_name ||
+        item.account_provider ||
+        item.account_bank ||
+        item.account_institution ||
+        item.financial_institution ||
+        item.bank
     ) || accountDetails.provider;
 
   const account = accountDetails.type || humanize(accountRaw);
@@ -155,11 +139,6 @@ export function formatFundingSource(item) {
       .trim();
 
     return [provider, trimmedAccountType || null].filter(Boolean).join(' ');
-  }
-
-  if (provider && accountRaw && !isServiceOnly) {
-    const cleaned = extractAccountType(humanize(accountRaw), provider);
-    return [provider, cleaned || null].filter(Boolean).join(' ') || provider;
   }
 
   return provider || accountType || 'Manual entry';
