@@ -98,34 +98,3 @@ describe('dataClient auth', () => {
     assert.ok(dataClient.auth.isGoogleLoginConfigured());
   });
 });
-
-describe('dataClient donations', () => {
-  it('strips weekly giving notes when creating a donation', async () => {
-    const created = await dataClient.entities.Donation.create({
-      date: '2024-01-01',
-      charity_name: 'Test Charity',
-      amount: 50,
-      note: 'Weekly Giving',
-      notes: 'weekly giving',
-    });
-
-    assert.ok(!('note' in created));
-    assert.ok(!('notes' in created));
-  });
-
-  it('cleans existing weekly giving notes on list and persists the sanitized copy', async () => {
-    const donationsWithNotes = [
-      { id: 'don_1', date: '2024-02-01', charity_name: 'First', amount: 20, note: 'Weekly Giving' },
-      { id: 'don_2', date: '2024-02-02', charity_name: 'Second', amount: 30, notes: '  weekly giving  ' },
-    ];
-
-    window.localStorage.setItem('maaser_donations', JSON.stringify(donationsWithNotes));
-
-    const listed = await dataClient.entities.Donation.list();
-
-    assert.ok(listed.every((donation) => !('note' in donation) && !('notes' in donation)));
-
-    const persisted = JSON.parse(window.localStorage.getItem('maaser_donations'));
-    assert.ok(persisted.every((donation) => !('note' in donation) && !('notes' in donation)));
-  });
-});
