@@ -63,15 +63,6 @@ function parseAccountDetails(rawAccount) {
   const keyword = ACCOUNT_TYPE_KEYWORDS.find((key) => lower.includes(key));
 
   if (!keyword) {
-    const parts = normalized.split(' ');
-
-    if (parts.length >= 2) {
-      const provider = humanize(parts.slice(0, -1).join(' '));
-      const type = humanize(parts[parts.length - 1]);
-
-      return { provider, type };
-    }
-
     return { provider: '', type: normalized };
   }
 
@@ -148,11 +139,6 @@ export function formatFundingSource(item) {
       .trim();
 
     return [provider, trimmedAccountType || null].filter(Boolean).join(' ');
-  }
-
-  if (provider && accountRaw && !isServiceOnly) {
-    const cleaned = extractAccountType(humanize(accountRaw), provider);
-    return [provider, cleaned || null].filter(Boolean).join(' ') || provider;
   }
 
   return provider || accountType || 'Manual entry';
