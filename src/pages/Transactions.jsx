@@ -98,11 +98,7 @@ function LedgerCard({ title, items, view, onViewChange }) {
           items.map((item) => (
             <div
               key={`${item.type}-${item.id}`}
-              className={`flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow ${
-                item.type === 'income'
-                  ? 'bg-emerald-50 border-emerald-100'
-                  : 'bg-blue-50 border-blue-100'
-              }`}
+              className="flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow bg-white border-slate-200"
             >
               <div className="flex items-center gap-4 flex-1 min-w-0">
                 <div className={`p-3 rounded-xl ${item.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
