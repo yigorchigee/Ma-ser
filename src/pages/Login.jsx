@@ -5,13 +5,13 @@ import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
 import { Mail, KeyRound } from 'lucide-react';
 
-export default function Login() {
+export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.from || '/dashboard';
 
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState(defaultMode);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const googleLoginEnabled = dataClient.auth.isGoogleLoginConfigured();
