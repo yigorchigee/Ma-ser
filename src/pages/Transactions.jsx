@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DollarSign, List, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
-import { formatCounterparty } from '@/utils';
+import { formatCounterparty, formatFundingSource } from '@/utils';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
 
 export default function Transactions() {
@@ -124,16 +124,9 @@ function LedgerCard({ title, items, view, onViewChange }) {
                   </div>
                   <div className="flex items-center gap-2 flex-wrap text-sm">
                     {item.type === 'income' ? (
-                      <>
-                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                          Source: {item.integration_provider || item.account || 'Manual entry'}
-                        </Badge>
-                        {item.account && (
-                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                            Account: {item.account}
-                          </Badge>
-                        )}
-                      </>
+                      <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                        {formatFundingSource(item)}
+                      </Badge>
                     ) : (
                       <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
                         To: {item.charity_name || item.description || 'Recipient'}
@@ -141,7 +134,6 @@ function LedgerCard({ title, items, view, onViewChange }) {
                     )}
                   </div>
                   <p className="text-sm text-slate-600 truncate">
-                    {item.type === 'income' && item.account ? `${item.account} • ` : ''}
                     {format(new Date(item.date), 'MMMM dd, yyyy')}
                   </p>
                   {(() => {
