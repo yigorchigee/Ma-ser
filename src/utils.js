@@ -4,34 +4,11 @@ export function createPageUrl(name) {
 
 const SERVICE_FIRST_PROVIDERS = ['paypal', 'venmo', 'cashapp', 'cash app', 'cash-app'];
 
-function extractAccountType(account, provider) {
-  if (!account) return '';
-
-  if (!provider) return account;
-
-  const providerPattern = new RegExp(provider.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-  const stripped = account.replace(providerPattern, '').trim();
-
-  return stripped || account;
-}
-
 export function formatFundingSource(item) {
   if (!item) return 'Manual entry';
 
-  const provider =
-    item.integration_provider?.toString().trim() ||
-    item.provider?.toString().trim() ||
-    item.bank_name?.toString().trim() ||
-    item.institution_name?.toString().trim() ||
-    item.account_bank?.toString().trim() ||
-    item.account_institution?.toString().trim();
-
-  const account =
-    item.account?.toString().trim() ||
-    item.account_name?.toString().trim() ||
-    item.account_label?.toString().trim() ||
-    item.account_type?.toString().trim();
-
+  const provider = item.integration_provider?.toString().trim();
+  const account = item.account?.toString().trim();
   const description = item.description?.toString().trim();
   const notes = item.notes?.toString().trim();
 
@@ -46,10 +23,13 @@ export function formatFundingSource(item) {
   }
 
   if (!isServiceOnly) {
-    const accountType = extractAccountType(account, provider) || (!provider ? description || notes : null);
+    const accountPart = account || (!provider ? description || notes : null);
 
-    if (accountType) {
-      parts.push(accountType);
+    if (
+      accountPart &&
+      !parts.some((part) => accountPart.toLowerCase().includes(part.toLowerCase()))
+    ) {
+      parts.push(accountPart);
     }
   }
 
