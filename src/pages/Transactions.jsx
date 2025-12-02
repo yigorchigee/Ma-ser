@@ -134,6 +134,7 @@ function LedgerCard({ title, items, view, onViewChange }) {
                     )}
                   </div>
                   <p className="text-sm text-slate-600 truncate">
+                    {item.type === 'income' ? `${formatFundingSource(item)} • ` : ''}
                     {format(new Date(item.date), 'MMMM dd, yyyy')}
                   </p>
                   {(() => {

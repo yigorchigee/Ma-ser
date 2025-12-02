@@ -189,6 +189,7 @@ export default function MaaserTracker() {
                         )}
                       </div>
                       <p className="text-sm text-slate-600 truncate">
+                        {isIncome ? `${formatFundingSource(item)} • ` : ''}
                         {format(new Date(item.date), 'MMMM dd, yyyy')}
                       </p>
                       {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}

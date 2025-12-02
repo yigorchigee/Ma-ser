@@ -4,17 +4,6 @@ export function createPageUrl(name) {
 
 const SERVICE_FIRST_PROVIDERS = ['paypal', 'venmo', 'cashapp', 'cash app', 'cash-app'];
 
-function extractAccountType(account, provider) {
-  if (!account) return '';
-
-  if (!provider) return account;
-
-  const providerPattern = new RegExp(provider.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-  const stripped = account.replace(providerPattern, '').trim();
-
-  return stripped || account;
-}
-
 export function formatFundingSource(item) {
   if (!item) return 'Manual entry';
 
@@ -34,10 +23,13 @@ export function formatFundingSource(item) {
   }
 
   if (!isServiceOnly) {
-    const accountType = extractAccountType(account, provider) || (!provider ? description || notes : null);
+    const accountPart = account || (!provider ? description || notes : null);
 
-    if (accountType) {
-      parts.push(accountType);
+    if (
+      accountPart &&
+      !parts.some((part) => accountPart.toLowerCase().includes(part.toLowerCase()))
+    ) {
+      parts.push(accountPart);
     }
   }
 
