@@ -24,20 +24,24 @@ export default function Layout({ children, currentPageName }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Increase header height slightly so logo can sit higher without overlapping content */}
+          <div className="flex items-center justify-between h-28 relative">
+            {/* LEFT: Logo (left aligned, lifted up) */}
+            <div className="flex items-center">
+              <Link
+                to={createPageUrl('Dashboard')}
+                className="flex items-center ml-2 md:ml-0"
+                aria-label="Tzedaka Tracker home"
+                style={{ zIndex: 20 }}
+              >
+                {/* white pill wrapper, adjust -translate-y-* to change vertical position */}
+                <div className="bg-white/95 border border-white/70 rounded-xl p-2 -translate-y-6 md:-translate-y-8 shadow-sm">
+                  <TzedakaLogo className="h-12 md:h-14 w-auto" />
+                </div>
+              </Link>
+            </div>
 
-          {/* CONTAINER FOR CENTERING */}
-          <div className="relative flex items-center h-24">
-
-            {/* Centered Logo */}
-            <Link
-              to={createPageUrl('Dashboard')}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-4"
-              style={{ zIndex: 10 }}
-            >
-              <TzedakaLogo className="h-28 md:h-32 aspect-[10/7] max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95 shadow-sm" />
-            </Link>
-
-            {/* Navbar on the right */}
+            {/* RIGHT: Nav */}
             <nav className="ml-auto flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
               {navItems.map((item) => {
                 const Icon = item.icon;
