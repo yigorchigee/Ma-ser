@@ -113,7 +113,7 @@ function LedgerCard({ title, items, view, onViewChange }) {
                     <h4 className="font-semibold text-slate-900 text-lg truncate">
                       {formatCounterparty(item)}
                     </h4>
-                    <Badge className={item.type === 'income' ? 'bg-emerald-600' : 'bg-blue-600'}>
+                    <Badge className={item.type === 'income' ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'}>
                       {item.type === 'income' ? 'Income' : "Ma'aser Payment"}
                     </Badge>
                     {item.is_internal_transfer && (

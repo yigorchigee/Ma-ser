@@ -173,7 +173,7 @@ export default function MaaserTracker() {
                       <h4 className="font-semibold text-slate-900 text-lg truncate">
                         {isIncome ? item.description : item.charity_name}
                       </h4>
-                      <Badge className={isIncome ? 'bg-emerald-600' : 'bg-blue-600'}>
+                      <Badge className={isIncome ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'}>
                         {isIncome ? 'Income' : "Ma'aser Payment"}
                       </Badge>
                     </div>
