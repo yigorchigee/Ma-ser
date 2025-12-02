@@ -24,12 +24,12 @@ export default function Layout({ children, currentPageName }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
+          <div className="flex items-center justify-center h-24 relative">
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-4 -translate-y-10 md:-translate-y-12">
               <TzedakaLogo className="h-28 md:h-32 aspect-[10/7] max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95 shadow-sm" />
             </Link>
 
-            <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
+            <nav className="absolute right-4 flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPageName === item.name;
@@ -48,14 +48,12 @@ export default function Layout({ children, currentPageName }) {
                         isActive ? 'text-blue-700' : 'text-slate-500'
                       }`}
                     />
-                    <span className="hidden md:inline">{item.label}</span>
+                    <span className="hidden md:inline">{item. label}</span>
                     <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-white/0 via-white/40 to-white/0" aria-hidden />
                   </Link>
                 );
               })}
             </nav>
-
-            <div />
           </div>
         </div>
       </header>
