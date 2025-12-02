@@ -5,7 +5,7 @@ import { LayoutDashboard, Receipt, Settings } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
 import TzedakaLogo from './components/icons/TzedakaLogo';
 
-export default function Layout({ children, currentPageName }) {
+export default function Layout({ children, currentPageName, showNav = true }) {
   const navItems = [
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { name: 'Transactions', label: 'Transactions', icon: Receipt },
@@ -29,31 +29,33 @@ export default function Layout({ children, currentPageName }) {
               <TzedakaLogo className="h-28 md:h-32 aspect-[10/7] max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95 shadow-sm" />
             </Link>
 
-            <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentPageName === item.name;
-                return (
-                  <Link
-                    key={item.name}
-                    to={createPageUrl(item.name)}
-                    className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border shadow-sm hover:shadow ${
-                      isActive
-                        ? 'bg-blue-50 text-blue-700 border-blue-600'
-                        : 'text-slate-600 border-transparent hover:text-slate-900 hover:border-slate-200 hover:bg-white'
-                    } active:scale-95 hover:-translate-y-0.5`}
-                  >
-                    <Icon
-                      className={`${item.name === 'Donate' ? 'h-5 w-5' : 'h-4 w-4'} ${
-                        isActive ? 'text-blue-700' : 'text-slate-500'
-                      }`}
-                    />
-                    <span className="hidden md:inline">{item.label}</span>
-                    <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-white/0 via-white/40 to-white/0" aria-hidden />
-                  </Link>
-                );
-              })}
-            </nav>
+            {showNav && (
+              <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentPageName === item.name;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={createPageUrl(item.name)}
+                      className={`group relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border shadow-sm hover:shadow ${
+                        isActive
+                          ? 'bg-blue-50 text-blue-700 border-blue-600'
+                          : 'text-slate-600 border-transparent hover:text-slate-900 hover:border-slate-200 hover:bg-white'
+                      } active:scale-95 hover:-translate-y-0.5`}
+                    >
+                      <Icon
+                        className={`${item.name === 'Donate' ? 'h-5 w-5' : 'h-4 w-4'} ${
+                          isActive ? 'text-blue-700' : 'text-slate-500'
+                        }`}
+                      />
+                      <span className="hidden md:inline">{item.label}</span>
+                      <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-white/0 via-white/40 to-white/0" aria-hidden />
+                    </Link>
+                  );
+                })}
+              </nav>
+            )}
 
             <div />
           </div>

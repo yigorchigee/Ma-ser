@@ -23,7 +23,22 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={(
+                <Layout showNav={false}>
+                  <Login />
+                </Layout>
+              )}
+            />
+            <Route
+              path="/signup"
+              element={(
+                <Layout showNav={false}>
+                  <Login defaultMode="signup" />
+                </Layout>
+              )}
+            />
             <Route
               path="/dashboard"
               element={(
