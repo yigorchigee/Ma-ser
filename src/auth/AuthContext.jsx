@@ -21,8 +21,8 @@ export function AuthProvider({ children }) {
     refreshSession();
   }, []);
 
-  const loginWithGoogle = async () => {
-    const result = await dataClient.auth.loginWithGoogle();
+  const loginWithGoogle = async (payload) => {
+    const result = await dataClient.auth.loginWithGoogle(payload);
     setSession(result.session);
     return result;
   };
