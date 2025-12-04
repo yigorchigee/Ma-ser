@@ -46,7 +46,19 @@ export default function Login({ defaultMode = 'login' }) {
   const handleGoogleLogin = async () => {
     try {
       setIsSubmitting(true);
-      const result = await loginWithGoogle();
+      if (!form.securityPin || form.securityPin.length < 4) {
+        throw new Error('Please set a 4+ digit PIN to continue with Google.');
+      }
+
+      if (mode === 'signup' && form.securityPin !== form.confirmPin) {
+        throw new Error('PINs must match to continue.');
+      }
+
+      const result = await loginWithGoogle({
+        securityPin: form.securityPin,
+        confirmPin: mode === 'signup' ? form.confirmPin : undefined,
+        connectedBanks: mode === 'signup' ? form.connectedBanks : undefined,
+      });
       toast.success(`Signed in as ${result.user.email}`);
       navigate(redirectPath, { replace: true });
     } catch (error) {
@@ -122,6 +134,10 @@ export default function Login({ defaultMode = 'login' }) {
               />
               Continue with Google
             </button>
+
+            <p className="text-xs text-slate-600 text-center">
+              Enter your security PIN below to sign up or sign in with Google. New accounts can also link banks now.
+            </p>
 
             {!googleLoginEnabled && (
               <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg py-3 px-4 space-y-1">

@@ -374,7 +374,7 @@ export const dataClient = {
       const session = persistSession(stored);
       return { session, user: sanitizeUser(stored) };
     },
-    async loginWithGoogle() {
+    async loginWithGoogle({ securityPin, confirmPin, connectedBanks } = {}) {
       if (!hasDom) {
         throw new Error('Google login is only available in the browser.');
       }
@@ -394,6 +394,36 @@ export const dataClient = {
         throw new Error('Google account does not include an email address.');
       }
 
+      const existingAccount = getStoredCredentials();
+
+      if (existingAccount && existingAccount.email === normalizedEmail && existingAccount.auth_provider === 'google') {
+        if (!existingAccount.security_pin) {
+          throw new Error('A security PIN must be set for Google sign-in.');
+        }
+
+        const normalizedPin = securityPin?.toString().trim();
+        if (!normalizedPin) {
+          throw new Error('Security PIN is required to continue.');
+        }
+
+        if (normalizedPin !== existingAccount.security_pin) {
+          throw new Error('Incorrect security PIN for this Google account.');
+        }
+
+        const session = persistSession(existingAccount);
+        return { session, user: sanitizeUser(existingAccount) };
+      }
+
+      const normalizedPin = securityPin?.toString().trim();
+
+      if (!normalizedPin || normalizedPin.length < 4) {
+        throw new Error('Please set a 4+ digit security PIN for Google sign-in.');
+      }
+
+      if (typeof confirmPin !== 'undefined' && normalizedPin !== confirmPin?.toString().trim()) {
+        throw new Error('PINs must match to continue.');
+      }
+
       const googleAccount = {
         name: profile.name || profile.given_name || 'Google User',
         email: normalizedEmail,
@@ -402,6 +432,8 @@ export const dataClient = {
         email_verified: Boolean(profile.email_verified),
         avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
+        security_pin: normalizedPin,
+        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
       };
 
       persistCredentials(googleAccount);
