@@ -339,11 +339,15 @@ export const dataClient = {
       const normalizedEmail = email?.trim().toLowerCase();
       const normalizedPin = securityPin?.toString().trim();
 
+      if (!normalizedPin || normalizedPin.length < 4) {
+        throw new Error('Please choose a 4+ digit security PIN.');
+      }
+
       const account = {
         name: name?.trim() || 'Maaser User',
         email: normalizedEmail,
         password,
-        security_pin: normalizedPin && normalizedPin.length >= 4 ? normalizedPin : undefined,
+        security_pin: normalizedPin,
         maaser_percentage: defaultUser.maaser_percentage,
         connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
         auth_provider: 'email',
@@ -361,12 +365,20 @@ export const dataClient = {
         message: `Verification email sent to ${normalizedEmail}`,
       };
     },
-    async loginWithEmail({ email, password }) {
+    async loginWithEmail({ email, password, securityPin }) {
       const normalizedEmail = email?.trim().toLowerCase();
       const stored = getStoredCredentials();
 
       if (!stored || stored.email !== normalizedEmail || stored.password !== password) {
         throw new Error('Invalid email or password');
+      }
+
+      if (!stored.security_pin) {
+        throw new Error('A security PIN is required for this account.');
+      }
+
+      if (stored.security_pin !== securityPin?.toString().trim()) {
+        throw new Error('Incorrect security PIN');
       }
 
       const session = persistSession(stored);
@@ -395,11 +407,28 @@ export const dataClient = {
       const existingAccount = getStoredCredentials();
 
       if (existingAccount && existingAccount.email === normalizedEmail && existingAccount.auth_provider === 'google') {
+        if (!existingAccount.security_pin) {
+          throw new Error('A security PIN must be set for Google sign-in.');
+        }
+
+        const normalizedPin = securityPin?.toString().trim();
+        if (!normalizedPin) {
+          throw new Error('Security PIN is required to continue.');
+        }
+
+        if (normalizedPin !== existingAccount.security_pin) {
+          throw new Error('Incorrect security PIN for this Google account.');
+        }
+
         const session = persistSession(existingAccount);
         return { session, user: sanitizeUser(existingAccount) };
       }
 
       const normalizedPin = securityPin?.toString().trim();
+
+      if (!normalizedPin || normalizedPin.length < 4) {
+        throw new Error('Please set a 4+ digit security PIN for Google sign-in.');
+      }
 
       if (typeof confirmPin !== 'undefined' && normalizedPin !== confirmPin?.toString().trim()) {
         throw new Error('PINs must match to continue.');
@@ -413,7 +442,7 @@ export const dataClient = {
         email_verified: Boolean(profile.email_verified),
         avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
-        security_pin: normalizedPin && normalizedPin.length >= 4 ? normalizedPin : undefined,
+        security_pin: normalizedPin,
         connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
       };
 

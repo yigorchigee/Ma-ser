@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
-import { Mail, KeyRound, Link2 } from 'lucide-react';
+import { Mail, KeyRound, Shield, Link2 } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -16,6 +16,8 @@ export default function Login({ defaultMode = 'login' }) {
     name: '',
     email: '',
     password: '',
+    securityPin: '',
+    confirmPin: '',
     connectedBanks: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +46,19 @@ export default function Login({ defaultMode = 'login' }) {
   const handleGoogleLogin = async () => {
     try {
       setIsSubmitting(true);
-      const result = await loginWithGoogle({ connectedBanks: mode === 'signup' ? form.connectedBanks : undefined });
+      if (!form.securityPin || form.securityPin.length < 4) {
+        throw new Error('Please set a 4+ digit PIN to continue with Google.');
+      }
+
+      if (mode === 'signup' && form.securityPin !== form.confirmPin) {
+        throw new Error('PINs must match to continue.');
+      }
+
+      const result = await loginWithGoogle({
+        securityPin: form.securityPin,
+        confirmPin: mode === 'signup' ? form.confirmPin : undefined,
+        connectedBanks: mode === 'signup' ? form.connectedBanks : undefined,
+      });
       toast.success(`Signed in as ${result.user.email}`);
       navigate('/create-pin', { replace: true, state: { from: redirectPath } });
     } catch (error) {
@@ -59,13 +73,22 @@ export default function Login({ defaultMode = 'login' }) {
     try {
       setIsSubmitting(true);
       if (mode === 'login') {
-        await loginWithEmail({ email: form.email, password: form.password });
+        await loginWithEmail({ email: form.email, password: form.password, securityPin: form.securityPin });
         toast.success('Welcome back!');
       } else {
+        if (!form.securityPin || form.securityPin.length < 4) {
+          throw new Error('Please choose a 4+ digit security PIN.');
+        }
+
+        if (form.securityPin !== form.confirmPin) {
+          throw new Error('PINs must match to continue.');
+        }
+
         const result = await registerWithEmail({
           name: form.name,
           email: form.email,
           password: form.password,
+          securityPin: form.securityPin,
           connectedBanks: form.connectedBanks,
         });
         toast.success('Account created');
@@ -178,6 +201,50 @@ export default function Login({ defaultMode = 'login' }) {
                   />
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-800" htmlFor="securityPin">
+                  Security PIN
+                </label>
+                <div className="relative">
+                  <Shield className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
+                  <input
+                    id="securityPin"
+                    name="securityPin"
+                    type="password"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    required
+                    value={form.securityPin}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="4+ digit PIN"
+                  />
+                </div>
+              </div>
+
+              {mode === 'signup' && (
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-800" htmlFor="confirmPin">
+                    Confirm PIN
+                  </label>
+                  <div className="relative">
+                    <Shield className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
+                    <input
+                      id="confirmPin"
+                      name="confirmPin"
+                      type="password"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      required
+                      value={form.confirmPin}
+                      onChange={handleChange}
+                      className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Re-enter your PIN"
+                    />
+                  </div>
+                </div>
+              )}
 
               {mode === 'signup' && (
                 <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
