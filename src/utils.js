@@ -46,7 +46,7 @@ function extractAccountType(account, provider) {
 
   if (!provider) return account;
 
-  const providerPattern = new RegExp(`^${provider.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*`, 'i');
+  const providerPattern = new RegExp(provider.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
   const stripped = account.replace(providerPattern, '').trim();
 
   return stripped || account;
@@ -89,7 +89,6 @@ export function formatFundingSource(item) {
   const accountRaw =
     item.account ||
     item.account_name ||
-    item.accountName ||
     item.account_label ||
     item.account_type ||
     item.account_subtype ||
@@ -105,23 +104,15 @@ export function formatFundingSource(item) {
         item.source_name ||
         item.source ||
         item.bank_name ||
-        item.bankName ||
         item.institution_name ||
-        item.institutionName ||
         item.account_provider ||
-        item.accountProvider ||
         item.account_bank ||
-        item.accountBank ||
         item.account_institution ||
-        item.accountInstitution ||
         item.financial_institution ||
-        item.financialInstitution ||
         item.bank
     ) || accountDetails.provider;
 
-  const account = provider
-    ? humanize(accountRaw)
-    : accountDetails.type || humanize(accountRaw);
+  const account = accountDetails.type || humanize(accountRaw);
 
   const description = item.description?.toString().trim();
   const notes = item.notes?.toString().trim();
@@ -131,7 +122,7 @@ export function formatFundingSource(item) {
     : false;
 
   const accountType =
-    extractAccountType(account || description || notes, provider) || (!provider ? account || description || notes : null);
+    extractAccountType(account, provider) || (!provider ? account || description || notes : null);
 
   if (!provider && accountDetails.provider) {
     const cleaned = extractAccountType(accountType, accountDetails.provider);
@@ -142,15 +133,15 @@ export function formatFundingSource(item) {
     return provider || accountType || 'Manual entry';
   }
 
-  const trimmedAccountType = provider && accountType
-    ? accountType
-        .replace(new RegExp(`^${provider.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*`, 'i'), '')
-        .trim()
-    : accountType;
+  if (provider && accountType) {
+    const trimmedAccountType = accountType
+      .replace(new RegExp(`^${provider.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*`, 'i'), '')
+      .trim();
 
-  const combined = [provider, trimmedAccountType || null].filter(Boolean).join(' ').trim();
+    return [provider, trimmedAccountType || null].filter(Boolean).join(' ');
+  }
 
-  return combined || provider || accountType || 'Manual entry';
+  return provider || accountType || 'Manual entry';
 }
 
 export function formatCounterparty(item) {
