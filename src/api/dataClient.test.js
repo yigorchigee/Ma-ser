@@ -42,6 +42,8 @@ describe('dataClient auth', () => {
       name: 'Test User',
       email: 'tester@example.com',
       password: 'secret',
+      securityPin: '1234',
+      connectedBanks: ['Bank'],
     });
 
     assert.equal(result.user.email, 'tester@example.com');
@@ -50,6 +52,7 @@ describe('dataClient auth', () => {
 
     const storedSession = JSON.parse(window.localStorage.getItem('maaser_session'));
     assert.equal(storedSession.user.email, 'tester@example.com');
+    assert.equal(storedSession.user.has_security_pin, true);
   });
 
   it('logs a user in with stored credentials', async () => {
@@ -57,11 +60,14 @@ describe('dataClient auth', () => {
       name: 'Existing User',
       email: 'existing@example.com',
       password: 'hunter2',
+      securityPin: '1234',
+      connectedBanks: ['Bank'],
     });
 
     const { user, session } = await dataClient.auth.loginWithEmail({
       email: 'existing@example.com',
       password: 'hunter2',
+      securityPin: '1234',
     });
 
     assert.equal(user.email, 'existing@example.com');
@@ -73,6 +79,8 @@ describe('dataClient auth', () => {
       name: 'Existing User',
       email: 'existing@example.com',
       password: 'hunter2',
+      securityPin: '1234',
+      connectedBanks: ['Bank'],
     });
 
     await assert.rejects(
@@ -80,6 +88,7 @@ describe('dataClient auth', () => {
         dataClient.auth.loginWithEmail({
           email: 'existing@example.com',
           password: 'wrong',
+          securityPin: '1234',
         }),
       /Invalid email or password/
     );
