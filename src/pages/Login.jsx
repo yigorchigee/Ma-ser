@@ -135,10 +135,6 @@ export default function Login({ defaultMode = 'login' }) {
               Continue with Google
             </button>
 
-            <p className="text-xs text-slate-600 text-center">
-              Enter your security PIN below to sign up or sign in with Google. New accounts can also link banks now.
-            </p>
-
             {!googleLoginEnabled && (
               <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg py-3 px-4 space-y-1">
                 <p className="font-semibold text-center">Google login is not set up yet.</p>
