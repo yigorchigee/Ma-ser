@@ -4,8 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import DonationForm from '../components/forms/DonationForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import CharityBoxIcon from '../components/icons/CharityBoxIcon';
-import { Heart, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Sparkles, ArrowUpRight } from 'lucide-react';
 
 export default function Donate() {
   const [showDonationForm] = useState(true);
@@ -67,7 +66,7 @@ export default function Donate() {
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="text-3xl md:text-4xl font-black text-slate-900">Channel your ma'aser where it matters most.</h1>
-        <p className="text-slate-600 max-w-2xl">Pick a cause to support. We'll expand each profile soon, but for now choose the charity that resonates and log your gift.</p>
+        <p className="text-slate-600 max-w-2xl">Pick a cause to support. We'll expand each profile soon, but for now choose the charity that resonates and record your ma'aser.</p>
       </div>
 
       <Card className="border border-slate-200 shadow-md">
@@ -117,43 +116,6 @@ export default function Donate() {
         </Card>
       )}
 
-      <Card className="border border-slate-200 shadow-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900">
-            <Heart className="h-5 w-5 text-blue-600" />
-            Recent gifts
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 pt-0">
-          {donations.length === 0 && <p className="text-slate-600">No donations yet. Pick a charity above to get started.</p>}
-          {donations.map((donation) => (
-            <div
-              key={donation.id}
-              className="flex items-center justify-between p-4 bg-blue-50 border border-blue-100 rounded-xl transition hover:-translate-y-0.5 hover:shadow"
-            >
-              <div className="flex items-center gap-4">
-                <div className="bg-blue-100 p-3 rounded-xl">
-                  <CharityBoxIcon className="h-6 w-6 text-blue-700" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-slate-900 text-lg">{donation.charity_name}</h4>
-                  <p className="text-sm text-slate-600">{new Date(donation.date).toLocaleDateString()}</p>
-                  {(() => {
-                    const rawNote = donation.notes ?? donation.note;
-                    const normalized = typeof rawNote === 'string' ? rawNote.trim() : '';
-                    const shouldShowNote = normalized && normalized.toLowerCase() !== 'weekly giving';
-
-                    return shouldShowNote ? (
-                      <p className="text-sm text-slate-500 mt-1">{normalized}</p>
-                    ) : null;
-                  })()}
-                </div>
-              </div>
-              <span className="text-xl font-bold text-blue-700">${donation.amount.toFixed(2)}</span>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
     </div>
   );
 }

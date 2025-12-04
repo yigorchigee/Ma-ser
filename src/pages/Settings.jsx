@@ -6,7 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, Percent, RotateCcw, Link2, User, LogOut } from 'lucide-react';
+import {
+  AlertTriangle,
+  Percent,
+  RotateCcw,
+  Link2,
+  User,
+  LogOut,
+  Landmark,
+  DollarSign,
+  Wallet,
+  Send,
+  Apple,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 
@@ -70,6 +82,15 @@ export default function Settings() {
     await logout();
     navigate('/login', { replace: true });
   };
+
+  const accountProviders = [
+    { name: 'Bank', icon: Landmark, description: 'Tap to link bank' },
+    { name: 'Cash App', icon: DollarSign, description: 'Tap to link cash app' },
+    { name: 'Venmo', icon: Wallet, description: 'Tap to link venmo' },
+    { name: 'PayPal', icon: Wallet, description: 'Tap to link paypal' },
+    { name: 'Zelle', icon: Send, description: 'Tap to link zelle' },
+    { name: 'Apple Pay', icon: Apple, description: 'Tap to link apple pay' },
+  ];
 
   const sections = [
     { id: 'account', label: 'Account', description: "Profile, ma'aser, and connections", icon: User },
@@ -194,13 +215,20 @@ export default function Settings() {
               </div>
               <p className="text-sm text-slate-600">Connect banks or payment apps so income and giving stay in sync. These buttons are placeholders for upcoming integrations.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {['Bank', 'Cash App', 'Venmo', 'PayPal', 'Zelle', 'Other'].map((provider) => (
+                {accountProviders.map(({ name, icon: Icon, description }) => (
                   <button
-                    key={provider}
+                    key={name}
                     className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-800 hover:border-slate-400 hover:-translate-y-0.5 active:scale-95 transition shadow-sm"
                   >
-                    {provider}
-                    <span className="block text-xs font-normal text-slate-500">Tap to link {provider.toLowerCase()}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <span className="block text-base font-semibold text-slate-900">{name}</span>
+                        <span className="block text-xs font-normal text-slate-500">{description}</span>
+                      </div>
+                    </div>
                   </button>
                 ))}
               </div>
