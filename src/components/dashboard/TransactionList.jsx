@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Edit2, Trash2, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
+import { formatFundingSource } from '@/utils';
 
 export default function TransactionList({ transactions, onEdit, onDelete }) {
   return (
@@ -29,7 +30,7 @@ export default function TransactionList({ transactions, onEdit, onDelete }) {
                   )}
                 </div>
                 <p className="text-sm text-slate-600 truncate">
-                  {transaction.account} • {format(new Date(transaction.date), 'MMM dd, yyyy')}
+                  {formatFundingSource(transaction)} • {format(new Date(transaction.date), 'MMM dd, yyyy')}
                 </p>
               </div>
             </div>

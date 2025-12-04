@@ -6,20 +6,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 
 export default function TransactionForm({ transaction, onSubmit, onCancel }) {
-  const [formData, setFormData] = useState(transaction || {
-    date: new Date().toISOString().split('T')[0],
-    description: '',
-    amount: '',
-    account: '',
-    is_internal_transfer: false,
-    category: ''
-  });
+  const [formData, setFormData] = useState(
+    transaction || {
+      date: new Date().toISOString().split('T')[0],
+      description: '',
+      amount: '',
+      integration_provider: '',
+      account: '',
+      is_internal_transfer: false,
+      category: '',
+    }
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
       ...formData,
-      amount: parseFloat(formData.amount)
+      amount: parseFloat(formData.amount),
     });
   };
 
@@ -68,6 +71,17 @@ export default function TransactionForm({ transaction, onSubmit, onCancel }) {
               required
               className="text-lg"
               placeholder="Enter transaction description"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="integration_provider" className="text-base font-semibold">Bank or app name</Label>
+            <Input
+              id="integration_provider"
+              value={formData.integration_provider || ''}
+              onChange={(e) => setFormData({ ...formData, integration_provider: e.target.value })}
+              className="text-lg"
+              placeholder="e.g., Chase, Wells Fargo, PayPal"
             />
           </div>
 
