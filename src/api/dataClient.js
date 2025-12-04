@@ -228,6 +228,16 @@ function persistSession(user) {
   return session;
 }
 
+function assertValidPin(pin) {
+  const normalizedPin = pin?.toString().trim();
+
+  if (!normalizedPin || normalizedPin.length < 4) {
+    throw new Error('Please enter a 4+ digit security PIN.');
+  }
+
+  return normalizedPin;
+}
+
 function isGoogleLoginConfigured() {
   return Boolean(resolveGoogleClientId());
 }
@@ -440,6 +450,40 @@ export const dataClient = {
       const session = persistSession(googleAccount);
 
       return { session, user: sanitizeUser(googleAccount) };
+    },
+    async verifySecurityPin(pin) {
+      const stored = getStoredCredentials();
+      if (!stored?.security_pin) {
+        throw new Error('No security PIN set for this account yet.');
+      }
+
+      const normalizedPin = assertValidPin(pin);
+
+      if (stored.security_pin !== normalizedPin) {
+        throw new Error('Incorrect security PIN.');
+      }
+
+      const session = persistSession(stored);
+      return { session, user: sanitizeUser(stored) };
+    },
+    async setSecurityPin(pin) {
+      const stored = getStoredCredentials();
+
+      if (!stored) {
+        throw new Error('No authenticated account found.');
+      }
+
+      if (stored.security_pin) {
+        throw new Error('A security PIN is already set for this account.');
+      }
+
+      const normalizedPin = assertValidPin(pin);
+
+      const updated = { ...stored, security_pin: normalizedPin };
+      persistCredentials(updated);
+      const session = persistSession(updated);
+
+      return { session, user: sanitizeUser(updated) };
     },
     isGoogleLoginConfigured,
     async logout() {

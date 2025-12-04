@@ -12,6 +12,7 @@ import Transactions from './pages/Transactions';
 import Donate from './pages/Donate';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
+import CreatePin from './pages/CreatePin';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { AuthProvider } from './auth/AuthContext';
 
@@ -75,6 +76,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout currentPageName="Settings">
                     <Settings />
+                  </Layout>
+                </ProtectedRoute>
+              )}
+            />
+            <Route
+              path="/create-pin"
+              element={(
+                <ProtectedRoute allowWithoutPin>
+                  <Layout showNav={false}>
+                    <CreatePin />
                   </Layout>
                 </ProtectedRoute>
               )}

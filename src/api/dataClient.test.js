@@ -94,6 +94,24 @@ describe('dataClient auth', () => {
     );
   });
 
+  it('creates and verifies a security PIN after login', async () => {
+    await dataClient.auth.registerWithEmail({
+      name: 'Pinless User',
+      email: 'pinless@example.com',
+      password: 'secret',
+    });
+
+    await dataClient.auth.loginWithEmail({ email: 'pinless@example.com', password: 'secret' });
+
+    const created = await dataClient.auth.setSecurityPin('1234');
+    assert.equal(created.user.has_security_pin, true);
+
+    const verified = await dataClient.auth.verifySecurityPin('1234');
+    assert.equal(verified.user.email, 'pinless@example.com');
+
+    await assert.rejects(() => dataClient.auth.verifySecurityPin('9999'), /Incorrect security PIN/);
+  });
+
   it('fails Google login in a non-browser environment', async () => {
     await assert.rejects(
       () => dataClient.auth.loginWithGoogle(),

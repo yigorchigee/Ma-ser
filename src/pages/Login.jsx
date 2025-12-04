@@ -60,7 +60,7 @@ export default function Login({ defaultMode = 'login' }) {
         connectedBanks: mode === 'signup' ? form.connectedBanks : undefined,
       });
       toast.success(`Signed in as ${result.user.email}`);
-      navigate(redirectPath, { replace: true });
+      navigate('/create-pin', { replace: true, state: { from: redirectPath } });
     } catch (error) {
       toast.error(error.message || 'Unable to sign in with Google');
     } finally {
@@ -97,7 +97,7 @@ export default function Login({ defaultMode = 'login' }) {
           toast.info('Tip: connect at least one bank so we can stay in sync.');
         }
       }
-      navigate(redirectPath, { replace: true });
+      navigate('/create-pin', { replace: true, state: { from: redirectPath } });
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
     } finally {
@@ -147,11 +147,6 @@ export default function Login({ defaultMode = 'login' }) {
                 </p>
               </div>
             )}
-
-            <div className="relative py-2 text-center text-xs text-slate-500">
-              <span className="px-3 bg-white relative z-10">or</span>
-              <div className="absolute inset-x-0 top-1/2 h-px bg-slate-200" aria-hidden />
-            </div>
 
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               {mode === 'signup' && (
