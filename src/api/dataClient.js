@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
 
 const defaultUser = {
   maaser_percentage: 10,
+  connected_banks: [],
 };
 
 const defaultCharities = [
@@ -202,8 +203,13 @@ function persist(key, value) {
 function sanitizeUser(user) {
   if (!user) return null;
 
-  const { password, ...safeUser } = user;
-  return { ...defaultUser, ...safeUser };
+  const { password, security_pin, ...safeUser } = user;
+  return {
+    ...defaultUser,
+    ...safeUser,
+    has_security_pin: Boolean(security_pin),
+    connected_banks: safeUser.connected_banks || defaultUser.connected_banks,
+  };
 }
 
 function getStoredCredentials() {
@@ -319,14 +325,21 @@ export const dataClient = {
       const session = load(STORAGE_KEYS.session, null);
       return session?.user ? session : null;
     },
-    async registerWithEmail({ name, email, password }) {
+    async registerWithEmail({ name, email, password, securityPin, connectedBanks = [] }) {
       const normalizedEmail = email?.trim().toLowerCase();
+      const normalizedPin = securityPin?.toString().trim();
+
+      if (!normalizedPin || normalizedPin.length < 4) {
+        throw new Error('Please choose a 4+ digit security PIN.');
+      }
 
       const account = {
         name: name?.trim() || 'Maaser User',
         email: normalizedEmail,
         password,
+        security_pin: normalizedPin,
         maaser_percentage: defaultUser.maaser_percentage,
+        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
         auth_provider: 'email',
         email_verified: false,
         created_at: new Date().toISOString(),
@@ -342,7 +355,7 @@ export const dataClient = {
         message: `Verification email sent to ${normalizedEmail}`,
       };
     },
-    async loginWithEmail({ email, password }) {
+    async loginWithEmail({ email, password, securityPin }) {
       const normalizedEmail = email?.trim().toLowerCase();
       const stored = getStoredCredentials();
 
@@ -350,10 +363,18 @@ export const dataClient = {
         throw new Error('Invalid email or password');
       }
 
+      if (!stored.security_pin) {
+        throw new Error('A security PIN is required for this account.');
+      }
+
+      if (stored.security_pin !== securityPin?.toString().trim()) {
+        throw new Error('Incorrect security PIN');
+      }
+
       const session = persistSession(stored);
       return { session, user: sanitizeUser(stored) };
     },
-    async loginWithGoogle() {
+    async loginWithGoogle({ securityPin, confirmPin, connectedBanks } = {}) {
       if (!hasDom) {
         throw new Error('Google login is only available in the browser.');
       }
@@ -373,6 +394,36 @@ export const dataClient = {
         throw new Error('Google account does not include an email address.');
       }
 
+      const existingAccount = getStoredCredentials();
+
+      if (existingAccount && existingAccount.email === normalizedEmail && existingAccount.auth_provider === 'google') {
+        if (!existingAccount.security_pin) {
+          throw new Error('A security PIN must be set for Google sign-in.');
+        }
+
+        const normalizedPin = securityPin?.toString().trim();
+        if (!normalizedPin) {
+          throw new Error('Security PIN is required to continue.');
+        }
+
+        if (normalizedPin !== existingAccount.security_pin) {
+          throw new Error('Incorrect security PIN for this Google account.');
+        }
+
+        const session = persistSession(existingAccount);
+        return { session, user: sanitizeUser(existingAccount) };
+      }
+
+      const normalizedPin = securityPin?.toString().trim();
+
+      if (!normalizedPin || normalizedPin.length < 4) {
+        throw new Error('Please set a 4+ digit security PIN for Google sign-in.');
+      }
+
+      if (typeof confirmPin !== 'undefined' && normalizedPin !== confirmPin?.toString().trim()) {
+        throw new Error('PINs must match to continue.');
+      }
+
       const googleAccount = {
         name: profile.name || profile.given_name || 'Google User',
         email: normalizedEmail,
@@ -381,6 +432,8 @@ export const dataClient = {
         email_verified: Boolean(profile.email_verified),
         avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
+        security_pin: normalizedPin,
+        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
       };
 
       persistCredentials(googleAccount);
