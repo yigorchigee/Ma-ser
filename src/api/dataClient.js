@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
 
 const defaultUser = {
   maaser_percentage: 10,
+  connected_banks: [],
 };
 
 const defaultCharities = [
@@ -202,8 +203,13 @@ function persist(key, value) {
 function sanitizeUser(user) {
   if (!user) return null;
 
-  const { password, ...safeUser } = user;
-  return { ...defaultUser, ...safeUser };
+  const { password, security_pin, ...safeUser } = user;
+  return {
+    ...defaultUser,
+    ...safeUser,
+    has_security_pin: Boolean(security_pin),
+    connected_banks: safeUser.connected_banks || defaultUser.connected_banks,
+  };
 }
 
 function getStoredCredentials() {
@@ -220,6 +226,16 @@ function persistSession(user) {
   persist(STORAGE_KEYS.session, session);
   persist(STORAGE_KEYS.user, sanitized);
   return session;
+}
+
+function assertValidPin(pin) {
+  const normalizedPin = pin?.toString().trim();
+
+  if (!normalizedPin || normalizedPin.length < 4) {
+    throw new Error('Please enter a 4+ digit security PIN.');
+  }
+
+  return normalizedPin;
 }
 
 function isGoogleLoginConfigured() {
@@ -319,14 +335,17 @@ export const dataClient = {
       const session = load(STORAGE_KEYS.session, null);
       return session?.user ? session : null;
     },
-    async registerWithEmail({ name, email, password }) {
+    async registerWithEmail({ name, email, password, securityPin, connectedBanks = [] }) {
       const normalizedEmail = email?.trim().toLowerCase();
+      const normalizedPin = securityPin?.toString().trim();
 
       const account = {
         name: name?.trim() || 'Maaser User',
         email: normalizedEmail,
         password,
+        security_pin: normalizedPin && normalizedPin.length >= 4 ? normalizedPin : undefined,
         maaser_percentage: defaultUser.maaser_percentage,
+        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
         auth_provider: 'email',
         email_verified: false,
         created_at: new Date().toISOString(),
@@ -353,7 +372,7 @@ export const dataClient = {
       const session = persistSession(stored);
       return { session, user: sanitizeUser(stored) };
     },
-    async loginWithGoogle() {
+    async loginWithGoogle({ securityPin, confirmPin, connectedBanks } = {}) {
       if (!hasDom) {
         throw new Error('Google login is only available in the browser.');
       }
@@ -373,6 +392,19 @@ export const dataClient = {
         throw new Error('Google account does not include an email address.');
       }
 
+      const existingAccount = getStoredCredentials();
+
+      if (existingAccount && existingAccount.email === normalizedEmail && existingAccount.auth_provider === 'google') {
+        const session = persistSession(existingAccount);
+        return { session, user: sanitizeUser(existingAccount) };
+      }
+
+      const normalizedPin = securityPin?.toString().trim();
+
+      if (typeof confirmPin !== 'undefined' && normalizedPin !== confirmPin?.toString().trim()) {
+        throw new Error('PINs must match to continue.');
+      }
+
       const googleAccount = {
         name: profile.name || profile.given_name || 'Google User',
         email: normalizedEmail,
@@ -381,12 +413,48 @@ export const dataClient = {
         email_verified: Boolean(profile.email_verified),
         avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
+        security_pin: normalizedPin && normalizedPin.length >= 4 ? normalizedPin : undefined,
+        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
       };
 
       persistCredentials(googleAccount);
       const session = persistSession(googleAccount);
 
       return { session, user: sanitizeUser(googleAccount) };
+    },
+    async verifySecurityPin(pin) {
+      const stored = getStoredCredentials();
+      if (!stored?.security_pin) {
+        throw new Error('No security PIN set for this account yet.');
+      }
+
+      const normalizedPin = assertValidPin(pin);
+
+      if (stored.security_pin !== normalizedPin) {
+        throw new Error('Incorrect security PIN.');
+      }
+
+      const session = persistSession(stored);
+      return { session, user: sanitizeUser(stored) };
+    },
+    async setSecurityPin(pin) {
+      const stored = getStoredCredentials();
+
+      if (!stored) {
+        throw new Error('No authenticated account found.');
+      }
+
+      if (stored.security_pin) {
+        throw new Error('A security PIN is already set for this account.');
+      }
+
+      const normalizedPin = assertValidPin(pin);
+
+      const updated = { ...stored, security_pin: normalizedPin };
+      persistCredentials(updated);
+      const session = persistSession(updated);
+
+      return { session, user: sanitizeUser(updated) };
     },
     isGoogleLoginConfigured,
     async logout() {

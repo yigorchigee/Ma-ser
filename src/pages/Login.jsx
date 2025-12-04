@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
-import { Mail, KeyRound } from 'lucide-react';
+import { Mail, KeyRound, Link2 } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -12,7 +12,12 @@ export default function Login({ defaultMode = 'login' }) {
   const redirectPath = location.state?.from || '/dashboard';
 
   const [mode, setMode] = useState(defaultMode);
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    connectedBanks: [],
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const googleLoginEnabled = dataClient.auth.isGoogleLoginConfigured();
 
@@ -25,10 +30,21 @@ export default function Login({ defaultMode = 'login' }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const toggleBankConnection = (provider) => {
+    setForm((prev) => {
+      const exists = prev.connectedBanks.includes(provider);
+      const connectedBanks = exists
+        ? prev.connectedBanks.filter((bank) => bank !== provider)
+        : [...prev.connectedBanks, provider];
+
+      return { ...prev, connectedBanks };
+    });
+  };
+
   const handleGoogleLogin = async () => {
     try {
       setIsSubmitting(true);
-      const result = await loginWithGoogle();
+      const result = await loginWithGoogle({ connectedBanks: mode === 'signup' ? form.connectedBanks : undefined });
       toast.success(`Signed in as ${result.user.email}`);
       navigate(redirectPath, { replace: true });
     } catch (error) {
@@ -46,9 +62,17 @@ export default function Login({ defaultMode = 'login' }) {
         await loginWithEmail({ email: form.email, password: form.password });
         toast.success('Welcome back!');
       } else {
-        const result = await registerWithEmail({ name: form.name, email: form.email, password: form.password });
+        const result = await registerWithEmail({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          connectedBanks: form.connectedBanks,
+        });
         toast.success('Account created');
         toast.message(result.message, { icon: <Mail className="h-4 w-4" /> });
+        if (form.connectedBanks.length === 0) {
+          toast.info('Tip: connect at least one bank so we can stay in sync.');
+        }
       }
       navigate(redirectPath, { replace: true });
     } catch (error) {
@@ -100,11 +124,6 @@ export default function Login({ defaultMode = 'login' }) {
                 </p>
               </div>
             )}
-
-            <div className="relative py-2 text-center text-xs text-slate-500">
-              <span className="px-3 bg-white relative z-10">or</span>
-              <div className="absolute inset-x-0 top-1/2 h-px bg-slate-200" aria-hidden />
-            </div>
 
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               {mode === 'signup' && (
@@ -159,6 +178,41 @@ export default function Login({ defaultMode = 'login' }) {
                   />
                 </div>
               </div>
+
+              {mode === 'signup' && (
+                <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-blue-600" />
+                    <p className="font-semibold text-slate-900">Connect your banks now</p>
+                  </div>
+                  <p className="text-sm text-slate-600">
+                    Pick the accounts you want to link so transactions stay in sync from day one. You can update these later in
+                    settings.
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {['Bank', 'Cash App', 'Venmo', 'PayPal', 'Zelle', 'Other'].map((provider) => {
+                      const isSelected = form.connectedBanks.includes(provider);
+                      return (
+                        <button
+                          key={provider}
+                          type="button"
+                          onClick={() => toggleBankConnection(provider)}
+                          className={`w-full rounded-xl border px-3 py-2 text-left text-sm font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            isSelected
+                              ? 'border-blue-500 bg-blue-50 text-blue-800'
+                              : 'border-slate-200 bg-white text-slate-800 hover:border-slate-400'
+                          }`}
+                        >
+                          {provider}
+                          <span className="block text-xs font-normal text-slate-500">
+                            {isSelected ? 'Connected' : `Link ${provider.toLowerCase()}`}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <button
                 type="submit"

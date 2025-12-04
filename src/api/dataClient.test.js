@@ -42,6 +42,7 @@ describe('dataClient auth', () => {
       name: 'Test User',
       email: 'tester@example.com',
       password: 'secret',
+      connectedBanks: ['Bank'],
     });
 
     assert.equal(result.user.email, 'tester@example.com');
@@ -50,6 +51,7 @@ describe('dataClient auth', () => {
 
     const storedSession = JSON.parse(window.localStorage.getItem('maaser_session'));
     assert.equal(storedSession.user.email, 'tester@example.com');
+    assert.equal(storedSession.user.has_security_pin, false);
   });
 
   it('logs a user in with stored credentials', async () => {
@@ -57,12 +59,10 @@ describe('dataClient auth', () => {
       name: 'Existing User',
       email: 'existing@example.com',
       password: 'hunter2',
+      connectedBanks: ['Bank'],
     });
 
-    const { user, session } = await dataClient.auth.loginWithEmail({
-      email: 'existing@example.com',
-      password: 'hunter2',
-    });
+    const { user, session } = await dataClient.auth.loginWithEmail({ email: 'existing@example.com', password: 'hunter2' });
 
     assert.equal(user.email, 'existing@example.com');
     assert.equal(session.user.maaser_percentage, 10);
@@ -73,16 +73,31 @@ describe('dataClient auth', () => {
       name: 'Existing User',
       email: 'existing@example.com',
       password: 'hunter2',
+      connectedBanks: ['Bank'],
     });
 
     await assert.rejects(
-      () =>
-        dataClient.auth.loginWithEmail({
-          email: 'existing@example.com',
-          password: 'wrong',
-        }),
+      () => dataClient.auth.loginWithEmail({ email: 'existing@example.com', password: 'wrong' }),
       /Invalid email or password/
     );
+  });
+
+  it('creates and verifies a security PIN after login', async () => {
+    await dataClient.auth.registerWithEmail({
+      name: 'Pinless User',
+      email: 'pinless@example.com',
+      password: 'secret',
+    });
+
+    await dataClient.auth.loginWithEmail({ email: 'pinless@example.com', password: 'secret' });
+
+    const created = await dataClient.auth.setSecurityPin('1234');
+    assert.equal(created.user.has_security_pin, true);
+
+    const verified = await dataClient.auth.verifySecurityPin('1234');
+    assert.equal(verified.user.email, 'pinless@example.com');
+
+    await assert.rejects(() => dataClient.auth.verifySecurityPin('9999'), /Incorrect security PIN/);
   });
 
   it('fails Google login in a non-browser environment', async () => {
