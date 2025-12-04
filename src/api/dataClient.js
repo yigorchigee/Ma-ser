@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
 
 const defaultUser = {
   maaser_percentage: 10,
+  connected_banks: [],
 };
 
 const defaultCharities = [
@@ -202,8 +203,13 @@ function persist(key, value) {
 function sanitizeUser(user) {
   if (!user) return null;
 
-  const { password, ...safeUser } = user;
-  return { ...defaultUser, ...safeUser };
+  const { password, security_pin, ...safeUser } = user;
+  return {
+    ...defaultUser,
+    ...safeUser,
+    has_security_pin: Boolean(security_pin),
+    connected_banks: safeUser.connected_banks || defaultUser.connected_banks,
+  };
 }
 
 function getStoredCredentials() {
@@ -319,14 +325,21 @@ export const dataClient = {
       const session = load(STORAGE_KEYS.session, null);
       return session?.user ? session : null;
     },
-    async registerWithEmail({ name, email, password }) {
+    async registerWithEmail({ name, email, password, securityPin, connectedBanks = [] }) {
       const normalizedEmail = email?.trim().toLowerCase();
+      const normalizedPin = securityPin?.toString().trim();
+
+      if (!normalizedPin || normalizedPin.length < 4) {
+        throw new Error('Please choose a 4+ digit security PIN.');
+      }
 
       const account = {
         name: name?.trim() || 'Maaser User',
         email: normalizedEmail,
         password,
+        security_pin: normalizedPin,
         maaser_percentage: defaultUser.maaser_percentage,
+        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
         auth_provider: 'email',
         email_verified: false,
         created_at: new Date().toISOString(),
@@ -342,12 +355,20 @@ export const dataClient = {
         message: `Verification email sent to ${normalizedEmail}`,
       };
     },
-    async loginWithEmail({ email, password }) {
+    async loginWithEmail({ email, password, securityPin }) {
       const normalizedEmail = email?.trim().toLowerCase();
       const stored = getStoredCredentials();
 
       if (!stored || stored.email !== normalizedEmail || stored.password !== password) {
         throw new Error('Invalid email or password');
+      }
+
+      if (!stored.security_pin) {
+        throw new Error('A security PIN is required for this account.');
+      }
+
+      if (stored.security_pin !== securityPin?.toString().trim()) {
+        throw new Error('Incorrect security PIN');
       }
 
       const session = persistSession(stored);
