@@ -35,7 +35,11 @@ export default function Login({ defaultMode = 'login' }) {
       const result = await loginWithGoogle();
       toast.success(`Signed in as ${result.user.email}`);
       const nextPath = mode === 'signup' ? '/connect-accounts' : redirectPath;
-      navigate('/create-pin', { replace: true, state: { from: nextPath } });
+      if (result.user?.has_security_pin) {
+        navigate('/create-pin', { replace: true, state: { from: nextPath } });
+      } else {
+        navigate(nextPath, { replace: true });
+      }
     } catch (error) {
       toast.error(error.message || 'Unable to sign in with Google');
     } finally {
@@ -47,11 +51,12 @@ export default function Login({ defaultMode = 'login' }) {
     event.preventDefault();
     try {
       setIsSubmitting(true);
+      let result;
       if (mode === 'login') {
-        await loginWithEmail({ email: form.email, password: form.password });
+        result = await loginWithEmail({ email: form.email, password: form.password });
         toast.success('Welcome back!');
       } else {
-        const result = await registerWithEmail({
+        result = await registerWithEmail({
           name: form.name,
           email: form.email,
           password: form.password,
@@ -60,7 +65,11 @@ export default function Login({ defaultMode = 'login' }) {
         toast.message(result.message, { icon: <Mail className="h-4 w-4" /> });
       }
       const nextPath = mode === 'signup' ? '/connect-accounts' : redirectPath;
-      navigate('/create-pin', { replace: true, state: { from: nextPath } });
+      if (result?.user?.has_security_pin) {
+        navigate('/create-pin', { replace: true, state: { from: nextPath } });
+      } else {
+        navigate(nextPath, { replace: true });
+      }
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
     } finally {
