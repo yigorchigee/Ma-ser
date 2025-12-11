@@ -13,6 +13,11 @@ export default function CreatePin() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const handlePinChange = (setter) => (event) => {
+    const digitsOnly = event.target.value.replace(/\D/g, '').slice(0, 4);
+    setter(digitsOnly);
+  };
+
   const redirectPath = location.state?.from || '/dashboard';
   const hasExistingPin = Boolean(user?.has_security_pin);
 
@@ -63,7 +68,7 @@ export default function CreatePin() {
               <p className="text-slate-600">
                 {hasExistingPin
                   ? 'For your security, please confirm your PIN to continue.'
-                  : 'Set a 4+ digit PIN to secure your account before continuing.'}
+                  : 'Set a 4-digit PIN to secure your account before continuing.'}
               </p>
             </div>
           </div>
@@ -78,12 +83,14 @@ export default function CreatePin() {
                 name="pin"
                 type="password"
                 inputMode="numeric"
-                pattern="[0-9]*"
+                pattern="\d{4}"
+                maxLength={4}
+                minLength={4}
                 value={pin}
-                onChange={(e) => setPin(e.target.value)}
+                onChange={handlePinChange(setPin)}
                 required
                 className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="4+ digit PIN"
+                placeholder="4-digit PIN"
               />
             </div>
 
@@ -95,14 +102,16 @@ export default function CreatePin() {
                 <input
                   id="confirmPin"
                   name="confirmPin"
-                  type="password"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  value={confirmPin}
-                  onChange={(e) => setConfirmPin(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Re-enter your PIN"
+                type="password"
+                inputMode="numeric"
+                pattern="\d{4}"
+                maxLength={4}
+                minLength={4}
+                value={confirmPin}
+                onChange={handlePinChange(setConfirmPin)}
+                required
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Re-enter your PIN"
                 />
               </div>
             )}

@@ -231,8 +231,8 @@ function persistSession(user) {
 function assertValidPin(pin) {
   const normalizedPin = pin?.toString().trim();
 
-  if (!normalizedPin || normalizedPin.length < 4) {
-    throw new Error('Please enter a 4+ digit security PIN.');
+  if (!normalizedPin || !/^\d{4}$/.test(normalizedPin)) {
+    throw new Error('Security PIN must be exactly 4 digits.');
   }
 
   return normalizedPin;
