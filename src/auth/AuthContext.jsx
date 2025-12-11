@@ -28,21 +28,21 @@ export function AuthProvider({ children }) {
   const loginWithGoogle = async () => {
     const result = await dataClient.auth.loginWithGoogle();
     setSession(result.session);
-    setIsPinVerified(false);
+    setIsPinVerified(!result.user?.has_security_pin);
     return result;
   };
 
   const loginWithEmail = async (payload) => {
     const result = await dataClient.auth.loginWithEmail(payload);
     setSession(result.session);
-    setIsPinVerified(false);
+    setIsPinVerified(!result.user?.has_security_pin);
     return result;
   };
 
   const registerWithEmail = async (payload) => {
     const result = await dataClient.auth.registerWithEmail(payload);
     setSession(result.session);
-    setIsPinVerified(false);
+    setIsPinVerified(!result.user?.has_security_pin);
     return result;
   };
 
