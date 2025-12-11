@@ -366,7 +366,7 @@ export const dataClient = {
         message: `Verification email sent to ${normalizedEmail}`,
       };
     },
-    async loginWithEmail({ email, password, securityPin }) {
+    async loginWithEmail({ email, password }) {
       const normalizedEmail = email?.trim().toLowerCase();
       const stored = getStoredCredentials();
 
@@ -374,21 +374,10 @@ export const dataClient = {
         throw new Error('Invalid email or password');
       }
 
-      if (stored.security_pin) {
-        const normalizedPin = securityPin?.toString().trim();
-        if (!normalizedPin) {
-          throw new Error('A security PIN is required for this account.');
-        }
-
-        if (stored.security_pin !== normalizedPin) {
-          throw new Error('Incorrect security PIN');
-        }
-      }
-
       const session = persistSession(stored);
       return { session, user: sanitizeUser(stored) };
     },
-    async loginWithGoogle({ securityPin } = {}) {
+    async loginWithGoogle() {
       if (!hasDom) {
         throw new Error('Google login is only available in the browser.');
       }
@@ -411,17 +400,6 @@ export const dataClient = {
       const existingAccount = getStoredCredentials();
 
       if (existingAccount && existingAccount.email === normalizedEmail && existingAccount.auth_provider === 'google') {
-        if (existingAccount.security_pin) {
-          const normalizedPin = securityPin?.toString().trim();
-          if (!normalizedPin) {
-            throw new Error('Security PIN is required to continue.');
-          }
-
-          if (normalizedPin !== existingAccount.security_pin) {
-            throw new Error('Incorrect security PIN for this Google account.');
-          }
-        }
-
         const session = persistSession(existingAccount);
         return { session, user: sanitizeUser(existingAccount) };
       }

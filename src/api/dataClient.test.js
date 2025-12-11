@@ -65,7 +65,6 @@ describe('dataClient auth', () => {
     const { user, session } = await dataClient.auth.loginWithEmail({
       email: 'existing@example.com',
       password: 'hunter2',
-      securityPin: '1234',
     });
 
     assert.equal(user.email, 'existing@example.com');
@@ -86,7 +85,6 @@ describe('dataClient auth', () => {
         dataClient.auth.loginWithEmail({
           email: 'existing@example.com',
           password: 'wrong',
-          securityPin: '1234',
         }),
       /Invalid email or password/
     );
