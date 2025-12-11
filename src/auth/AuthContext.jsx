@@ -25,8 +25,8 @@ export function AuthProvider({ children }) {
     refreshSession();
   }, []);
 
-  const loginWithGoogle = async (payload) => {
-    const result = await dataClient.auth.loginWithGoogle(payload);
+  const loginWithGoogle = async () => {
+    const result = await dataClient.auth.loginWithGoogle();
     setSession(result.session);
     setIsPinVerified(false);
     return result;

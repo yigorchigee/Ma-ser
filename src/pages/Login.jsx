@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
-import { Mail, KeyRound, Shield } from 'lucide-react';
+import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -16,7 +16,6 @@ export default function Login({ defaultMode = 'login' }) {
     name: '',
     email: '',
     password: '',
-    securityPin: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const googleLoginEnabled = dataClient.auth.isGoogleLoginConfigured();
@@ -33,9 +32,7 @@ export default function Login({ defaultMode = 'login' }) {
   const handleGoogleLogin = async () => {
     try {
       setIsSubmitting(true);
-      const result = await loginWithGoogle({
-        securityPin: mode === 'login' ? form.securityPin : undefined,
-      });
+      const result = await loginWithGoogle();
       toast.success(`Signed in as ${result.user.email}`);
       const nextPath = mode === 'signup' ? '/connect-accounts' : redirectPath;
       navigate('/create-pin', { replace: true, state: { from: nextPath } });
@@ -51,10 +48,7 @@ export default function Login({ defaultMode = 'login' }) {
     try {
       setIsSubmitting(true);
       if (mode === 'login') {
-        if (!form.securityPin) {
-          throw new Error('Please enter your security PIN.');
-        }
-        await loginWithEmail({ email: form.email, password: form.password, securityPin: form.securityPin });
+        await loginWithEmail({ email: form.email, password: form.password });
         toast.success('Welcome back!');
       } else {
         const result = await registerWithEmail({
@@ -170,29 +164,6 @@ export default function Login({ defaultMode = 'login' }) {
                   />
                 </div>
               </div>
-
-              {mode === 'login' && (
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-800" htmlFor="securityPin">
-                    Security PIN
-                  </label>
-                  <div className="relative">
-                    <Shield className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
-                    <input
-                      id="securityPin"
-                      name="securityPin"
-                      type="password"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      required
-                      value={form.securityPin}
-                      onChange={handleChange}
-                      className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="4+ digit PIN"
-                    />
-                  </div>
-                </div>
-              )}
 
               <button
                 type="submit"
