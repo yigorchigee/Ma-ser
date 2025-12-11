@@ -4,14 +4,15 @@ import { dataClient } from '@/api/dataClient';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(() => dataClient.auth.getSession());
-  const [isPinVerified, setIsPinVerified] = useState(() => Boolean(dataClient.auth.getSession()));
+  const initialSession = dataClient.auth.getSession();
+  const [session, setSession] = useState(initialSession);
+  const [isPinVerified, setIsPinVerified] = useState(() => Boolean(initialSession?.user?.has_security_pin));
 
   const refreshSession = async () => {
     try {
       const user = await dataClient.auth.me();
       setSession({ user });
-      setIsPinVerified(true);
+      setIsPinVerified(Boolean(user?.has_security_pin));
       return user;
     } catch {
       setSession(null);

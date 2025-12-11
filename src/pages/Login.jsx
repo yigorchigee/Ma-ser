@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
-import { Mail, KeyRound, Shield, Link2 } from 'lucide-react';
+import { Mail, KeyRound, Shield } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -17,8 +17,6 @@ export default function Login({ defaultMode = 'login' }) {
     email: '',
     password: '',
     securityPin: '',
-    confirmPin: '',
-    connectedBanks: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const googleLoginEnabled = dataClient.auth.isGoogleLoginConfigured();
@@ -32,35 +30,15 @@ export default function Login({ defaultMode = 'login' }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleBankConnection = (provider) => {
-    setForm((prev) => {
-      const exists = prev.connectedBanks.includes(provider);
-      const connectedBanks = exists
-        ? prev.connectedBanks.filter((bank) => bank !== provider)
-        : [...prev.connectedBanks, provider];
-
-      return { ...prev, connectedBanks };
-    });
-  };
-
   const handleGoogleLogin = async () => {
     try {
       setIsSubmitting(true);
-      if (!form.securityPin || form.securityPin.length < 4) {
-        throw new Error('Please set a 4+ digit PIN to continue with Google.');
-      }
-
-      if (mode === 'signup' && form.securityPin !== form.confirmPin) {
-        throw new Error('PINs must match to continue.');
-      }
-
       const result = await loginWithGoogle({
-        securityPin: form.securityPin,
-        confirmPin: mode === 'signup' ? form.confirmPin : undefined,
-        connectedBanks: mode === 'signup' ? form.connectedBanks : undefined,
+        securityPin: mode === 'login' ? form.securityPin : undefined,
       });
       toast.success(`Signed in as ${result.user.email}`);
-      navigate('/create-pin', { replace: true, state: { from: redirectPath } });
+      const nextPath = mode === 'signup' ? '/connect-accounts' : redirectPath;
+      navigate('/create-pin', { replace: true, state: { from: nextPath } });
     } catch (error) {
       toast.error(error.message || 'Unable to sign in with Google');
     } finally {
@@ -73,31 +51,22 @@ export default function Login({ defaultMode = 'login' }) {
     try {
       setIsSubmitting(true);
       if (mode === 'login') {
+        if (!form.securityPin) {
+          throw new Error('Please enter your security PIN.');
+        }
         await loginWithEmail({ email: form.email, password: form.password, securityPin: form.securityPin });
         toast.success('Welcome back!');
       } else {
-        if (!form.securityPin || form.securityPin.length < 4) {
-          throw new Error('Please choose a 4+ digit security PIN.');
-        }
-
-        if (form.securityPin !== form.confirmPin) {
-          throw new Error('PINs must match to continue.');
-        }
-
         const result = await registerWithEmail({
           name: form.name,
           email: form.email,
           password: form.password,
-          securityPin: form.securityPin,
-          connectedBanks: form.connectedBanks,
         });
         toast.success('Account created');
         toast.message(result.message, { icon: <Mail className="h-4 w-4" /> });
-        if (form.connectedBanks.length === 0) {
-          toast.info('Tip: connect at least one bank so we can stay in sync.');
-        }
       }
-      navigate('/create-pin', { replace: true, state: { from: redirectPath } });
+      const nextPath = mode === 'signup' ? '/connect-accounts' : redirectPath;
+      navigate('/create-pin', { replace: true, state: { from: nextPath } });
     } catch (error) {
       toast.error(error.message || 'Authentication failed');
     } finally {
@@ -202,81 +171,25 @@ export default function Login({ defaultMode = 'login' }) {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-800" htmlFor="securityPin">
-                  Security PIN
-                </label>
-                <div className="relative">
-                  <Shield className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
-                  <input
-                    id="securityPin"
-                    name="securityPin"
-                    type="password"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    required
-                    value={form.securityPin}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="4+ digit PIN"
-                  />
-                </div>
-              </div>
-
-              {mode === 'signup' && (
+              {mode === 'login' && (
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-800" htmlFor="confirmPin">
-                    Confirm PIN
+                  <label className="text-sm font-semibold text-slate-800" htmlFor="securityPin">
+                    Security PIN
                   </label>
                   <div className="relative">
                     <Shield className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
                     <input
-                      id="confirmPin"
-                      name="confirmPin"
+                      id="securityPin"
+                      name="securityPin"
                       type="password"
                       inputMode="numeric"
                       pattern="[0-9]*"
                       required
-                      value={form.confirmPin}
+                      value={form.securityPin}
                       onChange={handleChange}
                       className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Re-enter your PIN"
+                      placeholder="4+ digit PIN"
                     />
-                  </div>
-                </div>
-              )}
-
-              {mode === 'signup' && (
-                <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center gap-2">
-                    <Link2 className="h-4 w-4 text-blue-600" />
-                    <p className="font-semibold text-slate-900">Connect your banks now</p>
-                  </div>
-                  <p className="text-sm text-slate-600">
-                    Pick the accounts you want to link so transactions stay in sync from day one. You can update these later in
-                    settings.
-                  </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {['Bank', 'Cash App', 'Venmo', 'PayPal', 'Zelle', 'Other'].map((provider) => {
-                      const isSelected = form.connectedBanks.includes(provider);
-                      return (
-                        <button
-                          key={provider}
-                          type="button"
-                          onClick={() => toggleBankConnection(provider)}
-                          className={`w-full rounded-xl border px-3 py-2 text-left text-sm font-semibold shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                            isSelected
-                              ? 'border-blue-500 bg-blue-50 text-blue-800'
-                              : 'border-slate-200 bg-white text-slate-800 hover:border-slate-400'
-                          }`}
-                        >
-                          {provider}
-                          <span className="block text-xs font-normal text-slate-500">
-                            {isSelected ? 'Connected' : `Link ${provider.toLowerCase()}`}
-                          </span>
-                        </button>
-                      );
-                    })}
                   </div>
                 </div>
               )}

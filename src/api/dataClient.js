@@ -338,8 +338,9 @@ export const dataClient = {
     async registerWithEmail({ name, email, password, securityPin, connectedBanks = [] }) {
       const normalizedEmail = email?.trim().toLowerCase();
       const normalizedPin = securityPin?.toString().trim();
+      const hasValidPin = normalizedPin && normalizedPin.length >= 4;
 
-      if (!normalizedPin || normalizedPin.length < 4) {
+      if (normalizedPin && !hasValidPin) {
         throw new Error('Please choose a 4+ digit security PIN.');
       }
 
@@ -347,9 +348,9 @@ export const dataClient = {
         name: name?.trim() || 'Maaser User',
         email: normalizedEmail,
         password,
-        security_pin: normalizedPin,
+        security_pin: hasValidPin ? normalizedPin : null,
         maaser_percentage: defaultUser.maaser_percentage,
-        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
+        connected_banks: hasValidPin && Array.isArray(connectedBanks) ? connectedBanks : [],
         auth_provider: 'email',
         email_verified: false,
         created_at: new Date().toISOString(),
@@ -373,18 +374,21 @@ export const dataClient = {
         throw new Error('Invalid email or password');
       }
 
-      if (!stored.security_pin) {
-        throw new Error('A security PIN is required for this account.');
-      }
+      if (stored.security_pin) {
+        const normalizedPin = securityPin?.toString().trim();
+        if (!normalizedPin) {
+          throw new Error('A security PIN is required for this account.');
+        }
 
-      if (stored.security_pin !== securityPin?.toString().trim()) {
-        throw new Error('Incorrect security PIN');
+        if (stored.security_pin !== normalizedPin) {
+          throw new Error('Incorrect security PIN');
+        }
       }
 
       const session = persistSession(stored);
       return { session, user: sanitizeUser(stored) };
     },
-    async loginWithGoogle({ securityPin, confirmPin, connectedBanks } = {}) {
+    async loginWithGoogle({ securityPin } = {}) {
       if (!hasDom) {
         throw new Error('Google login is only available in the browser.');
       }
@@ -407,31 +411,19 @@ export const dataClient = {
       const existingAccount = getStoredCredentials();
 
       if (existingAccount && existingAccount.email === normalizedEmail && existingAccount.auth_provider === 'google') {
-        if (!existingAccount.security_pin) {
-          throw new Error('A security PIN must be set for Google sign-in.');
-        }
+        if (existingAccount.security_pin) {
+          const normalizedPin = securityPin?.toString().trim();
+          if (!normalizedPin) {
+            throw new Error('Security PIN is required to continue.');
+          }
 
-        const normalizedPin = securityPin?.toString().trim();
-        if (!normalizedPin) {
-          throw new Error('Security PIN is required to continue.');
-        }
-
-        if (normalizedPin !== existingAccount.security_pin) {
-          throw new Error('Incorrect security PIN for this Google account.');
+          if (normalizedPin !== existingAccount.security_pin) {
+            throw new Error('Incorrect security PIN for this Google account.');
+          }
         }
 
         const session = persistSession(existingAccount);
         return { session, user: sanitizeUser(existingAccount) };
-      }
-
-      const normalizedPin = securityPin?.toString().trim();
-
-      if (!normalizedPin || normalizedPin.length < 4) {
-        throw new Error('Please set a 4+ digit security PIN for Google sign-in.');
-      }
-
-      if (typeof confirmPin !== 'undefined' && normalizedPin !== confirmPin?.toString().trim()) {
-        throw new Error('PINs must match to continue.');
       }
 
       const googleAccount = {
@@ -442,8 +434,8 @@ export const dataClient = {
         email_verified: Boolean(profile.email_verified),
         avatar_url: profile.picture,
         connected_at: new Date().toISOString(),
-        security_pin: normalizedPin,
-        connected_banks: Array.isArray(connectedBanks) ? connectedBanks : [],
+        security_pin: null,
+        connected_banks: [],
       };
 
       persistCredentials(googleAccount);

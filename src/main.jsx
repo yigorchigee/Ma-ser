@@ -13,6 +13,7 @@ import Donate from './pages/Donate';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import CreatePin from './pages/CreatePin';
+import ConnectAccounts from './pages/ConnectAccounts';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { AuthProvider } from './auth/AuthContext';
 
@@ -86,6 +87,16 @@ function App() {
                 <ProtectedRoute allowWithoutPin>
                   <Layout showNav={false}>
                     <CreatePin />
+                  </Layout>
+                </ProtectedRoute>
+              )}
+            />
+            <Route
+              path="/connect-accounts"
+              element={(
+                <ProtectedRoute>
+                  <Layout showNav={false}>
+                    <ConnectAccounts />
                   </Layout>
                 </ProtectedRoute>
               )}
