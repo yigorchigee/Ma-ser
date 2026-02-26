@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Mail, KeyRound } from 'lucide-react';
+
 import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
-import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -62,7 +63,7 @@ export default function Login({ defaultMode = 'login' }) {
           password: form.password,
         });
         toast.success('Account created');
-        toast.message(result.message, { icon: <Mail className="h-4 w-4" /> });
+        toast.message(result.message, { icon: <Mail size={16} /> });
       }
       const nextPath = mode === 'signup' ? '/connect-accounts' : redirectPath;
       if (result?.user?.has_security_pin) {
@@ -78,54 +79,50 @@ export default function Login({ defaultMode = 'login' }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-xl">
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-2xl font-bold text-slate-900">{mode === 'login' ? 'Welcome' : 'Create account'}</p>
-              <p className="text-slate-600">
-                {mode === 'login'
-                  ? "Sign in to access your ma'aser dashboard."
-                  : 'Create your Tzedaka Tracker account to get started.'}
-              </p>
-            </div>
+    <div className="auth-page">
+      <div className="auth-shell">
+        <div className="auth-card glass-card">
+          <div className="auth-header">
+            <p className="auth-title">{mode === 'login' ? 'Welcome' : 'Create account'}</p>
+            <p className="auth-subtitle">
+              {mode === 'login'
+                ? "Sign in to access your ma'aser dashboard."
+                : 'Create your Tzedaka Tracker account to get started.'}
+            </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="auth-content">
             <button
               type="button"
               onClick={handleGoogleLogin}
               disabled={isSubmitting}
-              className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 active:scale-95 transition disabled:opacity-60"
+              className="auth-google-btn"
             >
               <img
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                 alt="Google"
-                className="h-5 w-5"
+                className="auth-google-icon"
               />
               Continue with Google
             </button>
 
             {!googleLoginEnabled && (
-              <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg py-3 px-4 space-y-1">
-                <p className="font-semibold text-center">Google login is not set up yet.</p>
+              <div className="auth-warning">
+                <p className="auth-warning-title">Google login is not set up yet.</p>
                 <p>
                   In your <code>.env</code> file (or hosting env vars), set <code>VITE_GOOGLE_CLIENT_ID</code> to
-                  <span className="font-semibold"> 377092527146-vu27pupmj0m69d3ndavbnv2i7adv6t9k.apps.googleusercontent.com</span>
-                  , then restart the app. Add <code>http://localhost:5173</code> as an authorized JavaScript origin for the
+                  <span className="auth-warning-id"> 377092527146-vu27pupmj0m69d3ndavbnv2i7adv6t9k.apps.googleusercontent.com</span>
+                  , then restart the app. Add <code>{window.location.origin}</code> as an authorized JavaScript origin for the
                   OAuth client in Google Cloud Console so local sign-ins are allowed. You can also set
                   <code>window.VITE_GOOGLE_CLIENT_ID</code> in the browser console for quick local testing.
                 </p>
               </div>
             )}
 
-            <form onSubmit={handleEmailSubmit} className="space-y-4">
+            <form onSubmit={handleEmailSubmit} className="auth-form">
               {mode === 'signup' && (
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-800" htmlFor="name">
-                    Full name
-                  </label>
+                <div className="auth-field">
+                  <label className="auth-label" htmlFor="name">Full name</label>
                   <input
                     id="name"
                     name="name"
@@ -133,16 +130,14 @@ export default function Login({ defaultMode = 'login' }) {
                     required
                     value={form.name}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="auth-input"
                     placeholder="Enter your name"
                   />
                 </div>
               )}
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-800" htmlFor="email">
-                  Email
-                </label>
+              <div className="auth-field">
+                <label className="auth-label" htmlFor="email">Email</label>
                 <input
                   id="email"
                   name="email"
@@ -150,17 +145,15 @@ export default function Login({ defaultMode = 'login' }) {
                   required
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="auth-input"
                   placeholder="you@example.com"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-800" htmlFor="password">
-                  Password
-                </label>
-                <div className="relative">
-                  <KeyRound className="h-4 w-4 text-slate-400 absolute left-3 top-3.5" />
+              <div className="auth-field">
+                <label className="auth-label" htmlFor="password">Password</label>
+                <div className="auth-input-icon-wrap">
+                  <KeyRound size={16} className="auth-input-icon" />
                   <input
                     id="password"
                     name="password"
@@ -168,48 +161,36 @@ export default function Login({ defaultMode = 'login' }) {
                     required
                     value={form.password}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="auth-input auth-input-with-icon"
                     placeholder="••••••••"
                   />
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-xl bg-blue-600 text-white py-3 font-semibold shadow-lg hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition"
-              >
+              <button type="submit" disabled={isSubmitting} className="auth-submit-btn">
                 {isSubmitting ? 'Please wait...' : mode === 'login' ? 'Login' : 'Create account'}
               </button>
 
               {mode === 'login' ? (
-                <p className="text-xs text-slate-600 text-center">
+                <p className="auth-switch-copy">
                   New to Tzedaka Tracker?{' '}
-                  <button
-                    type="button"
-                    onClick={() => setMode('signup')}
-                    className="text-blue-700 font-semibold hover:underline"
-                  >
+                  <button type="button" onClick={() => setMode('signup')} className="auth-switch-btn">
                     Create account
                   </button>
                 </p>
               ) : (
-                <p className="text-xs text-slate-600 text-center">
+                <p className="auth-switch-copy">
                   Already have an account?{' '}
-                  <button
-                    type="button"
-                    onClick={() => setMode('login')}
-                    className="text-blue-700 font-semibold hover:underline"
-                  >
+                  <button type="button" onClick={() => setMode('login')} className="auth-switch-btn">
                     Log in
                   </button>
                 </p>
               )}
             </form>
 
-            <p className="text-xs text-slate-500 text-center">
-              A verification email is sent when you create an account. Your session is remembered on this device so you stay signed
-              in.
+            <p className="auth-footnote">
+              A verification email is sent when you create an account. Your session is remembered on this device so you stay
+              signed in.
             </p>
           </div>
         </div>
