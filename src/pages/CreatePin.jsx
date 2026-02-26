@@ -56,7 +56,7 @@ export default function CreatePin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(100vh-108px)] bg-slate-50 flex items-center justify-center px-4 py-4">
       <div className="w-full max-w-lg">
         <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
           <div className="flex items-center gap-3">
