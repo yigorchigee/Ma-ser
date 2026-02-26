@@ -12,6 +12,8 @@ import Transactions from './pages/Transactions';
 import Donate from './pages/Donate';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
+import CreatePin from './pages/CreatePin';
+import ConnectAccounts from './pages/ConnectAccounts';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { AuthProvider } from './auth/AuthContext';
 
@@ -23,7 +25,22 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={(
+                <Layout showNav={false}>
+                  <Login />
+                </Layout>
+              )}
+            />
+            <Route
+              path="/signup"
+              element={(
+                <Layout showNav={false}>
+                  <Login defaultMode="signup" />
+                </Layout>
+              )}
+            />
             <Route
               path="/dashboard"
               element={(
@@ -60,6 +77,26 @@ function App() {
                 <ProtectedRoute>
                   <Layout currentPageName="Settings">
                     <Settings />
+                  </Layout>
+                </ProtectedRoute>
+              )}
+            />
+            <Route
+              path="/create-pin"
+              element={(
+                <ProtectedRoute allowWithoutPin>
+                  <Layout showNav={false}>
+                    <CreatePin />
+                  </Layout>
+                </ProtectedRoute>
+              )}
+            />
+            <Route
+              path="/connect-accounts"
+              element={(
+                <ProtectedRoute>
+                  <Layout showNav={false}>
+                    <ConnectAccounts />
                   </Layout>
                 </ProtectedRoute>
               )}

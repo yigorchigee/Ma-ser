@@ -7,7 +7,7 @@ import { Plus, DollarSign, Heart } from 'lucide-react';
 import { format } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { formatCounterparty } from '@/utils';
+import { formatCounterparty, formatFundingSource } from '@/utils';
 
 import TransactionForm from '../components/forms/TransactionForm';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
@@ -162,46 +162,36 @@ export default function MaaserTracker() {
               return (
                 <div
                   key={item.id}
-                  className={`flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow ${
-                    isIncome ? 'bg-emerald-50 border-emerald-100' : 'bg-blue-50 border-blue-100'
-                  }`}
+                  className="flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow bg-white border-slate-200"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
                     <div className={`p-3 rounded-xl ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
                       {isIncome ? <DollarSign className="h-5 w-5" /> : <CharityBoxIcon className="h-6 w-6" />}
                     </div>
-                  <div className="flex-1 min-w-0 space-y-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-semibold text-slate-900 text-lg truncate">
-                        {isIncome ? item.description : item.charity_name}
-                      </h4>
-                      <Badge className={isIncome ? 'bg-emerald-600' : 'bg-blue-600'}>
-                        {isIncome ? 'Income' : "Ma'aser Payment"}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap text-sm">
-                      {isIncome ? (
-                        <>
-                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                            Source: {item.integration_provider || item.account || 'Manual entry'}
-                          </Badge>
-                          {item.account && (
-                            <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                              Account: {item.account}
-                            </Badge>
-                          )}
-                        </>
-                      ) : (
-                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                          To: {item.charity_name || 'Recipient'}
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-semibold text-slate-900 text-lg truncate">
+                          {isIncome ? item.description : item.charity_name}
+                        </h4>
+                        <Badge className={isIncome ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'}>
+                          {isIncome ? 'Income' : "Ma'aser Payment"}
                         </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm text-slate-600 truncate">
-                      {isIncome && item.account ? `${item.account} • ` : ''}
-                      {format(new Date(item.date), 'MMMM dd, yyyy')}
-                    </p>
-                    {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap text-sm">
+                        {isIncome ? (
+                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                            {formatFundingSource(item)}
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                            To: {item.charity_name || 'Recipient'}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-slate-600 truncate">
+                        {format(new Date(item.date), 'MMMM dd, yyyy')}
+                      </p>
+                      {item.notes && <p className="text-sm text-slate-500 truncate">{item.notes}</p>}
                     </div>
                   </div>
                   <span className="text-2xl font-bold text-slate-900">${item.amount.toFixed(2)}</span>

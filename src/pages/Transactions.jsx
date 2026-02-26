@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DollarSign, List, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
-import { formatCounterparty } from '@/utils';
+import { formatCounterparty, formatFundingSource } from '@/utils';
 import CharityBoxIcon from '../components/icons/CharityBoxIcon';
 
 export default function Transactions() {
@@ -98,11 +98,7 @@ function LedgerCard({ title, items, view, onViewChange }) {
           items.map((item) => (
             <div
               key={`${item.type}-${item.id}`}
-              className={`flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow ${
-                item.type === 'income'
-                  ? 'bg-emerald-50 border-emerald-100'
-                  : 'bg-blue-50 border-blue-100'
-              }`}
+              className="flex items-center justify-between p-4 rounded-xl border transition hover:-translate-y-0.5 hover:shadow bg-white border-slate-200"
             >
               <div className="flex items-center gap-4 flex-1 min-w-0">
                 <div className={`p-3 rounded-xl ${item.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
@@ -117,7 +113,7 @@ function LedgerCard({ title, items, view, onViewChange }) {
                     <h4 className="font-semibold text-slate-900 text-lg truncate">
                       {formatCounterparty(item)}
                     </h4>
-                    <Badge className={item.type === 'income' ? 'bg-emerald-600' : 'bg-blue-600'}>
+                    <Badge className={item.type === 'income' ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'}>
                       {item.type === 'income' ? 'Income' : "Ma'aser Payment"}
                     </Badge>
                     {item.is_internal_transfer && (
@@ -128,16 +124,9 @@ function LedgerCard({ title, items, view, onViewChange }) {
                   </div>
                   <div className="flex items-center gap-2 flex-wrap text-sm">
                     {item.type === 'income' ? (
-                      <>
-                        <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                          Source: {item.integration_provider || item.account || 'Manual entry'}
-                        </Badge>
-                        {item.account && (
-                          <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
-                            Account: {item.account}
-                          </Badge>
-                        )}
-                      </>
+                      <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
+                        {formatFundingSource(item)}
+                      </Badge>
                     ) : (
                       <Badge variant="outline" className="bg-white text-slate-700 border-slate-200">
                         To: {item.charity_name || item.description || 'Recipient'}
@@ -145,7 +134,6 @@ function LedgerCard({ title, items, view, onViewChange }) {
                     )}
                   </div>
                   <p className="text-sm text-slate-600 truncate">
-                    {item.type === 'income' && item.account ? `${item.account} • ` : ''}
                     {format(new Date(item.date), 'MMMM dd, yyyy')}
                   </p>
                   {(() => {
