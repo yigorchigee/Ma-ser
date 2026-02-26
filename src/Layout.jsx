@@ -14,7 +14,7 @@ export default function Layout({ children, currentPageName, showNav = true }) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
       <div className="fixed inset-0 bg-gradient-to-br from-slate-100 via-white to-slate-50" aria-hidden />
       <div
         className="fixed inset-x-6 top-4 h-64 rounded-3xl bg-gradient-to-r opacity-40 blur-3xl pointer-events-none"
@@ -22,15 +22,15 @@ export default function Layout({ children, currentPageName, showNav = true }) {
         aria-hidden
       />
 
-      <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
+      <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/85 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
-            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-4 -mt-4 md:-mt-12">
-              <TzedakaLogo className="h-28 md:h-32 aspect-[10/7] max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95 shadow-sm" />
+            <Link to={createPageUrl('Dashboard')} className="flex items-center">
+              <TzedakaLogo className="h-16 md:h-20 w-auto max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5" />
             </Link>
 
             {showNav && (
-              <nav className="flex items-center gap-2 rounded-full bg-white/70 border border-white/60 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
+              <nav className="flex items-center gap-2 rounded-full bg-white/80 border border-white/70 shadow-md shadow-slate-900/5 px-1 py-1 backdrop-blur">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = currentPageName === item.name;
@@ -57,12 +57,12 @@ export default function Layout({ children, currentPageName, showNav = true }) {
               </nav>
             )}
 
-            <div />
+            <div className="w-0" />
           </div>
         </div>
       </header>
 
-      <main className="relative pt-10 pb-16">
+      <main className={`relative ${showNav ? 'pt-10 pb-14' : 'pt-4 pb-6'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">{children}</div>
       </main>
     </div>
