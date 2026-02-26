@@ -429,14 +429,14 @@ textarea {
 
 .auth-title {
   margin: 0;
-  color: #0f172a;
+  color: var(--text);
   font-size: clamp(28px, 4vw, 34px);
   font-weight: 900;
 }
 
 .auth-subtitle {
   margin: 8px 0 0;
-  color: #475569;
+  color: var(--muted);
   font-size: 15px;
 }
 
