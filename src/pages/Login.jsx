@@ -5,6 +5,7 @@ import { Mail, KeyRound } from 'lucide-react';
 
 import { useAuth } from '@/auth/AuthContext';
 import { dataClient } from '@/api/dataClient';
+import TzedakaLogo from '@/components/icons/TzedakaLogo';
 
 export default function Login({ defaultMode = 'login' }) {
   const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
@@ -83,6 +84,9 @@ export default function Login({ defaultMode = 'login' }) {
       <div className="auth-shell">
         <div className="auth-card glass-card">
           <div className="auth-header">
+            <div className="auth-brand">
+              <TzedakaLogo variant="full" className="auth-brand-logo" />
+            </div>
             <p className="auth-title">{mode === 'login' ? 'Welcome' : 'Create account'}</p>
             <p className="auth-subtitle">
               {mode === 'login'
