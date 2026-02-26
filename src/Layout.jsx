@@ -24,9 +24,9 @@ export default function Layout({ children, currentPageName, showNav = true }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/85 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
+          <div className="flex items-center justify-between h-[88px]">
             <Link to={createPageUrl('Dashboard')} className="flex items-center">
-              <TzedakaLogo className="h-16 md:h-20 w-auto max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5" />
+              <TzedakaLogo className="h-14 md:h-16 w-auto max-w-[300px] shrink-0 transition-transform duration-200 hover:-translate-y-0.5" />
             </Link>
 
             {showNav && (
@@ -62,7 +62,7 @@ export default function Layout({ children, currentPageName, showNav = true }) {
         </div>
       </header>
 
-      <main className={`relative ${showNav ? 'pt-10 pb-14' : 'pt-4 pb-6'}`}>
+      <main className={`relative ${showNav ? 'pt-8 pb-12' : 'py-2'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">{children}</div>
       </main>
     </div>

@@ -1,26 +1,39 @@
 import React, { useId } from 'react';
 
-function MarkShape({ bgId, mintId }) {
+function LogoDefs({ bgId, mintId }) {
+  return (
+    <defs>
+      <linearGradient id={bgId} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#1d67ef" />
+        <stop offset="100%" stopColor="#255ee3" />
+      </linearGradient>
+      <linearGradient id={mintId} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#5df1ce" />
+        <stop offset="100%" stopColor="#66e7c6" />
+      </linearGradient>
+    </defs>
+  );
+}
+
+function LogoMarkShape({ bgId, mintId }) {
   return (
     <>
-      <rect x="6" y="6" width="208" height="208" rx="36" fill={`url(#${bgId})`} />
-
-      <circle cx="112" cy="72" r="34" fill={`url(#${mintId})`} />
+      <rect x="6" y="6" width="228" height="228" rx="40" fill={`url(#${bgId})`} />
+      <circle cx="120" cy="72" r="34" fill={`url(#${mintId})`} />
       <text
-        x="112"
-        y="73"
+        x="120"
+        y="72"
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="#1e64f0"
+        fill="#1f57d7"
+        fontSize="44"
+        fontWeight="700"
         fontFamily="Inter, Manrope, Arial, sans-serif"
-        fontSize="45"
-        fontWeight="800"
       >
         $
       </text>
-
       <path
-        d="M46 134 L84 116 Q92 112 102 112 L152 116 Q164 118 165 128 Q165 138 152 139 L104 140"
+        d="M48 141 L84 122 Q92 118 101 118 L155 122 Q167 123 168 132 Q167 141 155 142 L104 143"
         fill="none"
         stroke={`url(#${mintId})`}
         strokeWidth="10"
@@ -28,7 +41,7 @@ function MarkShape({ bgId, mintId }) {
         strokeLinejoin="round"
       />
       <path
-        d="M72 155 Q82 148 97 149 L150 151 Q160 152 168 143 L193 116 Q200 108 196 103 Q192 98 184 105 L159 128"
+        d="M78 154 L160 156 Q168 156 173 150 L204 117 Q209 111 205 106 Q202 101 195 107 L165 132"
         fill="none"
         stroke={`url(#${mintId})`}
         strokeWidth="10"
@@ -39,48 +52,60 @@ function MarkShape({ bgId, mintId }) {
   );
 }
 
-function MarkDefs({ bgId, mintId }) {
-  return (
-    <defs>
-      <linearGradient id={bgId} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#1e64f0" />
-        <stop offset="100%" stopColor="#1a4fd3" />
-      </linearGradient>
-      <linearGradient id={mintId} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#60f3d0" />
-        <stop offset="100%" stopColor="#63e5c8" />
-      </linearGradient>
-    </defs>
-  );
-}
-
-function IconMark({ className = '' }) {
+function LogoMark({ className = '' }) {
   const id = useId().replace(/:/g, '');
-  const bgId = `tt-bg-${id}`;
+  const bgId = `tt-mark-bg-${id}`;
   const mintId = `tt-mint-${id}`;
 
   return (
-    <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" className={className} role="img" aria-label="Tzedaka Tracker logo icon">
-      <MarkDefs bgId={bgId} mintId={mintId} />
-      <MarkShape bgId={bgId} mintId={mintId} />
+    <svg
+      viewBox="0 0 240 240"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      role="img"
+      aria-label="Tzedaka Tracker logo mark"
+    >
+      <LogoDefs bgId={bgId} mintId={mintId} />
+      <LogoMarkShape bgId={bgId} mintId={mintId} />
     </svg>
   );
 }
 
 function FullLogo({ className = '' }) {
   const id = useId().replace(/:/g, '');
-  const bgId = `tt-bg-${id}`;
+  const bgId = `tt-mark-bg-${id}`;
   const mintId = `tt-mint-${id}`;
 
   return (
-    <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" className={className} role="img" aria-label="Tzedaka Tracker logo">
-      <MarkDefs bgId={bgId} mintId={mintId} />
-      <MarkShape bgId={bgId} mintId={mintId} />
-
-      <text x="252" y="105" fontFamily="Inter, Manrope, Arial, sans-serif" fontSize="80" fontWeight="800" fill="#2462e8">
+    <svg
+      viewBox="0 0 900 260"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      role="img"
+      aria-label="Tzedaka Tracker logo"
+    >
+      <LogoDefs bgId={bgId} mintId={mintId} />
+      <g transform="translate(0,10)">
+        <LogoMarkShape bgId={bgId} mintId={mintId} />
+      </g>
+      <text
+        x="280"
+        y="122"
+        fill="#2462e8"
+        fontSize="92"
+        fontWeight="800"
+        fontFamily="Inter, Manrope, Arial, sans-serif"
+      >
         Tzedaka
       </text>
-      <text x="252" y="186" fontFamily="Inter, Manrope, Arial, sans-serif" fontSize="80" fontWeight="800" fill="#2462e8">
+      <text
+        x="280"
+        y="214"
+        fill="#2462e8"
+        fontSize="92"
+        fontWeight="800"
+        fontFamily="Inter, Manrope, Arial, sans-serif"
+      >
         Tracker
       </text>
     </svg>
@@ -88,5 +113,5 @@ function FullLogo({ className = '' }) {
 }
 
 export default function TzedakaLogo({ className = '', variant = 'full' }) {
-  return variant === 'icon' ? <IconMark className={className} /> : <FullLogo className={className} />;
+  return variant === 'icon' ? <LogoMark className={className} /> : <FullLogo className={className} />;
 }
