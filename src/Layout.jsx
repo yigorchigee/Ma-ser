@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { LayoutDashboard, Receipt, Settings } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
-import TzedakaLogo from './components/icons/TzedakaLogo';
 
 export default function Layout({ children, currentPageName, showNav = true }) {
   const navItems = [
