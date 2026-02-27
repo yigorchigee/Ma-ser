@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { LayoutDashboard, Receipt, Settings } from 'lucide-react';
 import CharityBoxIcon from './components/icons/CharityBoxIcon';
-import TzedakaLogo from './components/icons/TzedakaLogo';
 
 export default function Layout({ children, currentPageName, showNav = true }) {
   const navItems = [
@@ -25,8 +24,12 @@ export default function Layout({ children, currentPageName, showNav = true }) {
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
-            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-4 -mt-4 md:-mt-12">
-              <TzedakaLogo className="h-28 md:h-32 aspect-[10/7] max-w-[24rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95 shadow-sm" />
+            <Link to={createPageUrl('Dashboard')} className="flex items-center justify-center h-full">
+              <img
+                src="/tzedaka-tracker-logo.png"
+                alt="Tzedaka Tracker"
+                className="h-16 md:h-20 w-[18rem] md:w-[24rem] object-cover object-center overflow-hidden shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
+              />
             </Link>
 
             {showNav && (
