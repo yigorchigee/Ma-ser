@@ -28,7 +28,7 @@ export default function Layout({ children, currentPageName, showNav = true }) {
               <img
                 src="/tzedaka-tracker-logo.png"
                 alt="Tzedaka Tracker"
-                className="h-16 md:h-20 w-[18rem] md:w-[24rem] object-cover object-center overflow-hidden shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
+                className="h-16 md:h-20 w-[18rem] md:w-[24rem] object-contain object-center shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
               />
             </Link>
 
