@@ -25,7 +25,11 @@ export default function Layout({ children, currentPageName, showNav = true }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
             <Link to={createPageUrl('Dashboard')} className="flex items-center justify-center h-full">
-              <TzedakaLogo className="h-16 md:h-20 w-auto max-w-[18rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95" />
+              <img
+                src="/tzedaka-tracker-logo.png"
+                alt="Tzedaka Tracker"
+                className="h-16 md:h-20 w-auto max-w-[18rem] shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
+              />
             </Link>
 
             {showNav && (
