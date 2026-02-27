@@ -23,7 +23,7 @@ export default function Layout({ children, currentPageName, showNav = true }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
+          <div className={`flex items-center h-24 ${showNav ? 'justify-between' : 'justify-center'}`}>
             <Link to={createPageUrl('Dashboard')} className="flex items-center justify-center h-full">
               <img
                 src="/tzedaka-tracker-logo.png"
@@ -60,7 +60,7 @@ export default function Layout({ children, currentPageName, showNav = true }) {
               </nav>
             )}
 
-            <div />
+            {showNav && <div />}
           </div>
         </div>
       </header>
