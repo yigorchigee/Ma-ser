@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '@/auth/AuthContext';
-import { dataClient } from '@/api/dataClient';
 import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
@@ -14,7 +13,6 @@ export default function Login({ defaultMode = 'login' }) {
   const [mode, setMode] = useState(defaultMode);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const googleLoginEnabled = dataClient.auth.isGoogleLoginConfigured();
 
   if (isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
@@ -28,12 +26,9 @@ export default function Login({ defaultMode = 'login' }) {
   const handleGoogleLogin = async () => {
     try {
       setIsSubmitting(true);
-      const result = await loginWithGoogle();
-      toast.success(`Signed in as ${result.user.email}`);
-      navigate(redirectPath, { replace: true });
+      await loginWithGoogle();
     } catch (error) {
       toast.error(error.message || 'Unable to sign in with Google');
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -87,19 +82,6 @@ export default function Login({ defaultMode = 'login' }) {
               />
               Continue with Google
             </button>
-
-            {!googleLoginEnabled && (
-              <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg py-3 px-4 space-y-1">
-                <p className="font-semibold text-center">Google login is not set up yet.</p>
-                <p>
-                  In your <code>.env</code> file (or hosting env vars), set <code>VITE_GOOGLE_CLIENT_ID</code> to
-                  <span className="font-semibold"> 377092527146-vu27pupmj0m69d3ndavbnv2i7adv6t9k.apps.googleusercontent.com</span>
-                  , then restart the app. Add <code>http://localhost:5173</code> as an authorized JavaScript origin for the
-                  OAuth client in Google Cloud Console so local sign-ins are allowed. You can also set
-                  <code>window.VITE_GOOGLE_CLIENT_ID</code> in the browser console for quick local testing.
-                </p>
-              </div>
-            )}
 
             <div className="relative py-2 text-center text-xs text-slate-500">
               <span className="px-3 bg-white relative z-10">or</span>

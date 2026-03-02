@@ -12,6 +12,7 @@
   "dependencies": {
     "@paypal/paypal-js": "^9.0.0",
     "@square/web-sdk": "^1.0.0",
+    "@supabase/supabase-js": "^2.98.0",
     "@tanstack/react-query": "^5.56.2",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.441.0",
