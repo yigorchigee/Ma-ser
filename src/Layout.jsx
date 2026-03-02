@@ -23,12 +23,12 @@ export default function Layout({ children, currentPageName, showNav = true }) {
 
       <header className="sticky top-0 z-30 backdrop-blur-2xl bg-white/75 border-b border-white/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-28 justify-between">
+          <div className="flex items-center h-32 justify-between">
             <Link to={createPageUrl('Dashboard')} className="flex items-center h-full py-3">
               <img
                 src="/tzedaka-tracker-logo.png"
                 alt="Tzedaka Tracker"
-                className="h-24 md:h-28 w-auto shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
+                className="h-28 md:h-32 w-auto shrink-0 transition-transform duration-200 hover:-translate-y-0.5 active:scale-95"
               />
             </Link>
 
