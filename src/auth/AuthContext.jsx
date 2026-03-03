@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
 
   const loginWithGoogle = async () => {
     if (!supabase) {
-      throw new Error('Authentication is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+      throw new Error(AUTH_NOT_CONFIGURED_ERROR);
     }
 
     const { error } = await supabase.auth.signInWithOAuth({
