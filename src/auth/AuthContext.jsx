@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 const AuthContext = createContext(null);
 
@@ -14,6 +17,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return undefined;
+    }
+
     const initializeAuth = async () => {
       const { data: { session: initialSession } } = await supabase.auth.getSession();
       setSession(initialSession);
@@ -36,6 +44,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginWithGoogle = async () => {
+    if (!supabase) {
+      throw new Error(AUTH_NOT_CONFIGURED_ERROR);
+    }
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -46,6 +58,10 @@ export function AuthProvider({ children }) {
   };
 
   const loginWithEmail = async ({ email, password }) => {
+    if (!supabase) {
+      throw new Error('Authentication is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -54,6 +70,10 @@ export function AuthProvider({ children }) {
   };
 
   const registerWithEmail = async ({ email, password, name }) => {
+    if (!supabase) {
+      throw new Error('Authentication is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+    }
+
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -69,6 +89,10 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    if (!supabase) {
+      return;
+    }
+
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   };
@@ -81,6 +105,7 @@ export function AuthProvider({ children }) {
       loginWithEmail,
       registerWithEmail,
       logout,
+      authConfigured: isSupabaseConfigured,
     }),
     [user]
   );
