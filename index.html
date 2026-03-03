@@ -8,7 +8,6 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
       const clientId =
         (typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_CLIENT_ID : undefined) ||
@@ -18,17 +17,6 @@
         window.__MAASER_CONFIG__ = window.__MAASER_CONFIG__ || {};
         window.__MAASER_CONFIG__.googleClientId = clientId;
       }
-    </script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'Manrope', 'ui-sans-serif', 'system-ui'],
-            },
-          },
-        },
-      };
     </script>
     <title>Tzedaka Tracker</title>
   </head>
