@@ -5,7 +5,7 @@ import { useAuth } from '@/auth/AuthContext';
 import { Mail, KeyRound } from 'lucide-react';
 
 export default function Login({ defaultMode = 'login' }) {
-  const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth();
+  const { isAuthenticated, loginWithGoogle, loginWithEmail, registerWithEmail, authConfigured } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.from || '/dashboard';
@@ -72,7 +72,7 @@ export default function Login({ defaultMode = 'login' }) {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !authConfigured}
               className="w-full inline-flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 active:scale-95 transition disabled:opacity-60"
             >
               <img
@@ -82,6 +82,14 @@ export default function Login({ defaultMode = 'login' }) {
               />
               Continue with Google
             </button>
+
+            {!authConfigured && (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                Authentication is not configured in this environment. Add{' '}
+                <code className="font-semibold">VITE_SUPABASE_URL</code> and{' '}
+                <code className="font-semibold">VITE_SUPABASE_ANON_KEY</code> to your environment variables.
+              </div>
+            )}
 
             <div className="relative py-2 text-center text-xs text-slate-500">
               <span className="px-3 bg-white relative z-10">or</span>
@@ -99,6 +107,7 @@ export default function Login({ defaultMode = 'login' }) {
                     name="name"
                     type="text"
                     required
+                    disabled={!authConfigured}
                     value={form.name}
                     onChange={handleChange}
                     className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -116,6 +125,7 @@ export default function Login({ defaultMode = 'login' }) {
                   name="email"
                   type="email"
                   required
+                  disabled={!authConfigured}
                   value={form.email}
                   onChange={handleChange}
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -134,6 +144,7 @@ export default function Login({ defaultMode = 'login' }) {
                     name="password"
                     type="password"
                     required
+                    disabled={!authConfigured}
                     value={form.password}
                     onChange={handleChange}
                     className="w-full rounded-xl border border-slate-200 px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -144,7 +155,7 @@ export default function Login({ defaultMode = 'login' }) {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !authConfigured}
                 className="w-full rounded-xl bg-blue-600 text-white py-3 font-semibold shadow-lg hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition"
               >
                 {isSubmitting ? 'Please wait...' : mode === 'login' ? 'Login' : 'Create account'}
